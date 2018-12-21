@@ -1,7 +1,7 @@
 version: '3.4'
 
 services:
-  app:
+  api:
     build: 
       context: ./app
       args:
@@ -14,4 +14,16 @@ services:
         max-size: "200k"
         max-file: "10"
 
-
+  web:
+    build: 
+      context: ./web
+      args:
+        - http_proxy
+        - https_proxy
+    depends_on:
+      - api
+    logging:
+      options:
+        max-size: "200k"
+        max-file: "10"
+    restart: on-failure
