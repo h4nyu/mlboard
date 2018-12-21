@@ -1,0 +1,9 @@
+.env
+*.tar
+!.gitkeep
+test_data
+**/*.DS_Store
+deploy.sh
+data
+
+

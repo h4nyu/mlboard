@@ -1,0 +1,29 @@
+version: '3.4'
+
+services:
+  app:
+    build: 
+      context: ./app
+      args:
+        - http_proxy
+        - https_proxy
+    command: python -u api.py
+    volumes:
+      - ./app:/srv
+
+    environment:
+      - PYTHON_ENV=development
+    restart: on-failure
+    logging:
+      options:
+        max-size: "200k"
+        max-file: "10"
+
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: ${SUBNET}
