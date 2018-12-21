@@ -7,12 +7,7 @@ services:
       args:
         - http_proxy
         - https_proxy
-    command: python -u api.py
-    volumes:
-      - ./app:/srv
-
-    environment:
-      - PYTHON_ENV=development
+    command: flask run --host=0.0.0.0
     restart: on-failure
     logging:
       options:
@@ -20,10 +15,3 @@ services:
         max-file: "10"
 
 
-networks:
-  default:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: ${SUBNET}

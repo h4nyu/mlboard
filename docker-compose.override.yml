@@ -1,0 +1,21 @@
+version: '3.4'
+
+services:
+  app:
+    volumes:
+      - ./app:/srv
+    environment:
+      - FLASK_DEBUG=1
+      - PYTHON_ENV=development
+
+    ports:
+      - "${APP_PORT}:5000"
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: ${SUBNET}
+
