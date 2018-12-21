@@ -34,19 +34,3 @@ def kwargs_cast(func):
         kwargs = {k: _f(k, v) for k, v in kwargs.items()}
         return func(*args, **kwargs)
     return wapper
-
-
-def without_timezone(func):
-    @functools.wraps(func)
-    def wapper(*args, **kwargs):
-        def rmTimezone(v):
-            if isinstance(v, datetime.datetime):
-                local_time = v.astimezone()
-                return local_time.replace(tzinfo=None)
-            else:
-                return v
-
-        args = [rmTimezone(v) for v in args]
-        kwargs = {k: rmTimezone(v) for k, v in kwargs.items()}
-        return func(*args, **kwargs)
-    return wapper

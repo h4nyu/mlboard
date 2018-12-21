@@ -3,7 +3,7 @@
 from flask import Flask, jsonify
 from flask.json import JSONEncoder
 from datetime import datetime
-from ..models.model_base import SerializableMixIn
+from .models.model_base import SerializableMixIn
 
 
 class DefaultEncoder(JSONEncoder):
