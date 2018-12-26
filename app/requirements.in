@@ -4,4 +4,5 @@ flask-restful
 SQLAlchemy
 cytoolz
 python-dateutil
+alembic
 

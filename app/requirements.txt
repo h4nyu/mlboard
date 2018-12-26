@@ -4,6 +4,7 @@
 #
 #    pip-compile --output-file requirements.txt requirements.in
 #
+alembic==1.0.5
 aniso8601==4.0.1          # via flask-restful
 ciso8601==2.1.1
 click==7.0                # via flask
@@ -12,8 +13,10 @@ flask-restful==0.3.7
 flask==1.0.2
 itsdangerous==1.1.0       # via flask
 jinja2==2.10              # via flask
-markupsafe==1.1.0         # via jinja2
+mako==1.0.7               # via alembic
+markupsafe==1.1.0         # via jinja2, mako
 python-dateutil==2.7.5
+python-editor==1.0.3      # via alembic
 pytz==2018.7              # via flask-restful
 six==1.12.0               # via flask-restful, python-dateutil
 sqlalchemy==1.2.15
