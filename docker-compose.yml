@@ -14,6 +14,18 @@ services:
         max-size: "200k"
         max-file: "10"
 
+  front:
+    build: 
+      context: ./front
+      args:
+        - http_proxy
+        - https_proxy
+    restart: on-failure
+    logging:
+      options:
+        max-size: "200k"
+        max-file: "10"
+
   web:
     build: 
       context: ./web
