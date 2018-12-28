@@ -19,7 +19,7 @@ export default {
           <p>{ this.message }</p>
         </div>
         <div class={styles.main}>
-          view-router
+          <router-view></router-view>
         </div>
       </div>
     )
