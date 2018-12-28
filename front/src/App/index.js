@@ -1,4 +1,4 @@
-import styles from "./app.css";
+import styles from "./style.css";
 
 export default {
   name: 'app',
@@ -18,4 +18,5 @@ export default {
     )
   }
 };
+
 
