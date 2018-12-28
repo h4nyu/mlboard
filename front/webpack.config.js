@@ -16,5 +16,11 @@ module.exports = {
         }
       }
     ]
+  },
+  resolve: {
+    alias: {
+      '@': '/srv/src',
+    },
+    extensions: ['*', '.js', '.vue', '.json']
   }
 };

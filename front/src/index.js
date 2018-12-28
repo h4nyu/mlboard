@@ -1,10 +1,14 @@
-import React from 'react';
-import {render} from 'react-dom';
+import Vue from 'vue';
+import App from '@/App';
 
-class App extends React.Component {
-  render () {
-    return <p> Hello React!</p>;
+/* eslint-disable no-new */
+new Vue({
+  el: '#app',
+  components: { App },
+  render: function render(h) {
+    return ( 
+      <App/>
+    )
   }
-}
+});
 
-render(<App/>, document.getElementById('app'));
