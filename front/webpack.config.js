@@ -1,6 +1,11 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 
 module.exports = {
+  devServer: {
+    disableHostCheck: true,
+    host: '0.0.0.0',
+    port: 80,
+  },
   plugins: [
     new HtmlWebPackPlugin({
       template: "./public/index.html",
