@@ -1,24 +1,20 @@
+import styles from "./app.css";
+
 export default {
   name: 'app',
-  data() {
-    return {
-      msg: 'Click to see the message'
-    };
-  },
-  methods: {
-    hello () {
-      alert('This is the message')
-    }
-  },
   render: function render(h) {
     return (
-      <span
-        class={{ 'my-class-3': true }}
-        style={{ cursor: 'pointer' }}
-        on-click={ this.hello }
-      >
-        { this.msg }
-      </span>
+      <div class={styles.app}>
+        <div class={styles.header}>
+          header
+        </div>
+        <div class={styles.aside}>
+          aside
+        </div>
+        <div class={styles.main}>
+          view-router
+        </div>
+      </div>
     )
   }
 };

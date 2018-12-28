@@ -1,0 +1,26 @@
+
+.app {
+  display: grid;
+  grid-template-areas:
+    "header header"
+    "nav content"
+    "footer content";
+  grid-template-columns: 200px 1fr;
+  grid-template-rows: auto 1fr auto;
+  height: 100vh;
+}
+
+.header {
+  grid-area: header;
+}
+
+.aside {
+  grid-area: nav;
+  overflow: auto;
+}
+
+.main {
+  grid-area: content;
+  overflow: auto;
+}
+

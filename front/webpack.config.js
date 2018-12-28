@@ -14,13 +14,20 @@ module.exports = {
         use: {
           loader: "babel-loader"
         }
-      }
+      },
+      {
+        test: /\.css$/,
+          use: [
+            "style-loader",
+            "css-loader?modules",
+          ],
+      },
     ]
   },
   resolve: {
     alias: {
       '@': '/srv/src',
     },
-    extensions: ['*', '.js', '.vue', '.json']
+    extensions: ['*', '.js', '.json']
   }
 };
