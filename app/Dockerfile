@@ -16,3 +16,4 @@ RUN pip install -r requirements.txt --no-cache-dir  && \
 COPY ./ /srv
 RUN python setup.py develop
 ENV FLASK_APP onikuflow
+ENV FLASK_CONFIG_FILE_PATH /srv/onikuflow.cfg

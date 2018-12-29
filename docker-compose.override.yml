@@ -1,5 +1,8 @@
 version: '3.4'
 
+volumes: 
+  db_data:
+
 services:
   api:
     volumes:
@@ -7,6 +10,12 @@ services:
     environment:
       - FLASK_DEBUG=1
       - PYTHON_ENV=development
+
+  db:
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
 
   front:
     environment:
