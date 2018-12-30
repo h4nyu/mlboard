@@ -1,11 +1,7 @@
 from __future__ import with_statement
 from alembic import context
 from sqlalchemy import engine_from_config, pool
-import sqlalchemy
-import logging
 from logging.config import fileConfig
-import time
-logger = logging.getLogger()
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -54,25 +50,19 @@ def run_migrations_online():
     and associate a connection with the context.
 
     """
-    while True:
-        try:
-            connectable = engine_from_config(
-                config.get_section(config.config_ini_section),
-                prefix='sqlalchemy.',
-                poolclass=pool.NullPool)
+    connectable = engine_from_config(
+        config.get_section(config.config_ini_section),
+        prefix='sqlalchemy.',
+        poolclass=pool.NullPool)
 
-            with connectable.connect() as connection:
-                context.configure(
-                    connection=connection,
-                    target_metadata=target_metadata
-                )
+    with connectable.connect() as connection:
+        context.configure(
+            connection=connection,
+            target_metadata=target_metadata
+        )
 
-                with context.begin_transaction():
-                    context.run_migrations()
-            break
-        except sqlalchemy.exc.OperationalError as e:
-            logger.log("retry to connect db...")
-            time.sleep(1)
+        with context.begin_transaction():
+            context.run_migrations()
 
 if context.is_offline_mode():
     run_migrations_offline()

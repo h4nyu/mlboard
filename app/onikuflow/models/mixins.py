@@ -1,22 +1,5 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-from sqlalchemy import (
-    Column,
-    Integer,
-    DateTime,
-    text,
-    Text,
-    LargeBinary,
-    Float
-)
-import datetime
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm.collections import InstrumentedList
 import json
-from sqlalchemy.ext.declarative import declarative_base
 import uuid
-
-Base = declarative_base()
 
 
 class SerializableMixIn(object):

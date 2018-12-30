@@ -7,6 +7,7 @@ import uuid
 from sqlalchemy import create_engine
 from sqlalchemy.pool import NullPool
 from sqlalchemy.orm import sessionmaker
+from .config import config
 
 
 class JSONEncoder(json.JSONEncoder):
@@ -24,8 +25,7 @@ def dumps(d):
     return json.dumps(d, cls=JSONEncoder)
 
 
-SQL_ALCHEMY_CONN = os.getenv("SQL_ALCHEMY_CONN",
-                             'postgresql://osca:osca@db:5432/osca')
+SQL_ALCHEMY_CONN = config['sql_alchemy_conn']
 
 
 class DBSession(object):

@@ -4,6 +4,11 @@ volumes:
   db_data:
 
 services:
+  db:
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
   api:
     volumes:
       - ./app:/srv
@@ -11,11 +16,9 @@ services:
       - FLASK_DEBUG=1
       - PYTHON_ENV=development
 
-  db:
+  migration:
     volumes:
-      - db_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+      - ./migration:/srv
 
   front:
     environment:

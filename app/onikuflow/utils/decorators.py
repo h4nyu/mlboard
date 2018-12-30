@@ -26,7 +26,7 @@ def kwargs_cast(func):
     @functools.wraps(func)
     def wapper(*args, **kwargs):
         def _f(k, v):
-            if 'date' in k and isinstance(v, str):
+            if '_ts' in k and isinstance(v, str):
                 return dateutil.parser.parse(v)
             else:
                 return v

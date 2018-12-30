@@ -1,6 +1,14 @@
 version: '3.4'
 
 services:
+  db:
+    build: 
+      context: ./db
+      args:
+        - http_proxy
+        - https_proxy
+    restart: on-failure
+
   api:
     build: 
       context: ./app
@@ -14,13 +22,15 @@ services:
         max-size: "200k"
         max-file: "10"
 
-  db:
+  migration:
     build: 
-      context: ./db
+      context: ./migration
       args:
         - http_proxy
         - https_proxy
     restart: on-failure
+    depends_on:
+      - db
 
   front:
     build: 
