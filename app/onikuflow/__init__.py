@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from .view import api_bp
 from .encoders import DefaultEncoder
+import os
 from flask import Flask
 import logging
 
@@ -13,8 +14,12 @@ logger.setLevel(level=logging.DEBUG)
 
 
 def create_app(test_config=None):
+    from .config import config
     app = Flask(__name__, instance_relative_config=True)
-    app.config.from_envvar('ONIKUFLOW_CONFIG_FILE_PATH')
+    app.config.update(**config)
     app.json_encoder = DefaultEncoder
     app.register_blueprint(api_bp)
+    @app.route('/')
+    def hello_world():
+        return 'Hello, World!'
     return app

@@ -25,7 +25,7 @@ def dumps(d):
     return json.dumps(d, cls=JSONEncoder)
 
 
-SQL_ALCHEMY_CONN = config['sql_alchemy_conn']
+SQL_ALCHEMY_CONN = config['SQL_ALCHEMY_CONN']
 
 
 class DBSession(object):

@@ -1,1 +1,3 @@
-sql_alchemy_conn: "postgresql://onikuflow:onikuflow@db/onikuflow"
+SQL_ALCHEMY_CONN: "postgresql://onikuflow:onikuflow@db/onikuflow"
+DEBUG: True
+

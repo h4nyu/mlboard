@@ -3,10 +3,8 @@ import { mapState, mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'app',
-  computed:{
-    ...mapState('app', [
-      "message"
-    ]),
+  mounted: function () {
+    this.$store.dispatch('app/FETCH', {}, {root: true});
   },
   render: function render(h) {
     return (
