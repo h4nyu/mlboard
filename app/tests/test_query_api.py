@@ -29,6 +29,7 @@ def target(request):
 def test_all_table(api, target):
     payload = {
         "target": target.__name__,
+        'entities': [],
         "methods": [
             {"name": "limit", "args": [1], "kwargs":{}},
             {"name": "all", "args": [], "kwargs":{}}

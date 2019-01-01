@@ -151,20 +151,6 @@ class QueryApi extends API {
     return this._post(this.url, this.postData)
   }
 
-  recalc(obj) {
-    const putData = {
-      target: this.postData.target,
-      method: {
-        name: 'recalc',
-        args: [],
-        kwargs: {
-          obj: obj
-        }
-      }
-    }
-    return this._put(this.url, putData)
-  }
-
   upsert(obj) {
     const putData = {
       target: this.postData.target,

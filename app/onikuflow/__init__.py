@@ -19,7 +19,4 @@ def create_app(test_config=None):
     app.config.update(**config)
     app.json_encoder = DefaultEncoder
     app.register_blueprint(api_bp)
-    @app.route('/')
-    def hello_world():
-        return 'Hello, World!'
     return app

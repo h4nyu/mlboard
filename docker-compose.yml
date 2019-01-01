@@ -22,6 +22,13 @@ services:
         max-size: "200k"
         max-file: "10"
 
+  client:
+    build: 
+      context: ./client
+      args:
+        - http_proxy
+        - https_proxy
+
   migration:
     build: 
       context: ./migration
@@ -32,7 +39,7 @@ services:
     depends_on:
       - db
 
-  front:
+  board:
     build: 
       context: ./front
       args:
@@ -52,7 +59,7 @@ services:
         - https_proxy
     depends_on:
       - api
-      - front
+      - board
     logging:
       options:
         max-size: "200k"

@@ -27,9 +27,10 @@ def upgrade():
                 id uuid NOT NULL DEFAULT uuid_generate_v4(),
                 hash uuid NOT NULL DEFAULT uuid_generate_v4(),
                 create_date timestamp with time zone NOT NULL DEFAULT clock_timestamp(),
-                name text NOT NULL,
+                tag text NOT NULL,
                 memo text,
-                config json DEFAULT '{}'::json
+                config json DEFAULT '{}'::json,
+                CONSTRAINT tag_unique UNIQUE (tag)
             );
 
         CREATE TABLE traces

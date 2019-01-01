@@ -18,11 +18,15 @@ services:
     ports:
       - "5000:5000"
 
+  client:
+    volumes:
+      - ./client:/srv
+
   migration:
     volumes:
       - ./migration:/srv
 
-  front:
+  board:
     environment:
       - NODE_ENV=development
       - http_proxy
