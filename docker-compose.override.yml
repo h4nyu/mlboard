@@ -32,7 +32,7 @@ services:
       - http_proxy
       - https_proxy
     volumes:
-      - ./front:/srv
+      - ./board:/srv
     command: npm start
 
   web:
