@@ -41,7 +41,7 @@ services:
 
   board:
     build: 
-      context: ./front
+      context: ./board
       args:
         - http_proxy
         - https_proxy
