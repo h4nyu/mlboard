@@ -40,3 +40,4 @@ tmp
 docs/site
 .coverage*
 .pytest_cache
+*.db
