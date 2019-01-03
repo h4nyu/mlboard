@@ -1,4 +1,6 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
+
 
 module.exports = {
   devServer: {
@@ -9,7 +11,8 @@ module.exports = {
   plugins: [
     new HtmlWebPackPlugin({
       template: "./public/index.html",
-    })
+    }),
+    new VueLoaderPlugin(),
   ],
   module: {
     rules: [
@@ -21,10 +24,14 @@ module.exports = {
         }
       },
       {
+        test: /\.vue$/,
+        loader: 'vue-loader',
+      },
+      {
         test: /\.(css|scss|sass)$/,
           use: [
-            "style-loader",
-            "css-loader?modules",
+            'vue-style-loader',
+            'css-loader',
             "sass-loader",
           ],
       },
@@ -34,6 +41,6 @@ module.exports = {
     alias: {
       '@': '/srv/src',
     },
-    extensions: ['*', '.js', '.json']
+    extensions: ['*', '.js', '.json', '.vue']
   }
 };

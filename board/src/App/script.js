@@ -1,24 +1,24 @@
-import layout from "./layout.css";
 import { mapState, mapActions, mapGetters } from 'vuex';
 import HeaderNav from '@/components/HeaderNav'
+import SideNav from '@/components/SideNav'
 
 export default {
   name: 'app',
-  components: { HeaderNav },
   mounted: function () {
     this.$store.dispatch('app/FETCH', {}, {root: true});
+    console.log(this)
+
   },
   render: function render(h) {
     return (
-      <div class={layout.app}>
-        <div class={layout.header}>
-          <header-nav/>
+      <div class="app">
+        <div class="header">
+          <HeaderNav/>
         </div>
-        <div class={layout.aside}>
-          aside
-          <p>{ this.message }</p>
+        <div class="aside">
+          <SideNav />
         </div>
-        <div class={layout.main}>
+        <div class="main">
           <router-view></router-view>
         </div>
       </div>
