@@ -1,7 +1,7 @@
 import ExperimentList from "@/components/ExperimentList"
 
 export default {
-  name: 'SideNav',
+  name: 'TracePage',
   render: function render(h) {
     return (
       <ExperimentList />

@@ -17,14 +17,15 @@ export default {
           <HeaderNav/>
         </div>
         <div class="aside">
-          <SideNav />
         </div>
         <div class="main">
-          <router-view></router-view>
+          <SideNav/>
         </div>
       </div>
     )
   }
 };
+
+          // <router-view></router-view>
 
 

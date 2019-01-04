@@ -115,23 +115,10 @@ export default {
     },
   },
   computed:{
-    plotData: function () {
-      const mapTrace = fp.map(seg => {
-        if (seg.type === 'gantt'){
-          return this.gantt(seg);
-        }else{
-          return seg
-        }
-      });
-      return fp.pipe([
-        mapTrace,
-        fp.flatten
-      ])(this.data);
-    },
     plotConfig:function(){
       return [
         this.$el,
-        this.plotData,
+        this.data,
         this.layout,
         this.option
       ]

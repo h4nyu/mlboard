@@ -6,7 +6,7 @@ export default {
     query("Experiment")
       .all()
       .then(res => {
-        console.log(res);
+        commit(types.FETCH_ALL, res.data)
       })
   },
 };

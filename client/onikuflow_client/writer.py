@@ -25,6 +25,13 @@ class SummaryWriter(object):
 
         self.experment = self.api.upsert("Experiment", experment)
 
+    def update_config(self, config):
+        self.experment["config"] = {
+            **self.experment["config"],
+            **config,
+        }
+        self.api.upsert("Experiment", self.experment)
+
     def add_scalar(self, tag, scalar_value, global_step=None, walltime=None):
         trace = {
             'tag': tag,
