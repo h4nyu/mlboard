@@ -3,8 +3,10 @@ import TreeView from "vue-json-tree-view/src/TreeView"
 import { mapState, mapActions } from 'vuex';
 import BTable from 'buefy/src/components/table/Table' 
 import BTableColumn from 'buefy/src/components/table/TableColumn'
+import Empty from '@/components/Empty'
 import Timeago from 'vue-timeago'
 import filters from '@/filters'
+console.log(Empty);
 
 
 
@@ -16,6 +18,7 @@ export default {
     BTable,
     BTableColumn,
     Timeago,
+    Empty,
   },
   data(){
     return {
@@ -45,6 +48,7 @@ export default {
       <b-table 
         data={this.all} 
         checkable
+        jk
         scopedSlots={{
           default: props => (
             [
@@ -66,6 +70,7 @@ export default {
               </b-table-column>,
             ]
           ),
+          empty: () => (<empty/>)
         }}
       >
       </b-table>
