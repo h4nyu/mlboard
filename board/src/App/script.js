@@ -14,10 +14,10 @@ export default {
         <div class="header">
           <HeaderNav/>
         </div>
-        <div class="aside">
+        <div class="aside card">
           <SideNav/>
         </div>
-        <div class="main">
+        <div class="main card">
           <router-view></router-view>
         </div>
       </div>
