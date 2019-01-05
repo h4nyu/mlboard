@@ -35,6 +35,14 @@ module.exports = {
             "sass-loader",
           ],
       },
+      {
+        test: /\.(png|jpe?g|gif|svg|woff2?|eot|ttf|otf)(\?.*)?$/,
+        loader: 'url-loader',
+        options: {
+          limit: 10000,
+          name: '[name].[hash:7].[ext]'
+        }
+      },
     ]
   },
   resolve: {
