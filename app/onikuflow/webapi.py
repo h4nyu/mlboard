@@ -68,6 +68,4 @@ class QueryAPI(BaseAPI):
             query_cls = eval(f"qry.{target}")
             model_cls = eval(f'ms.{target}')
             obj = model_cls().from_dict(method['kwargs']['obj'])
-            q = query_cls(entities=model_cls, session=sess)
-            q = getattr(q, method['name'])(obj)
-            return q
+            return getattr(query_cls(session=sess), method['name'])(obj)

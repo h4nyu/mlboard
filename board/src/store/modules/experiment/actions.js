@@ -9,5 +9,13 @@ export default {
         commit(types.FETCH_ALL, res.data)
       })
   },
+
+  [types.DELETE] ({commit, state, rootState, dispatch, rootGetters}, id) {
+    query("Experiment")
+      .deleteCascade(id)
+      .then(() => {
+        dispatch(types.FETCH_ALL);
+      })
+  },
 };
 

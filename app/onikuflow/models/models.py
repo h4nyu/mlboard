@@ -51,4 +51,4 @@ class Experiment(SerializableMixIn, Base):
     )
 
     def __repr__(self):
-        return f"Experiment(name={self.name})"
+        return f"Experiment(name={self.tag})"

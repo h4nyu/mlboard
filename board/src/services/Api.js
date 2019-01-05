@@ -169,7 +169,7 @@ class QueryApi extends API {
     this.postData.methods.push({
       name: 'delete',
       args: [],
-      kwargs: {synchronize_session: false}
+      kwargs: {}
     })
     return this._post(this.url, this.postData)
   }

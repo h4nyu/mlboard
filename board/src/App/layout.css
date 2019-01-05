@@ -4,7 +4,7 @@
     "header header"
     "nav content"
     "footer content";
-  grid-template-columns: 200px 1fr;
+  grid-template-columns: auto 1fr;
   grid-template-rows: auto 1fr auto;
   height: 100vh;
 }

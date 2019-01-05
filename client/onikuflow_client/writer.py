@@ -9,7 +9,7 @@ class SummaryWriter(object):
         self.api = Api(api_url)
         self.experiment_tag = experiment_tag
         self._upsert_experiment()
-        self.experiment = None
+        assert self.experment is not None
 
     def _upsert_experiment(self):
         experment = (
@@ -24,6 +24,7 @@ class SummaryWriter(object):
             }
 
         self.experment = self.api.upsert("Experiment", experment)
+        print(self.experment)
 
     def update_config(self, config):
         self.experment["config"] = {

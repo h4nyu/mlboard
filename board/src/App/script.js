@@ -7,8 +7,6 @@ export default {
   name: 'app',
   mounted: function () {
     this.$store.dispatch('app/FETCH', {}, {root: true});
-    console.log(this)
-
   },
   render: function render(h) {
     return (
@@ -17,15 +15,15 @@ export default {
           <HeaderNav/>
         </div>
         <div class="aside">
+          <SideNav/>
         </div>
         <div class="main">
-          <SideNav/>
+          <router-view></router-view>
         </div>
       </div>
     )
   }
 };
 
-          // <router-view></router-view>
 
 

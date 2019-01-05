@@ -1,7 +1,11 @@
 import styles from '@/App/style.scss'
 import TreeView from "vue-json-tree-view/src/TreeView"
 import { mapState, mapActions } from 'vuex';
-import BTable from 'buefy/src/components/table/Table' import BTableColumn from 'buefy/src/components/table/TableColumn'
+import BTable from 'buefy/src/components/table/Table' 
+import BTableColumn from 'buefy/src/components/table/TableColumn'
+import Timeago from 'vue-timeago'
+import filters from '@/filters'
+
 
 
 
@@ -11,6 +15,7 @@ export default {
     TreeView,
     BTable,
     BTableColumn,
+    Timeago,
   },
   data(){
     return {
@@ -20,8 +25,15 @@ export default {
           label: 'TAG',
           width: '40',
         },
-      ]
+      ],
+      checked: []
     }
+  },
+  methods: {
+    ...mapActions('experiment', [
+      'DELETE'
+    ]),
+
   },
   computed: {
     ...mapState('experiment', [
@@ -32,30 +44,28 @@ export default {
     return (
       <b-table 
         data={this.all} 
+        checkable
         scopedSlots={{
           default: props => (
             [
-              <b-table-column field="tag" label="tag" width="40">
+              <b-table-column field="tag" label="experiment" width="40">
                 <tree-view 
                   data={props.row.config}
                   options={
                     {
-                      maxDepth: 4,
+                      maxDepth: 0,
                       rootObjectKey: props.row.tag,
                     }
                   }
                 />
               </b-table-column>,
-              <b-table-column field="create_date" label="create date" width="40">
-                {props.row.create_date}
-              </b-table-column>
+              <b-table-column field="delete" label="">
+                <a class="button" vOn:Click={() => this.DELETE(props.row.id)}> 
+                  <i class="fas fa-trash"></i>
+                </a>
+              </b-table-column>,
             ]
           ),
-          detail: props => {
-            <b-table-column field="tag" label="tag" width="40">
-              detail! { props.row.tag }
-            </b-table-column>
-          }
         }}
       >
       </b-table>

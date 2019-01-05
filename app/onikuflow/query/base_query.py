@@ -42,10 +42,6 @@ class BaseQuery(Query):
 
         super().__init__(entities=entities, session=session)
 
-    @property
-    def table_(self):
-        return self.entitiy_class.__table__
-
     def last(self):
         return self.order_by(self.entitiy_class.id.desc()).first()
 
@@ -74,7 +70,7 @@ class BaseQuery(Query):
             obj.id = str(uuid.uuid4())
         self.session.merge(obj)
         self.session.commit()
-        return obj
+        return self.get(obj.id)
 
     @cast_args
     def filter(self, *args, **kwargs):
@@ -108,7 +104,8 @@ class BaseQuery(Query):
             .filter(text(f"table_name ~ '{regex}'"))\
             .all()
         for table in tables:
-            self.session.execute(f"DROP TABLE IF EXISTS {table.table_schema}.{table.table_name};")
+            self.session.execute(
+                f"DROP TABLE IF EXISTS {table.table_schema}.{table.table_name};")
 
         self.session.commit()
 
@@ -117,7 +114,7 @@ class BaseQuery(Query):
         self.session.commit()
 
     def delete_cascade(self, id):
-        import osca.query as qs
+        import onikuflow.query as qs
         pipe(
             self.get_children(id),
             map(lambda x: (
@@ -130,76 +127,3 @@ class BaseQuery(Query):
 
         self.filter(self.entitiy_class.id == id).delete()
         return id
-
-
-class InfoBase(BaseQuery):
-
-    def get_exclude_children(self, id):
-        return []
-
-    def recalc(self, obj):
-        import osca.query as qs
-        children = self.get_exclude_children(obj.id)
-        for c in children:
-            children += getattr(qs, c.__class__.__name__)(
-                session=self.session
-            ).get_exclude_children(c.id)
-        children = pipe(
-            children,
-            map(lambda x: x.clone()),
-            list
-        )
-
-        self.delete_cascade(obj.id)
-
-        obj.hash = str(uuid.uuid4())
-        self.upsert(obj)
-        pipe(
-            children,
-            map(lambda x: getattr(qs, x.__class__.__name__)(
-                session=self.session,
-            ).upsert(x)),
-            list
-        )
-        return obj
-
-
-class InfoOutputBase(BaseQuery):
-    @kwargs_cast
-    def filter_range(self, from_date, to_date, **kwargs):
-        return self.filter(self.entitiy_class.collect_date < to_date)\
-            .filter(self.entitiy_class.collect_date >= from_date)\
-            .filter_by(**kwargs)
-
-    @kwargs_cast
-    def search_range(self, from_date, to_date, **kwargs):
-        return self.filter_range(from_date, to_date, **kwargs)\
-            .order_by(self.entitiy_class.collect_date)\
-            .all()
-
-    @kwargs_cast
-    def range_count(self, from_date, to_date, **kwargs):
-        return self.filter(self.entitiy_class.collect_date >= from_date)\
-            .filter(self.entitiy_class.collect_date <= to_date)\
-            .filter_by(**kwargs)\
-            .count()
-
-    @kwargs_cast
-    def first_collect_date(self, date=None, **kwargs):
-        self.__init__(
-            entities=[func.min(self.entitiy_class.collect_date)], session=self.session)
-        q = self.filter_by(**kwargs)
-        if isinstance(date, datetime.datetime):
-            q = q.filter(self.entitiy_class.collect_date <= date)
-        return q.first()[0]
-
-    @kwargs_cast
-    def last_collect_date(self, date=None, **kwargs):
-        self.__init__(
-            entities=[func.max(self.entitiy_class.collect_date)],
-            session=self.session
-        )
-        q = self.filter_by(**kwargs)
-        if isinstance(date, datetime.datetime):
-            q = q.filter(self.entitiy_class.collect_date >= date)
-        return q.first()[0]
