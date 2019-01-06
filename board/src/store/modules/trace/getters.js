@@ -1,31 +1,36 @@
-import _ from 'lodash'
+import _ from 'lodash';
+import fp from 'lodash/fp';
 export default {
   tags(state, getters, rootState, rootGetters){
     return _.uniqBy(_.map(state.all, x => x.tag));
   },
   plotDatas(state, getters, rootState, rootGetters){
-    let traces = _.groupBy(state.all, x => x.tag);
-    traces = _.mapValues(traces, (v, k) => { 
-      console.log(_.find(rootState.experiment.all, e => e.id === v[0].experiment_id).tag);
-      return {
-        x: _.map(v, row => row.x),
-        y: _.map(v, row => row.y),
-        mode: 'markers',
-        type: 'scatter',
-        name: _.find(rootState.experiment.all, e => e.id === v[0].experiment_id).tag,
-        tag: k,
-      };
-    });
-    return _.toArray(traces)
+    return fp.pipe(
+      fp.toArray,
+      fp.flatten,
+      fp.groupBy(x => `${x.experiment_id}${x.tag}`),
+      fp.mapValues((v, k) => {
+        const experiment = _.find(rootState.experiment.all, e => e.id === v[0].experiment_id)
+        return {
+          x: _.map(v, row => row.x),
+          y: _.map(v, row => row.y),
+          mode: 'markers',
+          type: 'scatter',
+          name: experiment? experiment.tag : "",
+          tag: v[0].tag,
+        };
+      }),
+      fp.toArray
+    )(state.all)
   },
   charts(state, getters, rootState, rootGetters){
-    let charts = _.groupBy(getters.plotDatas, x => x.tag);
-    charts = _.mapValues(charts, (v, k) => { 
-      return {
-        title: k,
+    return fp.pipe(
+      fp.groupBy(x => x.tag),
+      fp.mapValues((v, k) => ({
+        title: v[0].tag,
         plotData: v,
-      }
-    });
-    return _.toArray(charts)
+      })),
+      fp.toArray
+    )(getters.plotDatas)
   },
 }

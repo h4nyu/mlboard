@@ -1,8 +1,13 @@
 import types from './types';
 
 export default {
-  [types.FETCH_ALL] (state, all) {
-    state.all = all;
+  [types.FETCH] (state, trace) {
+    state.all = {...state.all, ...trace};
+  },
+
+  [types.DELETE] (state, experimentId) {
+    delete state.all[experimentId]
+    state.all = {...state.all}
   },
 };
 

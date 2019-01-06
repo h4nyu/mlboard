@@ -24,5 +24,5 @@ def test_writer(experment_tag, trace_tag):
             'hflip'
         ]
     })
-    for i in range(10):
+    for i in range(50):
         writer.add_scalar(trace_tag, random.uniform(-1.0, 1.0), i)

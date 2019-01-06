@@ -2,7 +2,7 @@ import types from './types';
 import { query } from '@/services/Api';
 
 export default {
-  [types.FETCH_ALL] ({commit, state, rootState, dispatch, rootGetters}, id) {
+  [types.FETCH_ALL] ({commit, state, rootState, dispatch, rootGetters}) {
     query("Experiment")
       .orderBy('create_date desc')
       .all()
@@ -16,18 +16,18 @@ export default {
       .deleteCascade(experiment.id)
       .then(() => {
         commit(types.DELETE, experiment.id);
-        commit(types.UNSELECT_ID, experiment.id);
+        dispatch(types.UNSELECT_ID, experiment.id);
       })
   },
 
   [types.SELECT_ID] ({commit, state, rootState, dispatch, rootGetters}, id) {
     commit(types.SELECT_ID, id)
-    dispatch('trace/FETCH_ALL', {}, {root: true});
+    dispatch('trace/FETCH', id, {root: true});
   },
 
   [types.UNSELECT_ID] ({commit, state, rootState, dispatch, rootGetters}, id) {
     commit(types.UNSELECT_ID, id)
-    dispatch('trace/FETCH_ALL', {}, {root: true});
+    dispatch('trace/DELETE', id, {root: true});
   },
 };
 

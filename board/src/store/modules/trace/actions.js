@@ -2,13 +2,17 @@ import types from './types';
 import { query } from '@/services/Api';
 
 export default {
-  [types.FETCH_ALL] ({commit, state, rootState, dispatch, rootGetters}, id) {
+  [types.FETCH] ({commit, state, rootState, dispatch, rootGetters}, experimentId) {
     query("Trace")
-      .inFilter({experiment_id:rootState.experiment.selectedIds})
+      .filterBy({experiment_id: experimentId})
       .all()
       .then(res => {
-        commit(types.FETCH_ALL, res.data);
+        commit(types.FETCH, {[experimentId]: res.data});
       })
+  },
+
+  [types.DELETE] ({commit, state, rootState, dispatch, rootGetters}, experimentId) {
+    commit(types.DELETE, (experimentId))
   },
 };
 
