@@ -2,7 +2,7 @@ import pytest
 from onikuflow_client.writer import SummaryWriter
 
 
-@pytest.fixture(params=[0, 1])
+@pytest.fixture(params=range(10))
 def writer(request):
     tag = f"test-{request.param}"
     return SummaryWriter('http://api:5000', tag)

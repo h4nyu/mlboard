@@ -4,18 +4,28 @@ import { query } from '@/services/Api';
 export default {
   [types.FETCH_ALL] ({commit, state, rootState, dispatch, rootGetters}, id) {
     query("Experiment")
+      .orderBy('create_date desc')
       .all()
       .then(res => {
         commit(types.FETCH_ALL, res.data)
       })
   },
 
-  [types.DELETE] ({commit, state, rootState, dispatch, rootGetters}, id) {
+  [types.DELETE] ({commit, state, rootState, dispatch, rootGetters}, experiment) {
     query("Experiment")
-      .deleteCascade(id)
+      .deleteCascade(experiment.id)
       .then(() => {
-        dispatch(types.FETCH_ALL);
+        commit(types.DELETE, experiment.id);
+        commit(types.UNSELECT_ID, experiment.id);
       })
+  },
+
+  [types.SELECT_ID] ({commit, state, rootState, dispatch, rootGetters}, id) {
+    commit(types.SELECT_ID, id)
+  },
+
+  [types.UNSELECT_ID] ({commit, state, rootState, dispatch, rootGetters}, id) {
+    commit(types.UNSELECT_ID, id)
   },
 };
 

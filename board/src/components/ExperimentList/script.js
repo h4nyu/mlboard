@@ -3,6 +3,7 @@ import { mapState, mapActions } from 'vuex';
 import BTable from 'buefy/src/components/table/Table' 
 import BTableColumn from 'buefy/src/components/table/TableColumn'
 import Empty from '@/components/Empty'
+import ExperimentListItem from '@/components/ExperimentListItem'
 import Timeago from 'vue-timeago'
 import filters from '@/filters'
 
@@ -15,60 +16,53 @@ export default {
     Timeago,
     Empty,
   },
-  data(){
-    return {
-      columns:[
-        {
-          field: 'tag',
-          label: 'TAG',
-          width: '40',
-        },
-      ],
-      checked: []
-    }
+  props: {
+    data: Array,
   },
   methods: {
     ...mapActions('experiment', [
-      'DELETE'
+      'DELETE',
+      "SELECT_ID",
+      "UNSELECT_ID",
     ]),
-
   },
   computed: {
     ...mapState('experiment', [
       'all',
+      'selectedIds',
     ])
   },
   render: function render(h) {
     return (
-      <b-table 
-        data={this.all} 
-        checkable
-        jk
-        scopedSlots={{
-          default: props => (
-            [
-              <b-table-column field="tag" label="experiment" width="40">
-                <tree-view 
-                  data={props.row.config}
-                  options={
-                    {
-                      maxDepth: 0,
-                      rootObjectKey: props.row.tag,
-                    }
-                  }
-                />
-              </b-table-column>,
-              <b-table-column field="delete" label="">
-                <a class="button" vOn:Click={() => this.DELETE(props.row.id)}> 
-                  <i class="fas fa-trash"></i>
-                </a>
-              </b-table-column>,
-            ]
-          ),
-          empty: () => (<empty/>)
-        }}
-      >
-      </b-table>
+      <div class="card">
+        <header class="card-header">
+          <p class="card-header-title">
+            Experiments
+          </p>
+          <a href="#" class="card-header-icon" aria-label="more options">
+            <span class="icon">
+              <i class="fa fa-angle-down" aria-hidden="true"></i>
+            </span>
+          </a>
+        </header>
+        <div class="card-table">
+          <div class="content">
+            <table class="table is-fullwidth is-striped">
+              <tbody>
+                {this.all.map(e=>
+                  <ExperimentListItem 
+                    data={e} 
+                    vOn:check={this.SELECT_ID}
+                    vOn:uncheck={this.UNSELECT_ID}
+                    vOn:delete={this.DELETE}
+                  />
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     )
   }
 };
+
