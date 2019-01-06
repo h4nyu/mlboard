@@ -22,6 +22,7 @@ export default {
 
   [types.SELECT_ID] ({commit, state, rootState, dispatch, rootGetters}, id) {
     commit(types.SELECT_ID, id)
+    dispatch('trace/FETCH_ALL', {}, {root: true});
   },
 
   [types.UNSELECT_ID] ({commit, state, rootState, dispatch, rootGetters}, id) {
