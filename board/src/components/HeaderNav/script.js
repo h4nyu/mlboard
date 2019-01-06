@@ -8,9 +8,6 @@ export default {
       }
     }
   },
-  mounted(){
-    console.log(this.$route);
-  },
   render: function render(h) {
     return (
       <nav class="navbar is-dark">

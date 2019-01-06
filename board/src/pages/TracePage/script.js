@@ -1,5 +1,6 @@
 import PlotlyPlot from '@/components/PlotlyPlot'
 import PlotFrame from '@/components/PlotFrame'
+import { mapState, mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'TracePage',
@@ -8,14 +9,17 @@ export default {
       charts:['aaaa', 'bbbb']
     }
   },
+  computed: {
+    ...mapGetters('trace', [
+      'plotlyTraces',
+    ])
+  },
   render: function render(h) {
     return (
       <div>
-        {this.charts.map(chart => 
-          <PlotFrame>
-            <PlotlyPlot />
-          </PlotFrame>
-        )}
+        <PlotFrame>
+          <PlotlyPlot data={this.plotlyTraces}/>
+        </PlotFrame>
       </div>
     )
   }

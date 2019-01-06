@@ -1,14 +1,20 @@
 import pytest
+import random
 from onikuflow_client.writer import SummaryWriter
 
 
-@pytest.fixture(params=range(10))
-def writer(request):
-    tag = f"test-{request.param}"
-    return SummaryWriter('http://api:5000', tag)
+@pytest.fixture(params=range(3))
+def experment_tag(request):
+    return f"experiment-{request.param}"
 
 
-def test_writer(writer):
+@pytest.fixture(params=range(3))
+def trace_tag(request):
+    return f"trace-{request.param}"
+
+
+def test_writer(experment_tag, trace_tag):
+    writer = SummaryWriter('http://api:5000', experment_tag)
     writer.update_config({
         'model': 'ResNet',
         'train_config': {
@@ -19,4 +25,4 @@ def test_writer(writer):
         ]
     })
     for i in range(10):
-        writer.add_scalar('test', 1, i)
+        writer.add_scalar(trace_tag, random.uniform(-1.0, 1.0), i)
