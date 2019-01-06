@@ -10,7 +10,7 @@ def experment_tag(request):
 
 @pytest.fixture(params=range(3))
 def trace_tag(request):
-    return f"trace-{request.param}"
+    return f"metric-{request.param}"
 
 
 def test_writer(experment_tag, trace_tag):

@@ -7,8 +7,7 @@ import ExperimentListItem from '@/components/ExperimentListItem'
 import Timeago from 'vue-timeago'
 import filters from '@/filters'
 
-export default {
-  name: 'ExperimentList',
+export default { name: 'ExperimentList',
   components:{
     TreeView,
     BTable,

@@ -8,7 +8,8 @@ const events = [
   'unhover',
   'selecting',
   'selected',
-  'relayout', 'autosize',
+  'relayout', 
+  'autosize',
   'deselect',
   'doubleclick',
   'redraw',
@@ -17,6 +18,7 @@ const events = [
 ];
 
 export default {
+  name:"PlotlyPlot",
   props: {
     data: {
       type: Array,
@@ -30,10 +32,6 @@ export default {
       type: Object,
       default: function () {
         return {
-          modeBarButtonsToRemove: [
-            'sendDataToCloud',
-            'hoverCompareCartesian'
-          ],
           responsive: true
         };
       }
@@ -78,23 +76,10 @@ export default {
       const register = fp.forEach(x => {
         this.$el.on(x.fullName, x.handler);
       });
-      const addEvents = fp.concat([
-        {
-          fullName: 'plotly_restyle',
-          handler: x => {
-            this.$emit('restyle', this.data);
-          }
-        }
-      ]);
       this.__generalListeners = fp.pipe([
         mapEvents,
-        addEvents,
         register
       ])(events);
-    },
-    relayout: function(){
-      const g = this.$el;
-      Plotly.relayout(this.$el);
     },
     react: function () {
       return Plotly.react(
@@ -140,6 +125,7 @@ export default {
   },
   mounted: function () {
     this.newPlot()
+    this.$parent.$emit('ploted')
   },
   render: function render(h) {
     return (
