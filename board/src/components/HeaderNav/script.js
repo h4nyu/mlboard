@@ -1,18 +1,16 @@
-// <div class="navbar is-dark">
-//   <div class="navbar-brand">
-//     <span class="navbar-item">
-//       OnikuBoard
-//     </span>
-//     <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
-//       <span aria-hidden="true"></span>
-//       <span aria-hidden="true"></span>
-//       <span aria-hidden="true"></span>
-//     </a>
-//   </div>
-// </div>
-
 export default {
   name: 'HeaderNav',
+  data(){
+    return {
+      tabStyle: {
+        'navbar-item': true,
+        'is-tab':true,
+      }
+    }
+  },
+  mounted(){
+    console.log(this.$route);
+  },
   render: function render(h) {
     return (
       <nav class="navbar is-dark">
@@ -26,11 +24,13 @@ export default {
             <span aria-hidden="true"></span>
           </a>
         </div>
-
         <div class="navbar-menu">
           <div class="navbar-start">
-            <a class="navbar-item">
+            <a class={ {...this.tabStyle, "is-active": this.$route.name === "TracePage"}}>
               Traces
+            </a>
+            <a class={ {...this.tabStyle, "is-active": this.$route.name === "ImagePage"}}>
+              Images
             </a>
           </div>
         </div>
