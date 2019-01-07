@@ -1,6 +1,7 @@
 version: 2
+
 jobs:
-  build:
+  ci:
     machine: true
     steps:
       - checkout
@@ -17,21 +18,16 @@ jobs:
           command: |
             docker-compose -f ./docker-compose.yml build
 
-  test:
-    machine: true
-    steps:
-      - checkout
       - run:
-          name: Install Docker Compose
+          name: Build Docker Images
           command: |
-            curl -L https://github.com/docker/compose/releases/download/1.19.0/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
-            chmod +x ~/docker-compose
-            sudo mv ~/docker-compose /usr/local/bin/docker-compose
-            docker-compose -v
+            docker-compose -f ./docker-compose.yml build
+
       - run:
           name: Check Images
           command: |
             docker images
+
       - run:
           name: Test Migration
           command: |
@@ -41,12 +37,3 @@ jobs:
           name: Test Api
           command: |
             docker-compose -f ./docker-compose.yml run --rm api pytest
-
-workflows:
-  version: 2
-  build_and_test:
-    jobs:
-      - build
-      - test:
-          requires:
-            - build
