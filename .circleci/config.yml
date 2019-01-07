@@ -15,4 +15,5 @@ jobs:
       - run:
           name: Build Docker Images
           command: |
-            docker-compose ./docker-compose.yml build
+            docker-compose -f ./docker-compose.yml build
+
