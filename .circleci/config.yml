@@ -20,6 +20,7 @@ jobs:
   test:
     machine: true
     steps:
+      - checkout
       - run:
           name: Test Migration
           command: |
@@ -35,4 +36,6 @@ workflows:
   build_and_test:
     jobs:
       - build
-      - test
+      - test:
+        requires:
+          - build
