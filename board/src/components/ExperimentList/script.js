@@ -23,6 +23,7 @@ export default { name: 'ExperimentList',
       'DELETE',
       "SELECT_ID",
       "UNSELECT_ID",
+      "FETCH_ALL",
     ]),
   },
   computed: {
@@ -38,11 +39,11 @@ export default { name: 'ExperimentList',
           <p class="card-header-title">
             Experiments
           </p>
-          <a href="#" class="card-header-icon" aria-label="more options">
-            <span class="icon">
-              <i class="fa fa-angle-down" aria-hidden="true"></i>
-            </span>
-          </a>
+          <span class="card-header-icon">
+            <div class="button is-white" vOn:click={this.FETCH_ALL}>
+              <i class="fas fa-sync-alt"></i>
+            </div>
+          </span>
         </header>
         <div class="card-table">
           <div class="content">
