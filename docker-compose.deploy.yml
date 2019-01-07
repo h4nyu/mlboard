@@ -1,0 +1,50 @@
+version: '3.4'
+volumes: 
+  db_data:
+  board_data:
+
+services:
+  db:
+    image: h4nyu/mlboard_db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: on-failure
+
+  api:
+    image: h4nyu/mlboard_api
+    restart: on-failure
+    logging:
+      options:
+        max-size: "200k"
+        max-file: "10"
+    depends_on:
+      - db
+
+  migration:
+    image: h4nyu/mlboard_migration
+    depends_on:
+      - db
+
+  board:
+    image: h4nyu/mlboard_board
+    volumes:
+      - board_data:/public
+    logging:
+      options:
+        max-size: "200k"
+        max-file: "10"
+
+  web:
+    image: h4nyu/mlboard_web
+    volumes:
+        - board_data:/public
+    depends_on:
+      - api
+      - board
+    logging:
+      options:
+        max-size: "200k"
+        max-file: "10"
+    restart: on-failure
+    ports:
+      - "80:80"
