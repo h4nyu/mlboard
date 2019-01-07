@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import pytest
-from onikuflow import models as ms
-from onikuflow import query as qry
-from onikuflow.session import DBSession
+from mlboard_api import models as ms
+from mlboard_api import query as qry
+from mlboard_api.session import DBSession
 import uuid
 from cytoolz.curried import pipe, map, filter
 from dateutil.parser import parse
@@ -12,7 +12,7 @@ import datetime
 
 @pytest.fixture
 def api():
-    from onikuflow.webapi import QueryAPI
+    from mlboard_api.webapi import QueryAPI
     return QueryAPI()
 
 

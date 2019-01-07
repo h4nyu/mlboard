@@ -28,7 +28,7 @@ dev_reqs = [str(ir.req) for ir in dev_reqs]
 
 
 setup(
-    name="onikuflow",
+    name="mlboard_api",
     version="0.0.0",
     description="TODO",
     author='Xinyuan Yao',

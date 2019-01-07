@@ -1,7 +1,7 @@
 FROM postgres:11
-ENV POSTGRES_USER onikuflow
-ENV POSTGRES_PASSWORD onikuflow
-ENV POSTGRES_DB onikuflow
+ENV POSTGRES_USER mlboard
+ENV POSTGRES_PASSWORD mlboard
+ENV POSTGRES_DB mlboard
 COPY ./postgresql.conf /etc/postgresql.conf
 RUN chmod o+r /etc/postgresql.conf
 WORKDIR /srv

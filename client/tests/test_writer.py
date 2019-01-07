@@ -1,6 +1,6 @@
 import pytest
 import random
-from onikuflow_client.writer import SummaryWriter
+from mlboard_client.writer import SummaryWriter
 
 
 @pytest.fixture(params=range(3))

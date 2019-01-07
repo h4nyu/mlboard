@@ -1,7 +1,7 @@
 {
-  "name": "onikuflow",
+  "name": "mlboard",
   "version": "0.0.0",
-  "description": "oniku",
+  "description": "mlboard",
   "main": "index.js",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.6.3",

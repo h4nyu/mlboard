@@ -1,0 +1,2 @@
+SQL_ALCHEMY_CONN: "postgresql://mlboard:mlboard@db/mlboard"
+DEBUG: True

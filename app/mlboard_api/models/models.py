@@ -22,7 +22,11 @@ Base = declarative_base()
 
 class Trace(SerializableMixIn, Base):
     __tablename__ = 'traces'
-    id = Column(UUID, primary_key=True)
+    id = Column(
+        UUID,
+        primary_key=True,
+        server_default=text("uuid_generate_v4()"),
+    )
     x = Column(Float)
     y = Column(Float)
     ts = Column(DateTime(timezone=True), default=datetime.datetime.now)
@@ -43,7 +47,8 @@ class Experiment(SerializableMixIn, Base):
     tag = Column(Text, nullable=False)
     memo = Column(Text, nullable=False)
     config = Column(JSON)
-    create_date = Column(DateTime(timezone=True), default=datetime.datetime.now)
+    create_date = Column(DateTime(timezone=True),
+                         default=datetime.datetime.now)
     hash = Column(
         UUID,
         nullable=False,

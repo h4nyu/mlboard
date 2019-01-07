@@ -97,6 +97,7 @@ class BaseQuery(Query):
                                  x, dict) else x.to_dict()),
                              list))
             self.session.execute(sql)
+            self.session.commit()
 
     def drop_tables(self, id):
         regex = self.table_.name + "_" + str(id).replace('-', '')
@@ -114,7 +115,7 @@ class BaseQuery(Query):
         self.session.commit()
 
     def delete_cascade(self, id):
-        import onikuflow.query as qs
+        import mlboard_api.query as qs
         pipe(
             self.get_children(id),
             map(lambda x: (

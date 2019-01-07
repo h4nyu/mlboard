@@ -1,2 +1,2 @@
-from onikuflow.config import config
+from mlboard_api.config import config
 

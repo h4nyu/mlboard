@@ -13,7 +13,7 @@ export default {
       <nav class="navbar is-dark">
         <div class="navbar-brand">
           <a class="navbar-item">
-            OnikuBoard
+            MLBoard
           </a>
           <a role="button" class="navbar-burger burger" data-target="navbarBasicExample">
             <span aria-hidden="true"></span>
