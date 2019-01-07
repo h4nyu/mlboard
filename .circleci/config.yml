@@ -11,3 +11,8 @@ jobs:
             chmod +x ~/docker-compose
             sudo mv ~/docker-compose /usr/local/bin/docker-compose
             docker-compose -v
+
+      - run:
+          name: Build Docker Images
+          command: |
+            docker-compose ./docker-compose.yml build

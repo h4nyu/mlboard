@@ -11,7 +11,7 @@ services:
       - "5432:5432"
   api:
     volumes:
-      - ./app:/srv
+      - ./api:/srv
     environment:
       - FLASK_DEBUG=1
       - PYTHON_ENV=development
@@ -39,12 +39,3 @@ services:
       - ./front/dist:/public/
     ports:
       - "80:80"
-
-networks:
-  default:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: ${SUBNET}
-

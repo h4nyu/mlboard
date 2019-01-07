@@ -11,7 +11,7 @@ services:
 
   api:
     build: 
-      context: ./app
+      context: ./api
       args:
         - http_proxy
         - https_proxy
@@ -21,6 +21,8 @@ services:
       options:
         max-size: "200k"
         max-file: "10"
+    depends_on:
+      - db
 
   client:
     build: 
