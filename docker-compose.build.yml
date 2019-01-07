@@ -1,0 +1,26 @@
+version: '3.4'
+
+services:
+  db:
+    image: h4nyu/mlboard_db
+
+  api:
+    image: h4nyu/mlboard_api
+
+  client:
+    image: h4nyu/mlboard_client
+
+  board:
+    image: h4nyu/mlboard_board
+    build: 
+      context: ./board
+      target: prod
+      args:
+        - http_proxy
+        - https_proxy
+
+  migration:
+    image: h4nyu/mlboard_migration
+
+  web:
+    image: h4nyu/mlboard_web

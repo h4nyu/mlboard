@@ -16,7 +16,7 @@ jobs:
       - run:
           name: Build Docker Images
           command: |
-            docker-compose -f ./docker-compose.yml build
+            docker-compose build
 
       - run:
           name: Check Images
@@ -26,9 +26,20 @@ jobs:
       - run:
           name: Test Migration
           command: |
-            docker-compose -f ./docker-compose.yml up migration
+            docker-compose up migration
 
       - run:
           name: Test Api
           command: |
-            docker-compose -f ./docker-compose.yml run --rm api pytest
+            docker-compose run --rm api pytest
+
+      - run:
+          name: Build Production Images
+          command: |
+            docker-compose -f ./docker-compose.yml -f ./docker-compose.build.yml build
+
+      - run:
+          name: Push Images
+          command: |
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker-compose -f ./docker-compose.yml -f ./docker-compose.build.yml push

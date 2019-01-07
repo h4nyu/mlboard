@@ -2,7 +2,6 @@ version: '3.4'
 
 services:
   db:
-    image: h4nyu/mlboard_db
     build: 
       context: ./db
       args:
@@ -11,7 +10,6 @@ services:
     restart: on-failure
 
   api:
-    image: h4nyu/mlboard_api
     build: 
       context: ./api
       args:
@@ -27,7 +25,6 @@ services:
       - db
 
   client:
-    image: h4nyu/mlboard_client
     build: 
       context: ./client
       args:
@@ -35,7 +32,6 @@ services:
         - https_proxy
 
   migration:
-    image: h4nyu/mlboard_migration
     build: 
       context: ./migration
       args:
@@ -46,7 +42,6 @@ services:
       - db
 
   board:
-    image: h4nyu/mlboard_board
     build: 
       context: ./board
       args:
@@ -59,7 +54,6 @@ services:
         max-file: "10"
 
   web:
-    image: h4nyu/mlboard_web
     build: 
       context: ./web
       args:
