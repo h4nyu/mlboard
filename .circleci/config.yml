@@ -29,3 +29,10 @@ jobs:
           name: Test Api
           command: |
             docker-compose -f ./docker-compose.yml run --rm api pytest
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test
