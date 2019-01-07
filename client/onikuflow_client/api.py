@@ -1,4 +1,13 @@
 import requests
+from datetime import datetime
+import json
+
+
+class DefaultEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+        return JSONEncoder.default(self, obj)
 
 
 class Api(object):
@@ -7,7 +16,11 @@ class Api(object):
         self.payload = {}
 
     def _post(self):
-        res = requests.post(self.api_url, json=self.payload)
+        res = requests.post(
+            self.api_url,
+            data=json.dumps(self.payload, cls=DefaultEncoder),
+            headers={'Content-Type': 'application/json'}
+        )
         res.raise_for_status()
         return res.json()
 
@@ -104,6 +117,16 @@ class Api(object):
         )
         return self._post()
 
+    def bulk_insert(self, objs):
+        self.payload['methods'].append(
+            {
+                "name": "bulk_insert",
+                "args": [objs],
+                "kwargs": {}
+            }
+        )
+        return self._post()
+
     def all(self):
         self.payload['methods'].append(
             {
@@ -116,11 +139,12 @@ class Api(object):
 
     def upsert(self, target, obj):
         self.payload = {
-            'target':target,
-            'method':{
+            'target': target,
+            'method': {
                 "name": "upsert",
                 "args": [],
                 "kwargs": {'obj': obj}
             }
         }
         return self._put()
+
