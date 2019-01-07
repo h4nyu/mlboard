@@ -22,6 +22,17 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install Docker Compose
+          command: |
+            curl -L https://github.com/docker/compose/releases/download/1.19.0/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
+            chmod +x ~/docker-compose
+            sudo mv ~/docker-compose /usr/local/bin/docker-compose
+            docker-compose -v
+      - run:
+          name: Check Images
+          command: |
+            docker images
+      - run:
           name: Test Migration
           command: |
             docker-compose -f ./docker-compose.yml up migration
