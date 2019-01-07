@@ -17,3 +17,15 @@ jobs:
           command: |
             docker-compose -f ./docker-compose.yml build
 
+  test:
+    machine: true
+    steps:
+      - run:
+          name: Test Migration
+          command: |
+            docker-compose -f ./docker-compose.yml up migration
+
+      - run:
+          name: Test Api
+          command: |
+            docker-compose -f ./docker-compose.yml run --rm api pytest
