@@ -4,5 +4,5 @@ flask-restful
 SQLAlchemy
 cytoolz
 python-dateutil
-PyYAML
+pyyaml>=4.2b1
 psycopg2-binary
