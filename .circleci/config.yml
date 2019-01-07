@@ -5,7 +5,7 @@ jobs:
     steps:
       - checkout
       - run:
-        name: docker-compose up
+        name: "docker-compose up"
         command: |
           docker-compose build
 
