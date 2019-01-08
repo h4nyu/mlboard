@@ -59,25 +59,15 @@ def run_migrations_online():
         prefix='sqlalchemy.',
         poolclass=pool.NullPool)
 
-    while True:
-        try:
-            connectable = engine_from_config(
-                config.get_section(config.config_ini_section),
-                prefix='sqlalchemy.',
-                poolclass=pool.NullPool)
+    with connectable.connect() as connection:
+        context.configure(
+            connection=connection,
+            target_metadata=target_metadata
+        )
 
-            with connectable.connect() as connection:
-                context.configure(
-                    connection=connection,
-                    target_metadata=target_metadata
-                )
+        with context.begin_transaction():
+            context.run_migrations()
 
-                with context.begin_transaction():
-                    context.run_migrations()
-            break
-        except sqlalchemy.exc.OperationalError as e:
-            logger.info('waiting db...')
-            time.sleep(1)
 
 if context.is_offline_mode():
     run_migrations_offline()
