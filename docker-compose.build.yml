@@ -7,9 +7,6 @@ services:
   api:
     image: h4nyu/mlboard_api
 
-  client:
-    image: h4nyu/mlboard_client
-
   board:
     image: h4nyu/mlboard_board
     build: 

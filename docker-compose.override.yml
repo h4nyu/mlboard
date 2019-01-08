@@ -11,10 +11,6 @@ services:
       - FLASK_DEBUG=1
       - PYTHON_ENV=development
 
-  client:
-    volumes:
-      - ./client:/srv
-
   migration:
     volumes:
       - ./migration:/srv

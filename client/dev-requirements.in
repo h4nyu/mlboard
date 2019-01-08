@@ -1,7 +1,0 @@
-flake8
-pytest
-pytest-timeout
-pytest-cov
-pytest-pep8
-pytest-profiling
-requests-mock
