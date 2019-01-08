@@ -10,6 +10,24 @@ from flask import jsonify
 from flask import request
 
 
+class ReadyAPI(Resource):
+
+    def post(self):
+        return True
+
+    def put(self):
+        return True
+
+    def delete(self):
+        return True
+
+    def get(self):
+        return True
+
+    def patch(self):
+        return True
+
+
 class BaseAPI(Resource):
 
     def _post(self):

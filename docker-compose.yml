@@ -37,6 +37,7 @@ services:
   board:
     build: 
       context: ./board
+      target: dev
       args:
         - http_proxy
         - https_proxy
