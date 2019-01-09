@@ -2,17 +2,14 @@
 # -*- coding: utf-8 -*-
 import pytest
 from mlboard_api import models as ms
+from mlboard_api import query as qry
 from mlboard_api import create_app
 import uuid
 from cytoolz.curried import pipe, map, filter
 from dateutil.parser import parse
 import datetime
-
-
-@pytest.fixture
-def app():
-    app = create_app()
-    return app.test_client()
+import uuid
+from .fixture import app
 
 
 @pytest.fixture(params=pipe(
@@ -34,8 +31,7 @@ def test_all_table(app, target):
             {"name": "all", "args": [], "kwargs":{}}
         ],
     }
-
-    res = app.post(
+    app.post(
         '/query',
         json=payload
     )
