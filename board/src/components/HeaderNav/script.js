@@ -26,9 +26,6 @@ export default {
             <a class={ {...this.tabStyle, "is-active": this.$route.name === "TracePage"}}>
               Traces
             </a>
-            <a class={ {...this.tabStyle, "is-active": this.$route.name === "ImagePage"}}>
-              Images
-            </a>
           </div>
         </div>
       </nav>
