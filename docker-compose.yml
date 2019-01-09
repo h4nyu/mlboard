@@ -17,10 +17,6 @@ services:
         - https_proxy
     command: flask run --host=0.0.0.0
     restart: on-failure
-    logging:
-      options:
-        max-size: "200k"
-        max-file: "10"
     depends_on:
       - db
 
@@ -42,10 +38,6 @@ services:
         - http_proxy
         - https_proxy
     restart: on-failure
-    logging:
-      options:
-        max-size: "200k"
-        max-file: "10"
 
   web:
     build: 
@@ -56,8 +48,4 @@ services:
     depends_on:
       - api
       - board
-    logging:
-      options:
-        max-size: "200k"
-        max-file: "10"
     restart: on-failure

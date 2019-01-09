@@ -14,14 +14,9 @@ jobs:
             docker-compose -v
 
       - run:
-          name: Build Docker Images
+          name: Build Docker Test Images
           command: |
             docker-compose -f ./docker-compose.yml build
-
-      - run:
-          name: Check Images
-          command: |
-            docker images
 
       - run:
           name: Test Migration
@@ -33,13 +28,39 @@ jobs:
           command: |
             docker-compose -f ./docker-compose.yml run --rm api pytest
 
+
+  deploy:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: Install Docker Compose
+          command: |
+            curl -L https://github.com/docker/compose/releases/download/1.19.0/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
+            chmod +x ~/docker-compose
+            sudo mv ~/docker-compose /usr/local/bin/docker-compose
+            docker-compose -v
+
       - run:
           name: Build Production Images
           command: |
             docker-compose -f ./docker-compose.yml -f ./docker-compose.build.yml build
-
       - run:
           name: Push Images
           command: |
             docker login -u $DOCKER_USER -p $DOCKER_PASS
             docker-compose -f ./docker-compose.yml -f ./docker-compose.build.yml push
+
+
+
+workflows:
+  version: 2
+  test_and_deploy:
+    jobs:
+      - test
+      - deploy:
+        requires:
+          - test
+        filters:
+          branches:
+            only: master
