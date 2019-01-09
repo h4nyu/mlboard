@@ -1,9 +1,5 @@
 FROM python:3.6.5-slim AS prod
 
-MAINTAINER Xinyaun Yao <yao.xinyuan@canon.co.jp>
-
-# machine learning base library
-
 RUN apt-get update && apt-get install -y \
     gcc
 
