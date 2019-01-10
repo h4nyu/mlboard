@@ -7,23 +7,29 @@
 apipkg==1.5               # via execnet
 atomicwrites==1.2.1       # via pytest
 attrs==18.2.0             # via pytest
+certifi==2018.11.29       # via requests
+chardet==3.0.4            # via requests
 click==7.0                # via pip-tools
 coverage==4.5.2           # via pytest-cov
 execnet==1.5.0            # via pytest-cache
 flake8==3.6.0
 gprof2dot==2017.9.19      # via pytest-profiling
+idna==2.8                 # via requests
 mccabe==0.6.1             # via flake8
-more-itertools==4.3.0     # via pytest
+mlboard-client==0.0.1
+more-itertools==5.0.0     # via pytest
 pep8==1.7.1               # via pytest-pep8
-pip-tools==3.1.0
-pluggy==0.8.0             # via pytest
+pip-tools==3.2.0
+pluggy==0.8.1             # via pytest
 py==1.7.0                 # via pytest
 pycodestyle==2.4.0        # via flake8
 pyflakes==2.0.0           # via flake8
 pytest-cache==1.0         # via pytest-pep8
-pytest-cov==2.6.0
+pytest-cov==2.6.1
 pytest-pep8==1.0.6
 pytest-profiling==1.3.0
 pytest-timeout==1.3.3
-pytest==4.0.1
-six==1.11.0               # via more-itertools, pip-tools, pytest, pytest-profiling
+pytest==4.1.0
+requests==2.21.0          # via mlboard-client
+six==1.12.0               # via more-itertools, pip-tools, pytest, pytest-profiling
+urllib3==1.24.1           # via requests

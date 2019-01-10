@@ -4,7 +4,7 @@
 #
 #    pip-compile --output-file requirements.txt requirements.in
 #
-aniso8601==4.0.1          # via flask-restful
+aniso8601==4.1.0          # via flask-restful
 ciso8601==2.1.1
 click==7.0                # via flask
 cytoolz==0.9.0.1
