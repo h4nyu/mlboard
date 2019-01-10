@@ -31,11 +31,11 @@ export default {
 
     return (
       <div class="card">
-        <header class="card-header">
+        <header class="card-header" vOn:click={this.handleClose}>
           <p class="card-header-title">
             {this.title}
           </p>
-          <div href="#" class="card-header-icon" vOn:click={this.handleClose}>
+          <div href="#" class="card-header-icon" >
             <span class="icon">
               {toggleIcon}
             </span>
