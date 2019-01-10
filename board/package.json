@@ -16,6 +16,7 @@
     "plotly.js-dist": "^1.43.1",
     "vue": "^2.5.21",
     "vue-json-tree-view": "^2.1.4",
+    "vue-loading-overlay": "^3.1.1",
     "vue-router": "^3.0.2",
     "vue-timeago": "^5.0.0",
     "vuex": "^3.0.1"
