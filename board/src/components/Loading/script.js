@@ -11,7 +11,7 @@ export default {
   },
   render: function render(h) {
     return (
-      <Loading active={this.isActive} />
+      <Loading active={this.isActive} width={150} height={150} />
     )
   }
 };
