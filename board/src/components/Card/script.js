@@ -1,5 +1,5 @@
 export default {
-  name: 'PlotFrame',
+  name: 'Card',
   data(){
     return{
       toggleContent: true

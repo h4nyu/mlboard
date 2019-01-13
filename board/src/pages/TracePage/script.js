@@ -1,5 +1,4 @@
-import PlotlyPlot from '@/components/PlotlyPlot'
-import PlotFrame from '@/components/PlotFrame'
+import TraceCard from '@/components/TraceCard'
 import { mapState, mapActions, mapGetters } from 'vuex';
 
 export default {
@@ -8,28 +7,17 @@ export default {
     ...mapGetters('trace', [
       'charts',
     ]),
-    plotLayout(){
-      return {
-        showlegend: true,
-        autosize: true,
-        margin:{
-          r: 0,
-          t: 40,
-          b: 20,
-          l: 20
-        },
-        height: 200,
-      }
-    },
   },
   render: function render(h) {
     return (
       <div>
         {
           this.charts.map(chart => 
-            <PlotFrame title={chart.title}>
-              <PlotlyPlot data={chart.plotData} layout={this.plotLayout}/>
-            </PlotFrame>)
+            <TraceCard 
+              title={chart.title}
+              plotData={chart.plotData}
+            >
+            </TraceCard>)
         }
       </div>
     )

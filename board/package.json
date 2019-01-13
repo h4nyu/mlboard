@@ -11,6 +11,7 @@
     "bulma": "^0.7.2",
     "bulma-extensions": "^4.0.0",
     "d3": "^5.7.0",
+    "element-ui": "^2.4.11",
     "lodash": "^4.17.11",
     "moment": "^2.23.0",
     "plotly.js-dist": "^1.43.1",

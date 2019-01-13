@@ -1,7 +1,6 @@
 import { mapState, mapActions, mapGetters } from 'vuex';
 import HeaderNav from '@/components/HeaderNav'
 import SideNav from '@/components/SideNav'
-import PlotlyPlot from '@/components/PlotlyPlot'
 import Loading from '@/components/Loading'
 
 export default {

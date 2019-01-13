@@ -23,7 +23,9 @@ export default { name: 'ExperimentList',
       'DELETE',
       "SELECT_ID",
       "UNSELECT_ID",
-      "FETCH_ALL",
+    ]),
+    ...mapActions('app', [
+      'FETCH',
     ]),
   },
   computed: {
@@ -40,7 +42,7 @@ export default { name: 'ExperimentList',
             Experiments
           </p>
           <span class="card-header-icon">
-            <div class="button is-white" vOn:click={this.FETCH_ALL}>
+            <div class="button is-white" vOn:click={this.FETCH}>
               <i class="fas fa-sync-alt"></i>
             </div>
           </span>

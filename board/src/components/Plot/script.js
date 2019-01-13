@@ -18,7 +18,7 @@ const events = [
 ];
 
 export default {
-  name:"PlotlyPlot",
+  name:"Plot",
   props: {
     data: {
       type: Array,
@@ -101,6 +101,7 @@ export default {
   },
   computed:{
     plotConfig:function(){
+      console.info(this.$el);
       return [
         this.$el,
         this.data,
