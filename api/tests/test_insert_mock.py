@@ -6,7 +6,7 @@ import random
 
 
 @pytest.mark.parametrize("id", [1, 2, 3])
-def test_all_table(id):
+def test_insert(id):
     writer = SummaryWriter("http://api:5000", f'test_{id}')
     writer.update_config({'aaa': 'bbb'})
     for i in range(10):

@@ -26,6 +26,7 @@ jobs:
       - run:
           name: Test Api
           command: |
+            docker-compose -f ./docker-compose.yml up api
             docker-compose -f ./docker-compose.yml run --rm api pytest
 
 
