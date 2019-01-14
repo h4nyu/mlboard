@@ -3,6 +3,7 @@ import HeaderNav from '@/components/HeaderNav'
 import SideNav from '@/components/SideNav'
 import Loading from '@/components/Loading'
 import Layout from '@/components/Layout'
+import DragBar from '@/components/DragBar'
 
 export default {
   name: 'App',
@@ -12,15 +13,11 @@ export default {
   render: function render(h) {
     return (
       <Layout>
-        <template slot='header'>
-          <HeaderNav/>
-        </template>
-        <template slot='aside'>
-          <SideNav />
-        </template>
-        <template slot='main'>
-          <router-view/>
-        </template>
+        <HeaderNav slot='header'/>
+        <DragBar slot='main'>
+          <SideNav slot='left'/>
+          <router-view slot='right'/>
+        </DragBar>
         <Loading />
       </Layout>
     )

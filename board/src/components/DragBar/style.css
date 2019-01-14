@@ -1,0 +1,13 @@
+.drag-container {
+  display: flex;
+  min-height: 100vh;
+}
+.right {
+  flex: 1;
+}
+
+.dragbar {
+  padding: 3px;
+  cursor: col-resize;
+  background-color: silver;
+}
