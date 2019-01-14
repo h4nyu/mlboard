@@ -2,29 +2,27 @@ import { mapState, mapActions, mapGetters } from 'vuex';
 import HeaderNav from '@/components/HeaderNav'
 import SideNav from '@/components/SideNav'
 import Loading from '@/components/Loading'
+import Layout from '@/components/Layout'
 
 export default {
-  name: 'app',
+  name: 'App',
   mounted: function () {
     this.$store.dispatch('app/FETCH', {}, {root: true});
   },
   render: function render(h) {
     return (
-      <div class="app">
-        <div class="header">
+      <Layout>
+        <template slot='header'>
           <HeaderNav/>
-        </div>
-        <div class="aside card">
-          <SideNav/>
-        </div>
-        <div class="main card">
-          <router-view></router-view>
-        </div>
+        </template>
+        <template slot='aside'>
+          <SideNav />
+        </template>
+        <template slot='main'>
+          <router-view/>
+        </template>
         <Loading />
-      </div>
+      </Layout>
     )
   }
 };
-
-
-
