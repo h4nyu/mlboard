@@ -101,7 +101,6 @@ export default {
   },
   computed:{
     plotConfig:function(){
-      console.info(this.$el);
       return [
         this.$el,
         this.data,
