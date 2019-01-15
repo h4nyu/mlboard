@@ -3,11 +3,10 @@
 .layout {
   display: grid;
   grid-template-areas:
-    "header header"
-    "nav content"
-    "footer content";
-  grid-template-columns: auto 1fr;
-  grid-template-rows: auto 1fr auto;
+    "header header header"
+    "nav bar content";
+  grid-template-columns: auto auto 1fr ;
+  grid-template-rows: auto 1fr;
   height: 100vh;
 }
 
@@ -23,4 +22,11 @@
 .main {
   grid-area: content;
   overflow: auto;
+}
+
+.dragbar {
+  grid-area: bar;
+  padding: 3px;
+  cursor: col-resize;
+  background-color: silver;
 }

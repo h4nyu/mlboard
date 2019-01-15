@@ -14,7 +14,7 @@ export default {
         return {
           x: _.map(v, row => row.x),
           y: _.map(v, row => row.y),
-          mode: 'markers',
+          mode: 'markers+lines',
           type: 'scatter',
           name: experiment? experiment.tag : "",
           tag: v[0].tag,

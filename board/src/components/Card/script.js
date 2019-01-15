@@ -32,16 +32,14 @@ export default {
     return (
       <div class="card">
         <header class="card-header" vOn:click={this.handleClose}>
-          <p class="card-header-title">
-            {this.title}
-          </p>
+          <div class="card-header-title"> {this.title} </div>
           <div href="#" class="card-header-icon" >
             <span class="icon">
               {toggleIcon}
             </span>
           </div>
         </header>
-          {content}
+        {content}
       </div>
     )
   }

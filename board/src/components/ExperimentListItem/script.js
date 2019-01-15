@@ -1,14 +1,10 @@
 import TreeView from "vue-json-tree-view/src/TreeView"
 import { mapState, mapActions } from 'vuex';
-import BCheckbox from 'buefy/src/components/checkbox/Checkbox'
+import CheckBox from 'buefy/src/components/checkbox/Checkbox'
 import Empty from '@/components/Empty'
 
 export default {
   name: 'ExperimentListItem',
-  components:{
-    TreeView,
-    BCheckbox
-  },
   props: {
     data: Object,
   },
@@ -23,22 +19,23 @@ export default {
   },
   render: function render(h) {
     return (
-      <tr>
+      <div>
         <td width="5%">
-          <b-checkbox vOn:input={this.emitCheck}/>
+          <CheckBox vOn:input={this.emitCheck}/>
         </td>
         <td>
-          <tree-view
+          <TreeView
             data={this.data.config}
-            options={{maxDepth: 0, rootObjectKey: this.data.tag}}>
-          </tree-view>
+            options={{maxDepth: 0, rootObjectKey: this.data.tag}}
+          >
+          </TreeView>
         </td>
         <td>
           <a class="button is-small" vOn:click={() => this.$emit('delete', this.data)}>
             <i class="fas fa-trash"></i>
           </a>
         </td>
-      </tr>
+      </div>
     )
   }
 };

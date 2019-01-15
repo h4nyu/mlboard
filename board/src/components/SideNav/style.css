@@ -1,3 +1,4 @@
 .menu {
     margin: 10px;
+    overflow: auto;
 }

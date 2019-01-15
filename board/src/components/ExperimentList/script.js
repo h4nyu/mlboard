@@ -3,21 +3,12 @@ import { mapState, mapActions } from 'vuex';
 import BTable from 'buefy/src/components/table/Table' 
 import BTableColumn from 'buefy/src/components/table/TableColumn'
 import Empty from '@/components/Empty'
-import ExperimentListItem from '@/components/ExperimentListItem'
 import Timeago from 'vue-timeago'
 import filters from '@/filters'
+import FilterList from '@/components/FilterList'
+import ExperimentListItem from '@/components/ExperimentListItem'
 
 export default { name: 'ExperimentList',
-  components:{
-    TreeView,
-    BTable,
-    BTableColumn,
-    Timeago,
-    Empty,
-  },
-  props: {
-    data: Array,
-  },
   methods: {
     ...mapActions('experiment', [
       'DELETE',
@@ -34,10 +25,16 @@ export default { name: 'ExperimentList',
       'selectedIds',
     ])
   },
-  render: function render(h) {
+  render(h){
     return (
-      <div class="card">
-        <header class="card-header">
+      <FilterList 
+        data={this.all}
+        getKey={e => e.tag}
+        scopedSlots={{
+          row: data => <ExperimentListItem data={data} vOn:check={this.SELECT_ID} vOn:uncheck={this.UNSELECT_ID} vOn:delete={this.DELETE} /> 
+        }}
+      >
+        <template slot='header'>
           <p class="card-header-title">
             Experiments
           </p>
@@ -46,25 +43,8 @@ export default { name: 'ExperimentList',
               <i class="fas fa-sync-alt"></i>
             </div>
           </span>
-        </header>
-        <div class="card-table">
-          <div class="content">
-            <table class="table is-fullwidth is-striped">
-              <tbody>
-                {this.all.map(e=>
-                  <ExperimentListItem 
-                    data={e} 
-                    vOn:check={this.SELECT_ID}
-                    vOn:uncheck={this.UNSELECT_ID}
-                    vOn:delete={this.DELETE}
-                  />
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+        </template>
+      </FilterList>
     )
   }
 };
-
