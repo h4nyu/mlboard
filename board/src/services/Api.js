@@ -34,15 +34,6 @@ class QueryApi extends API {
     this.url = 'api/query'
   }
 
-  get(id) {
-    this.postData.methods.push({
-      name: 'get',
-      args: [id],
-      kwargs: {}
-    })
-    return this._post(this.url, this.postData)
-  }
-
   distinct(formula) {
     this.postData.methods.push({
       name: 'distinct',

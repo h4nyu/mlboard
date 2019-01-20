@@ -3,7 +3,7 @@
 from flask import Flask, jsonify
 from flask.json import JSONEncoder
 from datetime import datetime
-from .models.mixins import SerializableMixIn
+from .models import BaseModel
 
 
 class DefaultEncoder(JSONEncoder):
@@ -11,8 +11,9 @@ class DefaultEncoder(JSONEncoder):
     def default(self, obj):
         if isinstance(obj, datetime):
             return obj.isoformat()
-        elif isinstance(obj, SerializableMixIn):
+        elif isinstance(obj, BaseModel):
             return obj.to_dict()
-        elif isinstance(obj, pd.DataFrame):
-            return obj.to_dict('list')
-        return JSONEncoder.default(self, obj)
+        elif isinstance(obj, BaseModel):
+            return obj.to_dict()
+        else:
+            return JSONEncoder.default(self, obj)

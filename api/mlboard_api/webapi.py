@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 from cytoolz.curried import pipe, map, take, first, concat
 from . import models as ms
-from . import query as qry
-from .session import DBSession
+from . import queries as qs
 from cytoolz.curried import pipe, map, take
 from flask_restful import Resource
 from flask import jsonify
@@ -66,24 +65,27 @@ class QueryAPI(BaseAPI):
     def _post(target,
               methods,
               entities=[]):
-        with DBSession() as sess:
-            query_class = eval(f"qry.{target}")
-            q = query_class(
-                entities=pipe(
-                    entities,
-                    map(lambda x: eval(f'ms.{x}')),
-                    list
-                ),
-                session=sess,
+        with ms.db.atomic() as transaction:
+            query_class = eval(f"qs.{target}")
+            entities = pipe(
+                entities,
+                map(lambda x: eval(f'ms.{x}')),
+                list
             )
+            q = query_class(*entities)
+
             for m in methods:
                 q = getattr(q, m['name'])(*m['args'], **m['kwargs'])
+
+            transaction.commit()
             return q
 
     @staticmethod
     def _put(target, method):
-        with DBSession() as sess:
-            query_cls = eval(f"qry.{target}")
+        with ms.db.atomic() as transaction:
+            query_cls = eval(f"qs.{target}")
             model_cls = eval(f'ms.{target}')
             obj = model_cls().from_dict(method['kwargs']['obj'])
-            return getattr(query_cls(session=sess), method['name'])(obj)
+            res = getattr(query_cls(), method['name'])(obj)
+            transaction.commit()
+            return res

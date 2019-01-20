@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import pytest
 from mlboard_api import models as ms
-from mlboard_api import query as qry
+from mlboard_api import queries as qs
 from mlboard_api import create_app
 import uuid
 from cytoolz.curried import pipe, map, filter
@@ -13,9 +13,8 @@ from .fixture import app
 
 
 @pytest.fixture(params=pipe(
-    dir(ms),
-    map(lambda x: getattr(ms, x)),
-    filter(lambda x: type(x).__name__ == 'DeclarativeMeta'),
+    qs.__all__,
+    map(lambda x: getattr(qs, x)),
     list
 ))
 def target(request):
@@ -31,7 +30,32 @@ def test_all_table(app, target):
             {"name": "all", "args": [], "kwargs":{}}
         ],
     }
-    app.post(
+    res = app.post(
         '/query',
         json=payload
     )
+    print(res.json)
+
+
+def test_query_experiment(app):
+    info_id = uuid.uuid4()
+    experiment = ms.Experiment(
+        id=info_id,
+        tag=f"{uuid.uuid4()}",
+    )
+    qs.Experiment().upsert(experiment)
+
+    payload = {
+        "target": ms.Experiment.__name__,
+        'entities': [],
+        "methods": [
+            {"name": "filter_by", "args": [], "kwargs":{"tag": experiment.tag}},
+            {"name": "first", "args": [], "kwargs":{}}
+        ],
+    }
+
+    res = app.post(
+        '/query',
+        json=payload
+    )
+    assert res.json['tag'] == experiment.tag

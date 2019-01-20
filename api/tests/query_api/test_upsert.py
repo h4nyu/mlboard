@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 import pytest
 from mlboard_api import models as ms
-from mlboard_api import query as qry
-from mlboard_api.session import DBSession
+from mlboard_api import queries as qs
 import uuid
 from cytoolz.curried import pipe, map, filter
 from dateutil.parser import parse
@@ -12,53 +11,57 @@ import datetime
 import uuid
 
 
-payloads = [
-    {
+def setup():
+    qs.Experiment().delete()
+
+
+def test_insert_update(app):
+
+    # insert
+    payload = {
         "target": "Experiment",
         "method": {
             "name": "upsert",
             "args": [],
             "kwargs": {
                 "obj": {
-                    "id": f"{uuid.uuid4()}",
                     "tag": "mock",
                     "config": {"foo": "bar"},
                 }
             }
         },
-    },
-    {
-        "target": "Trace",
+    }
+
+    res = app.put(
+        '/query',
+        json=payload
+    )
+
+    qry_cls = getattr(qs, payload['target'])
+    inserted_row = qry_cls().get(res.json['id'])
+    assert inserted_row is not None
+    assert inserted_row.config['foo'] == 'bar'
+
+    # then upsert
+    payload = {
+        "target": "Experiment",
         "method": {
             "name": "upsert",
             "args": [],
             "kwargs": {
                 "obj": {
-                    "id": f"{uuid.uuid4()}",
+                    "id": inserted_row.id,
                     "tag": "mock",
-                    "x": 1,
-                    "y": 1,
-                    "experiment_id": f"{uuid.uuid4()}"
+                    "config": {"foo": "baz"},
                 }
             }
         },
     }
-]
 
-
-def setup():
-    with DBSession() as sess:
-        qry.Experiment(session=sess).delete()
-        qry.Trace(session=sess).delete()
-
-
-@pytest.mark.parametrize("payload, ", payloads)
-def test_upsert(app, payload):
-    app.put(
+    res = app.put(
         '/query',
         json=payload
     )
-    qry_cls = getattr(qry, payload['target'])
-
-    with DBSession() as sess:
-        assert len(qry_cls(session=sess).all()) == 1
+    updated_row = qry_cls().get(res.json['id'])
+    assert updated_row is not None
+    assert updated_row.config['foo'] == 'baz'
