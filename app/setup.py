@@ -28,7 +28,7 @@ dev_reqs = [str(ir.req) for ir in dev_reqs]
 
 
 setup(
-    name="mlboard_api",
+    name="mlboard",
     version="0.0.0",
     description="TODO",
     author='Xinyuan Yao',

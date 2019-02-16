@@ -1,0 +1,2 @@
+DB_CONN: "postgresql://mlboard:mlboard@db/mlboard"
+DEBUG: True

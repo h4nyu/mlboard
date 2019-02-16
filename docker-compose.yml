@@ -11,11 +11,11 @@ services:
 
   api:
     build: 
-      context: ./api
+      context: ./app
       args:
         - http_proxy
         - https_proxy
-    command: flask run --host=0.0.0.0
+    command: gunicorn --bind 0.0.0.0:5000 mlboard:api
     restart: on-failure
     depends_on:
       - db

@@ -13,4 +13,3 @@ COPY ./ /srv
 RUN python setup.py develop
 ENV FLASK_APP mlboard_api
 ENV FLASK_CONFIG_FILE_PATH /srv/mlboard.cfg
-CMD flask run --host=0.0.0.0

@@ -6,3 +6,4 @@ pytest-cov
 pytest-pep8
 pytest-profiling
 mlboard-client
+Faker

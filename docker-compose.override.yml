@@ -6,7 +6,7 @@ services:
       - "5432:5432"
   api:
     volumes:
-      - ./api:/srv
+      - ./app:/srv
     environment:
       - FLASK_DEBUG=1
       - PYTHON_ENV=development

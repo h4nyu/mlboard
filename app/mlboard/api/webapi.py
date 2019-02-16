@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from cytoolz.curried import pipe, map, take, first, concat
-from . import models as ms
-from . import queries as qs
-from cytoolz.curried import pipe, map, take
+from toolz.curried import pipe, map, take, first, concat
+from mlboard.orm import models as ms
+from mlboard.orm import queries as qs
+from toolz.curried import pipe, map, take
 from flask_restful import Resource
 from flask import jsonify
 from flask import request
@@ -63,22 +63,13 @@ class BaseAPI(Resource):
 class QueryAPI(BaseAPI):
     @staticmethod
     def _post(target,
-              methods,
-              entities=[]):
+              method):
         with ms.db.atomic() as transaction:
             query_class = eval(f"qs.{target}")
-            entities = pipe(
-                entities,
-                map(lambda x: eval(f'ms.{x}')),
-                list
-            )
-            q = query_class(*entities)
-
-            for m in methods:
-                q = getattr(q, m['name'])(*m['args'], **m['kwargs'])
-
+            res = getattr(query_class(), method['name'])(
+                *method['args'], **method['kwargs'])
             transaction.commit()
-            return q
+            return res
 
     @staticmethod
     def _put(target, method):

@@ -6,3 +6,4 @@ python-dateutil
 pyyaml>=4.2b1
 peewee
 psycopg2-binary
+gunicorn

@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import pytest
-from mlboard_api import create_app
+from mlboard import create_api
 
 
 @pytest.fixture
 def app():
-    app = create_app()
+    app = create_api()
     return app.test_client()
 
 

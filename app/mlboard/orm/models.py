@@ -8,11 +8,9 @@ from peewee import Model, FloatField, TextField, ModelSelect
 from playhouse.db_url import connect
 from playhouse.postgres_ext import UUIDField, DateTimeTZField, JSONField
 from playhouse.shortcuts import model_to_dict, update_model_from_dict
-from .config import config
+from ..config import DB_CONN
 
-
-SQL_ALCHEMY_CONN = config['SQL_ALCHEMY_CONN']
-db = connect(SQL_ALCHEMY_CONN)
+db = connect(DB_CONN)
 
 __all__ = ["BaseModel", "Experiment", "Trace"]
 
