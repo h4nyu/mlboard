@@ -27,6 +27,6 @@ services:
   web:
     volumes:
       - ./web/nginx.dev.conf:/etc/nginx/nginx.conf
-      - ./front/dist:/public/
+      - ./board/dist:/public/
     ports:
       - "80:80"
