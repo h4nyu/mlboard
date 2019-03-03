@@ -8,20 +8,23 @@ services:
     image: h4nyu/mlboard_db
     volumes:
       - db_data:/var/lib/postgresql/data
-    restart: on-failure
+    logging: &default-log
+      options:
+        max-size: "200k"
+        max-file: "10"
     deploy:
+      restart_policy:
+          condition: on-failure
       mode: global
 
   api:
     image: h4nyu/mlboard_api
-    restart: on-failure
-    logging:
-      options:
-        max-size: "200k"
-        max-file: "10"
     depends_on:
       - db
+    logging: *default-log
     deploy:
+      restart_policy:
+          condition: on-failure
       mode: replicated
       replicas: 4
 
@@ -30,7 +33,10 @@ services:
     image: h4nyu/mlboard_migration
     depends_on:
       - db
+    logging: *default-log
     deploy:
+      restart_policy:
+          condition: none
       mode: replicated
       replicas: 1
 
@@ -39,11 +45,10 @@ services:
     image: h4nyu/mlboard_board
     volumes:
       - board_data:/public
-    logging:
-      options:
-        max-size: "200k"
-        max-file: "10"
+    logging: *default-log
     deploy:
+      restart_policy:
+          condition: none
       mode: replicated
       replicas: 1
 
@@ -54,13 +59,11 @@ services:
     depends_on:
       - api
       - board
-    logging:
-      options:
-        max-size: "200k"
-        max-file: "10"
-    restart: on-failure
+    logging: *default-log
     ports:
       - "80:80"
     deploy:
+      restart_policy:
+          condition: on-failure
       mode: replicated
       replicas: 1

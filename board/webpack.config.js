@@ -29,11 +29,31 @@ module.exports = {
       },
       {
         test: /\.(css|scss|sass)$/,
-          use: [
-            'vue-style-loader',
-            'css-loader',
-            "sass-loader",
-          ],
+        oneOf: [
+          // this matches `<style module>`
+          {
+            resourceQuery: /module/,
+            use: [
+              'style-loader',
+              {
+                loader: 'css-loader',
+                options: {
+                  modules: true,
+                  localIdentName: '[local]_[hash:base64:5]'
+                }
+              },
+              "sass-loader",
+            ]
+          },
+          // this matches plain `<style>` or `<style scoped>`
+          {
+            use: [
+              'vue-style-loader',
+              'css-loader',
+              "sass-loader",
+            ]
+          }
+        ],
       },
       {
         test: /\.(png|jpe?g|gif|svg|woff2?|eot|ttf|otf)(\?.*)?$/,

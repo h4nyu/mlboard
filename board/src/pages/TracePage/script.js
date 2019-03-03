@@ -1,5 +1,4 @@
-import TraceCard from '@/components/TraceCard'
-import FilterList from '@/components/FilterList'
+import TraceList from '@/components/TraceList'
 import { mapState, mapActions, mapGetters } from 'vuex';
 
 export default {
@@ -11,14 +10,9 @@ export default {
   },
   render: function render(h) {
     return (
-      <FilterList
-        data={this.charts}
-        getKey={i => i.title}
-        scopedSlots={{
-          row: chart => <TraceCard title={chart.title} plotData={chart.plotData} />
-        }}
-      >
-      </FilterList>
+      <div>
+        <TraceList />
+      </div>
     )
   }
 };

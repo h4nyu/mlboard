@@ -1,5 +1,5 @@
 import types from './types';
-import { query } from '@/services/Api';
+import { TraceApi } from '@/services/api';
 import fp from 'lodash/fp'
 
 export default {

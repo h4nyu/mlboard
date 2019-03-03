@@ -1,15 +1,16 @@
-FROM node:9-slim AS dev
+FROM node:10-slim AS dev
 
-MAINTAINER Xinyaun Yao <yao.ntno@gmail.com>
+RUN apt-get update && apt-get install -y \
+    git
 
 WORKDIR /srv
 COPY ./package.json /srv/package.json
 RUN npm install  --proxy=$http_proxy
+
 COPY ./  /srv
 RUN mkdir -p /public
 RUN mkdir -p /srv/dist
 ENV NODE_ENV production
-RUN npm run build
 
 FROM busybox AS prod
 COPY --from=dev /srv/dist /srv/dist

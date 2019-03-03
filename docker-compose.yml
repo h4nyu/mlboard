@@ -1,51 +1,42 @@
-version: '3.4'
+version: '2.4'
 
 services:
   db:
     build: 
       context: ./db
-      args:
+      args: &build-args
         - http_proxy
         - https_proxy
-    restart: on-failure
 
   api:
     build: 
       context: ./app
-      args:
-        - http_proxy
-        - https_proxy
+      args: *build-args
     command: gunicorn --bind 0.0.0.0:5000 mlboard:api
-    restart: on-failure
     depends_on:
       - db
 
   migration:
     build: 
       context: ./migration
-      args:
-        - http_proxy
-        - https_proxy
-    restart: on-failure
+      args: *build-args
     depends_on:
       - db
 
   board:
     build: 
       context: ./board
-      target: dev
-      args:
-        - http_proxy
-        - https_proxy
-    restart: on-failure
+      args: *build-args
+
+  storybook:
+    build: 
+      context: ./board
+      args: *build-args
 
   web:
     build: 
       context: ./web
-      args:
-        - http_proxy
-        - https_proxy
+      args: *build-args
     depends_on:
       - api
       - board
-    restart: on-failure

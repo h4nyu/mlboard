@@ -1,12 +1,13 @@
 import Card from '@/components/Card'
 import Plot from '@/components/Plot'
-import CheckBox from 'buefy/src/components/checkbox/Checkbox'
+import { ToggleButton } from 'vue-js-toggle-button'
+
 
 export default {
-  name: 'TraceCard',
+  name: 'TraceListItem',
   props:{
-    title: String,
-    plotData: Array,
+    traces:{type: Array, default: () => ([]) },
+    xAixs: {type: String, default: () => "Timestamp"} 
   },
   data(){
     return {
@@ -19,6 +20,22 @@ export default {
     }
   },
   computed:{
+    plotData(){
+      let x = []
+      if(this.xAixsType === 'DATE'){
+        x = this.traces.map(t => t.ts);
+      }else{
+        x = this.traces.map(t => t.x);
+      }
+      return [
+        {
+          x: x,
+          y: this.traces.map(t => t.y),
+          mode: 'markers+lines',
+          type: 'scatter',
+        }
+      ]
+    },
     yaxisType(){
       if(this.isLog){
         return "log";
@@ -45,9 +62,11 @@ export default {
   render: function render(h) {
     return (
       <Card title={this.title}>
-        <CheckBox vOn:input={this.handleCheck}>
-          log
-        </CheckBox>
+        <ToggleButton value={true} labels={{checked: 'log', unchecked: ''}}/>
+        <div class="field">
+          <input id="switchExample" type="checkbox" name="switchExample" class="switch" checked="checked"/>
+          <label for="switchExample">Switch example</label>
+        </div>
         <Plot style={{height: '200px' }} data={this.plotData} layout={this.plotLayout} />
       </Card>
     )

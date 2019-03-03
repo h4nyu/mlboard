@@ -1,0 +1,15 @@
+.layout {
+  display: grid;
+  padding: 0.5em;
+  grid-template-areas:
+    "content action";
+  grid-template-columns: 1fr auto;
+}
+
+.content {
+  grid-area: content;
+}
+
+.action {
+  grid-area: action;
+}

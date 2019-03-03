@@ -1,13 +1,15 @@
 import types from './types';
-import { query } from '@/services/Api';
+import { ExperimentApi } from '@/services/api';
 
 export default {
   [types.FETCH_ALL] ({commit, state, rootState, dispatch, rootGetters}) {
-    const callback = () => query("Experiment")
-      .all()
-      .then(res => {
-        commit(types.FETCH_ALL, res.data)
-      });
+    const callback = () => {
+      const api = ExperimentApi()
+        .all()
+        .then(res => {
+          commit(types.FETCH_ALL, res.data)
+        });
+    }
     dispatch('loading/DISPATCH', callback, {root: true});
   },
 

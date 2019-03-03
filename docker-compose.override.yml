@@ -1,28 +1,36 @@
-version: '3.4'
+version: '2.4'
 
 services:
   db:
     ports:
       - "5432:5432"
+
   api:
     volumes:
       - ./app:/srv
-    environment:
-      - FLASK_DEBUG=1
+    environment: &python-env
       - PYTHON_ENV=development
 
   migration:
     volumes:
       - ./migration:/srv
 
-  board:
-    environment:
+  board: &node-env
+    environment: 
       - NODE_ENV=development
       - http_proxy
       - https_proxy
+    build:
+      target: dev
     volumes:
       - ./board:/srv
     command: npm start
+
+  storybook:
+    <<: *node-env
+    command: npm run storybook
+    ports:
+      - "9001:9001"
 
   web:
     volumes:

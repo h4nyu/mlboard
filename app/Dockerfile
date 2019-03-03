@@ -1,4 +1,4 @@
-FROM python:3.6.5-slim AS prod
+FROM python:3.6-slim AS prod
 
 RUN apt-get update && apt-get install -y \
     gcc
@@ -11,5 +11,3 @@ RUN pip install -r requirements.txt --no-cache-dir  && \
 
 COPY ./ /srv
 RUN python setup.py develop
-ENV FLASK_APP mlboard_api
-ENV FLASK_CONFIG_FILE_PATH /srv/mlboard.cfg
