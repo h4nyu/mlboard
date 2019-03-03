@@ -6,14 +6,33 @@ import filters from '@/filters'
 import FilterList from '@/components/FilterList'
 import ExperimentListItem from '@/components/ExperimentListItem'
 
-export default { name: 'ExperimentList',
+export default { 
+  name: 'ExperimentList',
+  props:{
+    experiments: {
+      type: Array,
+    }
+  },
+  methods:{
+    handleRefreshClick(){
+      this.$emit("refresh")
+    },
+    handleDeleteClick(e){
+      this.$emit("deleteClick", e)
+    }
+  },
   render(h){
     return (
       <FilterList 
-        data={this.all}
+        data={this.experiments}
         getKey={e => e.tag}
         scopedSlots={{
-          row: data => <ExperimentListItem data={data} vOn:check={this.SELECT_ID} vOn:uncheck={this.UNSELECT_ID} vOn:delete={this.DELETE} /> 
+          row: experiment => (
+            <ExperimentListItem 
+              experiment={experiment} 
+              vOn:deleteClick={this.handleDeleteClick} 
+            />
+          )
         }}
       >
         <template slot='header'>
@@ -21,7 +40,7 @@ export default { name: 'ExperimentList',
             Experiments
           </p>
           <span class="card-header-icon">
-            <div class="button is-white" vOn:click={this.FETCH}>
+            <div class="button is-white" vOn:click={this.handleRefreshClick}>
               <i class="fas fa-sync-alt"></i>
             </div>
           </span>
