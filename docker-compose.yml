@@ -2,41 +2,63 @@ version: '2.4'
 
 services:
   db:
-    build: 
+    build: &default-build
       context: ./db
-      args: &build-args
+      args: 
         - http_proxy
         - https_proxy
+    ports:
+      - "${DB_PORT}:5432"
 
   api:
     build: 
+      <<: *default-build
       context: ./app
-      args: *build-args
     command: gunicorn --bind 0.0.0.0:5000 mlboard:api
+    volumes:
+      - ./app:/srv
+    environment: &python-env
+      - PYTHON_ENV=development
     depends_on:
       - db
 
   migration:
     build: 
+      <<: *default-build
       context: ./migration
-      args: *build-args
     depends_on:
       - db
 
-  board:
+  board: &node-env
     build: 
+      <<: *default-build
       context: ./board
-      args: *build-args
+      target: dev
+
+    environment: 
+      - NODE_ENV=development
+      - http_proxy
+      - https_proxy
+    volumes:
+      - ./board:/srv
+    command: npm start
+
 
   storybook:
-    build: 
-      context: ./board
-      args: *build-args
+    <<: *node-env
+    command: npm run storybook
+    ports:
+      - "${STORYBOOK_PORT}:9001"
 
   web:
     build: 
+      <<: *default-build
       context: ./web
-      args: *build-args
+    volumes:
+      - ./web/nginx.dev.conf:/etc/nginx/nginx.conf
+      - ./board/dist:/public/
+    ports:
+      - "${WEB_PORT}:80"
     depends_on:
       - api
       - board

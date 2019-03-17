@@ -19,6 +19,7 @@ storiesOf(`${Component.name}`, module)
         <Component 
           experiment={experiment}
           vOn:deleteClick={x => alert(`deleteClick, ${JSON.stringify(x)}`)}
+          vOn:chartClick={x => alert(`chartClick, ${JSON.stringify(x)}`)}
         />
       )
     }

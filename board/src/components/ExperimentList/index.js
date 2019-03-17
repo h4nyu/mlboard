@@ -1,17 +1,20 @@
-import TreeView from "vue-json-tree-view/src/TreeView"
-import { mapState, mapActions } from 'vuex';
-import Empty from '@/components/Empty'
-import Timeago from 'vue-timeago'
-import filters from '@/filters'
-import FilterList from '@/components/FilterList'
-import ExperimentListItem from '@/components/ExperimentListItem'
+import TreeView from "vue-json-tree-view/src/TreeView";
+import FilterList from '@/components/FilterList';
+import SelectItem from '@/components/SelectItem';
+import ExperimentListItem from '@/components/ExperimentListItem';
+import fp from "lodash/fp";
 
 export default { 
   name: 'ExperimentList',
   props:{
     experiments: {
-      type: Array,
-    }
+      type: Object,
+      default: () => [],
+    },
+    selectedIdList:{ 
+      type: Array, 
+      default: () => [],
+    },
   },
   methods:{
     handleRefreshClick(){
@@ -19,19 +22,38 @@ export default {
     },
     handleDeleteClick(e){
       this.$emit("deleteClick", e)
+    },
+    handleChartClick(e){
+      this.$emit("chartClick", e)
+    },
+    getIsSelected(id){
+      return _.includes(this.selectedIds, id)
+    },
+  },
+  computed:{
+    orderedExperimentList(){
+      return fp.pipe(
+        fp.toArrray,
+        fp.orderBy(x => x.createDate)
+      )(this.experiments)
     }
   },
   render(h){
     return (
       <FilterList 
-        data={this.experiments}
+        data={this.orderedExperimentList}
         getKey={e => e.tag}
         scopedSlots={{
           row: experiment => (
-            <ExperimentListItem 
-              experiment={experiment} 
-              vOn:deleteClick={this.handleDeleteClick} 
-            />
+            <SelectItem
+              isSelected={this.getIsSelected(experiment.id)}
+            >
+              <ExperimentListItem 
+                experiment={experiment} 
+                vOn:deleteClick={this.handleDeleteClick} 
+                vOn:chartClick={this.handleChartClick} 
+              />
+            </SelectItem>
           )
         }}
       >

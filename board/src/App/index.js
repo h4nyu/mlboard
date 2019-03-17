@@ -13,14 +13,13 @@ export default {
   mounted: function () {
     this.$store.dispatch('app/FETCH', {}, {root: true});
   },
-  // render: function render(h) {
-  //   return (
-  //     // <Layout>
-  //     //   <HeaderNav slot='header'/>
-  //     //   <SideNav slot='aside'/>
-  //     //   <router-view slot='main'/>
-  //     //   <Loading />
-  //     // </Layout>
-  //   )
-  // }
+  render: function render(h) {
+    return (
+      <Layout>
+        <HeaderNav slot='header'/>
+        <router-view slot='main'/>
+        <Loading />
+      </Layout>
+    )
+  }
 };

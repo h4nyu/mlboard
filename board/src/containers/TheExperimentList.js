@@ -1,7 +1,8 @@
 import { mapState, mapActions } from 'vuex';
 import ExperimentList from '@/components/ExperimentList'
 
-export default { name: 'ExperimentList',
+export default { 
+  name: 'TheExperimentList',
   methods: {
     ...mapActions('experiment', [
       'DELETE',
@@ -20,7 +21,12 @@ export default { name: 'ExperimentList',
   },
   render(h){
     return (
-      <ExperimentList>
+      <ExperimentList
+        experiments={this.all}
+        selectedIds={this.selectedIdList}
+        vOn:deleteClick={this.DELETE}
+        vOn:chartClick={this.SELECT_ID}
+      >
       </ExperimentList>
     )
   }

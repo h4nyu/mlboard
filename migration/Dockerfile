@@ -11,4 +11,5 @@ WORKDIR /srv
 COPY ./requirements.txt /srv/requirements.txt
 RUN pip install -r requirements.txt --no-cache-dir
 COPY ./ /srv
-CMD dockerize -wait tcp://db:5432 alembic upgrade head
+ENTRYPOINT ["dockerize", "-wait", "tcp://db:5432", "-timeout", "30s"]
+CMD alembic upgrade head && tail -f /dev/null

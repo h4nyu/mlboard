@@ -9,7 +9,6 @@ logger = getLogger("api")
 
 experiment_bp = Blueprint('experiment_bp', __name__)
 
-
 @experiment_bp.route('/experiment/all', methods=["POST"])
 def all():
     res = qs.Experiment().all()

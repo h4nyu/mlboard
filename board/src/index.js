@@ -8,7 +8,6 @@ new Vue({
   el: '#app',
   store,
   router,
-  components: { App },
   render: function render(h) {
     return ( 
       <App/>

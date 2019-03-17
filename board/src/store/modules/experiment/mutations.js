@@ -1,8 +1,9 @@
 import types from './types';
+import _ from "lodash";
 
 export default {
   [types.FETCH_ALL] (state, all) {
-    state.all = all;
+    state.all = _.keyBy(all, x => x.id);
   },
 
   [types.DELETE] (state, id) {

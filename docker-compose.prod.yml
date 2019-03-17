@@ -1,4 +1,4 @@
-version: '3.4'
+version: '2.4'
 volumes: 
   db_data:
   board_data:
@@ -12,21 +12,12 @@ services:
       options:
         max-size: "200k"
         max-file: "10"
-    deploy:
-      restart_policy:
-          condition: on-failure
-      mode: global
 
   api:
     image: h4nyu/mlboard_api
     depends_on:
       - db
     logging: *default-log
-    deploy:
-      restart_policy:
-          condition: on-failure
-      mode: replicated
-      replicas: 4
 
 
   migration:
@@ -34,11 +25,6 @@ services:
     depends_on:
       - db
     logging: *default-log
-    deploy:
-      restart_policy:
-          condition: none
-      mode: replicated
-      replicas: 1
 
 
   board:
@@ -46,11 +32,6 @@ services:
     volumes:
       - board_data:/public
     logging: *default-log
-    deploy:
-      restart_policy:
-          condition: none
-      mode: replicated
-      replicas: 1
 
   web:
     image: h4nyu/mlboard_web
@@ -62,8 +43,3 @@ services:
     logging: *default-log
     ports:
       - "80:80"
-    deploy:
-      restart_policy:
-          condition: on-failure
-      mode: replicated
-      replicas: 1

@@ -1,122 +1,80 @@
 import axios from 'axios'
 import * as ms from './models'
 import _ from 'lodash';
+import snakeCaseKeys from "snakecase-keys"
+import camelcaseKeys from "camelcase-keys"
 axios.defaults.headers.get['Content-Type'] = 'application/json'
 
 
-class API {
-  constructor() {
-    this.url = ''
+class JsonAPI {
+  __toCamelCase(res){
+    let converted;
+    if(_.isObject(res.data)){
+      converted = camelcaseKeys(res.data, {deep: true});
+    }else{
+      converted = res.data;
+    }
+
+    return {
+      ...res,
+      data: converted,
+    }
+  }
+
+  __toSnakeCase(payload){
+    let converted;
+    if(_.isObject(payload)){
+      converted = snakeCaseKeys(payload, {deep: true});
+    }else{
+      converted = payload;
+    }
+    return converted;  
   }
 
   _post(url, data) {
-    return axios.post(url, data)  
+    return axios.post(url, this.__toSnakeCase(data)).then(this.__toCamelCase)
   }
 
   _put(url, data) {
-    return axios.put(url, data).then(res => this._toModel(res))
+    return axios.put(url, this.__toSnakeCase(data)).then(this.__toCamelCase)
   }
 
   _get(url, data) {
     return axios.get(url, {
-      params: data
-    }).then(res => this._toModel(res))
+      params: this.__toSnakeCase(data),
+    }).then(this.__toCamelCase)
   }
+}
 
-  _toModel(res){
-    let data;
-    if (_.isArray(res.data)){
-      data = res.data.map(x => new this.ModelCls().fromRes(x));
-    }else{
-      data = new this.ModelCls().fromRes(res.data);
-    }
-    return {
+export class ExperimentApi extends JsonAPI {
+  all(){
+    return this._post("api/experiment/all").then(res => ({
       ...res,
-      data
-    }
+      data: res.data.map(x => new ms.Experiment(x))
+    }))
   }
 }
 
 
-class QueryApi extends API {
-  constructor(target, entities) {
-    super()
-    this.payload = {
-      target: target,
-      method: {},
-    }
-    this.url = 'api/query'
-  }
-
-  all() {
-    this.payload.method = {
-      name: 'all',
-      args: [],
-      kwargs: {}
-    }
-    return this._post(this.url, this.payload)
-  }
-
-  filterBy(kwargs) {
-    this.payload.method = {
-      name: 'filter_by',
-      args: [],
-      kwargs: kwargs
-    }
-    return this._post(this.url, this.payload)
-  }
-
-  filterIn(kwargs) {
-    this.payload.method = {
-      name: 'filter_in',
-      args: [],
-      kwargs: kwargs
-    }
-    return this._post(this.url, this.payload)
-  }
-
-  upsert(obj) {
-    this.payload.method = {
-        name: 'upsert',
-        args: [],
-        kwargs: {
-          obj: obj
-        }
-      }
-    return this._put(this.url, this.payload)
-  }
-}
-
-export class ExperimentApi extends QueryApi {
-  constructor () {
-    super('Experiment');
-  }
-
-  get ModelCls(){
-    return ms.Experiment;
-  }
-}
-
-
-export class TraceApi extends QueryApi {
-  constructor () {
-    super('Trace');
-  }
-
-  get ModelCls(){
-    return ms.Trace;
-  }
-
-  searchRange(sensorId, fromDate, toDate) {
-    this.payload.method = {
-      name: 'search_range',
-      args: [],
-      kwargs: {
-        sensor_id: sensorId,
-        from_date: fromDate,
-        to_date: toDate,
-      }
-    }
-    return this._post(this.url, this.payload)
-  }
-}
+// export class TraceApi extends QueryApi {
+//   constructor () {
+//     super('Trace');
+//   }
+//
+//   get ModelCls(){
+//     return ms.Trace;
+//   }
+//
+//   searchRange(sensorId, fromDate, toDate) {
+//     this.payload.method = {
+//       name: 'search_range',
+//       args: [],
+//       kwargs: {
+//         sensor_id: sensorId,
+//         from_date: fromDate,
+//         to_date: toDate,
+//       }
+//     }
+//     return this._post(this.url, this.payload)
+//   }
+// }

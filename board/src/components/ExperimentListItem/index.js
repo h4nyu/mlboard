@@ -1,7 +1,6 @@
 import style from "./style.css?module"
 import TreeView from "vue-json-tree-view/src/TreeView"
 import * as ms from "@/services/models"
-console.log(style);
 
 export default {
   name: 'ExperimentListItem',
@@ -32,6 +31,9 @@ export default {
             </TreeView>
           </div>
           <div class={style.action}>
+            <a class="button is-small" vOn:click={() => this.$emit('chartClick', {experimentId: this.experiment.id})}>
+              <i class="fas fa-chart-line"></i>
+            </a>
             <a class="button is-small" vOn:click={() => this.$emit('deleteClick', {experimentId: this.experiment.id})}>
               <i class="fas fa-trash"></i>
             </a>

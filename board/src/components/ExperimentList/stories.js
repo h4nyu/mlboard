@@ -25,9 +25,11 @@ storiesOf(`${Component.name}`, module)
           }
         }),
       ];
+      const selectedIds = [experiments[0].id]
       return (
         <Component 
           experiments={experiments}
+          selectedIds={selectedIds}
           vOn:refresh={x => alert(`refresh`)}
           vOn:deleteClick={x => alert(`deleteClick, ${JSON.stringify(x)}`)}
         />
