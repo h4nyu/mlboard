@@ -4,7 +4,7 @@ import Card from './index.js';
 
 storiesOf('Card', module)
   .add('default', () => ({
-    render(h) {
+    render() {
       return (
         <Card />
       );

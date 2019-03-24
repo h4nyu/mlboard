@@ -19,7 +19,7 @@ export default {
       }
     },
   },
-  render: function render(h) {
+  render() {
     return (
       <div class="card">
         <div class={style.layout}>

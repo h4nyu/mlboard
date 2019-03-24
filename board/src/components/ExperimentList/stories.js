@@ -6,7 +6,7 @@ import Component from '.';
 
 storiesOf(`${Component.name}`, module)
   .add('default', () => ({
-    render(h) {
+    render() {
       const experimentSet = [
         new ms.Experiment({
           id: uuid(),

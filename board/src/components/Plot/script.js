@@ -121,7 +121,7 @@ export default {
     this.newPlot();
     this.$parent.$emit('ploted');
   },
-  render: function render(h) {
+  render() {
     return (
       <div></div>
     );

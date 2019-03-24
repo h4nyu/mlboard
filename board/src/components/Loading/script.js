@@ -9,7 +9,7 @@ export default {
       'isActive',
     ]),
   },
-  render: function render(h) {
+  render() {
     return (
       <Loading active={this.isActive} width={150} height={150} />
     );

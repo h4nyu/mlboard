@@ -2,7 +2,7 @@ import TheExperimentList from '@/containers/TheExperimentList';
 
 export default {
   name: 'TracePage',
-  render: function render(h) {
+  render() {
     return (
       <div>
         <TheExperimentList />

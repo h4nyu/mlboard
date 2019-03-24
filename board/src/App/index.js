@@ -13,7 +13,7 @@ export default {
   mounted() {
     this.$store.dispatch('app/FETCH', {}, { root: true });
   },
-  render: function render(h) {
+  render() {
     return (
       <Layout>
         <HeaderNav slot="header" />

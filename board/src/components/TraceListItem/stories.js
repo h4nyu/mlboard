@@ -6,7 +6,7 @@ import TraceListItem from './index.js';
 
 storiesOf('TraceListItem', module)
   .add('default', () => ({
-    render(h) {
+    render() {
       const traces = [
         new ms.Trace().fromRes({
           y: 0.1,

@@ -4,7 +4,7 @@ import Component from '.';
 
 storiesOf(`${Component.name}`, module)
   .add('selected', () => ({
-    render(h) {
+    render() {
       return (
         <Component isSelected={true}>
           <div> content here !</div>
@@ -13,7 +13,7 @@ storiesOf(`${Component.name}`, module)
     },
   }))
   .add('unselected', () => ({
-    render(h) {
+    render() {
       return (
         <Component isSelected={false}>
           <div> content here !</div>

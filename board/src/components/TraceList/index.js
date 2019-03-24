@@ -40,6 +40,4 @@ export default {
       };
     },
   },
-  render: function render(h) {
-  },
 };

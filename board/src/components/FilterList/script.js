@@ -28,7 +28,7 @@ export default {
       }
     },
   },
-  render(h) {
+  render() {
     return (
       <div class="card">
         <header class="card-header">

@@ -13,7 +13,7 @@ export default {
       return null;
     },
   },
-  render: function render(h) {
+  render() {
     return (
       <div class={[style.layout]}>
         <div class={[style.bar, this.barStyle]}></div>

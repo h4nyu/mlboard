@@ -14,7 +14,7 @@ export default {
       this.toggleContent = !this.toggleContent;
     },
   },
-  render: function render(h) {
+  render() {
     let content;
     let toggleIcon;
     if (this.toggleContent) {

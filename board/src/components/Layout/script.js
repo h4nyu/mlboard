@@ -30,7 +30,7 @@ export default {
       this.isDragging = false;
     },
   },
-  render: function render(h) {
+  render() {
     return (
       <div class="layout" vOn:mouseup={this.endDrag} vOn:mousemove={this.doDrag}>
         <div class="header">

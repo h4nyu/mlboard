@@ -1,6 +1,6 @@
 export default {
   name: 'Empty',
-  render: function render(h) {
+  render() {
     return (
       <section class="section">
         <div class="content has-text-grey has-text-centered">

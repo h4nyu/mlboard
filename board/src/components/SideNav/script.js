@@ -2,7 +2,7 @@ import ExperimentList from '@/components/ExperimentList';
 
 export default {
   name: 'SideNav',
-  render: function render(h) {
+  render() {
     return (
       <ExperimentList />
     );

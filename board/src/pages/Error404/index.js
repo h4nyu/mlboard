@@ -1,6 +1,6 @@
 export default {
   name: 'Error404',
-  render(h) {
+  render() {
     return (
       <section>
         <h1>Page Not Found</h1>

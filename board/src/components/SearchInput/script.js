@@ -13,7 +13,7 @@ export default {
       this.$emit('input', newValue);
     },
   },
-  render: function render(h) {
+  render() {
     const bindTarget = this.inputValue;
     return (
       <p class="control has-icons-left has-icons-right">

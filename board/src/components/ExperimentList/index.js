@@ -38,7 +38,7 @@ export default {
       )(this.experimentSet);
     },
   },
-  render(h) {
+  render() {
     return (
       <FilterList
         data={this.orderedExperiments}

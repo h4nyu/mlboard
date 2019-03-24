@@ -17,7 +17,7 @@ export default {
       this.toggle = !this.toggle;
     },
   },
-  render: function render(h) {
+  render() {
     return (
       <nav class="navbar is-dark">
         <div class="navbar-brand">

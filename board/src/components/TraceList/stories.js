@@ -4,7 +4,7 @@ import TraceList from './index.js';
 
 storiesOf('TraceList', module)
   .add('default', () => ({
-    render(h) {
+    render() {
       return (
         <TraceList />
       );

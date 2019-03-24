@@ -10,7 +10,7 @@ export default {
   computed: {
     ...mapState('experiment', ['all', 'selectedIds']),
   },
-  render(h) {
+  render() {
     return (
       <ExperimentList
         experiments={this.all}
