@@ -1,13 +1,12 @@
-import { storiesOf } from '@storybook/vue'
-import Card from './index.js'
-import moment from "moment";
+import { storiesOf } from '@storybook/vue';
+import moment from 'moment';
+import Card from './index.js';
 
 storiesOf('Card', module)
   .add('default', () => ({
     render(h) {
       return (
         <Card />
-      )
-    }
-  }))
-
+      );
+    },
+  }));

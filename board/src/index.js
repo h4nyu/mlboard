@@ -9,8 +9,8 @@ new Vue({
   store,
   router,
   render: function render(h) {
-    return ( 
+    return (
       <App/>
-    )
-  }
+    );
+  },
 });

@@ -1,4 +1,4 @@
-import TheExperimentList from '@/containers/TheExperimentList'
+import TheExperimentList from '@/containers/TheExperimentList';
 
 export default {
   name: 'TracePage',
@@ -7,7 +7,6 @@ export default {
       <div>
         <TheExperimentList />
       </div>
-    )
-  }
+    );
+  },
 };
-

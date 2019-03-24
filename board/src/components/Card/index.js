@@ -1,33 +1,33 @@
 
 export default {
   name: 'Card',
-  data(){
-    return{
-      toggleContent: true
-    }
+  data() {
+    return {
+      toggleContent: true,
+    };
   },
-  props:{
+  props: {
     title: String,
   },
-  methods:{
-    handleClose(){
+  methods: {
+    handleClose() {
       this.toggleContent = !this.toggleContent;
-    }
+    },
   },
   render: function render(h) {
     let content;
     let toggleIcon;
-    if(this.toggleContent){
+    if (this.toggleContent) {
       content = (
         <div class="card-content">
-          <div style={{height: 200}}> 
-            {this.$slots.default} 
+          <div style={{ height: 200 }}>
+            {this.$slots.default}
           </div>
         </div>
       );
-      toggleIcon = <i class="fas fa-chevron-down"></i>
-    }else{
-      toggleIcon = <i class="fas fa-chevron-right"></i>
+      toggleIcon = <i class="fas fa-chevron-down"></i>;
+    } else {
+      toggleIcon = <i class="fas fa-chevron-right"></i>;
     }
 
     return (
@@ -42,6 +42,6 @@ export default {
         </header>
         {content}
       </div>
-    )
-  }
+    );
+  },
 };

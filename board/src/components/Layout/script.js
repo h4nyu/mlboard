@@ -1,32 +1,32 @@
 export default {
   name: 'Layout',
-  data(){
+  data() {
     return {
       leftWidth: null,
       isDragging: false,
-    }
+    };
   },
-  computed:{
-    barWidth(){
+  computed: {
+    barWidth() {
       return this.$refs.bar.offsetWidth;
     },
-    asideWidth(){
+    asideWidth() {
       return this.$slots.aside[0].elm.clientWidth;
     },
   },
-  methods:{
-    doDrag(e){
-      if(this.isDragging){
+  methods: {
+    doDrag(e) {
+      if (this.isDragging) {
         const leftWidth = (e.pageX - this.barWidth / 2);
-        if (this.asideWidth <= leftWidth){
+        if (this.asideWidth <= leftWidth) {
           this.leftWidth = leftWidth;
         }
       }
     },
-    startDrag(){
+    startDrag() {
       this.isDragging = true;
     },
-    endDrag(){
+    endDrag() {
       this.isDragging = false;
     },
   },
@@ -36,13 +36,13 @@ export default {
         <div class="header">
           {this.$slots.header}
         </div>
-        <div class="aside" ref="aside" style={{width: `${this.leftWidth}px`}}>
+        <div class="aside" ref="aside" style={{ width: `${this.leftWidth}px` }}>
           {this.$slots.aside}
         </div>
-        <div 
-          class="dragbar" 
-          ref='bar' 
-          vOn:mousedown={this.startDrag} 
+        <div
+          class="dragbar"
+          ref='bar'
+          vOn:mousedown={this.startDrag}
         >
         </div>
         <div class="main">
@@ -50,6 +50,6 @@ export default {
         </div>
         {this.$slots.default}
       </div>
-    )
+    );
   },
 };

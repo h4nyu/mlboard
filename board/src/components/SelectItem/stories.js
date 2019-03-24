@@ -1,6 +1,6 @@
-import { storiesOf } from '@storybook/vue'
-import Component from '.'
-import moment from "moment";
+import { storiesOf } from '@storybook/vue';
+import moment from 'moment';
+import Component from '.';
 
 storiesOf(`${Component.name}`, module)
   .add('selected', () => ({
@@ -9,8 +9,8 @@ storiesOf(`${Component.name}`, module)
         <Component isSelected={true}>
           <div> content here !</div>
         </Component>
-      )
-    }
+      );
+    },
   }))
   .add('unselected', () => ({
     render(h) {
@@ -18,6 +18,6 @@ storiesOf(`${Component.name}`, module)
         <Component isSelected={false}>
           <div> content here !</div>
         </Component>
-      )
-    }
-  }))
+      );
+    },
+  }));

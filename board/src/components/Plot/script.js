@@ -1,5 +1,4 @@
 import Plotly from 'plotly.js-dist';
-import * as d3 from 'd3';
 import fp from 'lodash/fp';
 
 const events = [
@@ -8,17 +7,17 @@ const events = [
   'unhover',
   'selecting',
   'selected',
-  'relayout', 
+  'relayout',
   'autosize',
   'deselect',
   'doubleclick',
   'redraw',
   'animated',
-  'legendclick'
+  'legendclick',
 ];
 
 export default {
-  name:"Plot",
+  name: 'Plot',
   props: {
     data: {
       type: Array,
@@ -30,106 +29,101 @@ export default {
     },
     option: {
       type: Object,
-      default: function () {
+      default() {
         return {
-          responsive: true
+          responsive: true,
         };
-      }
-    }
+      },
+    },
   },
   methods: {
-    newPlot(){
+    newPlot() {
       Plotly.newPlot(this.$el, this.data, this.layout, this.option)
         .then(this.attach)
         .then(this.registerEvents);
     },
-    attach: function(){
+    attach() {
       const g = this.$el;
-      g.addEventListener('mousemove', evt => {
+      g.addEventListener('mousemove', (evt) => {
         this.$emit('mousemove', this.getPosition(evt));
       });
     },
-    getPosition: function(evt){
+    getPosition(evt) {
       const g = this.$el;
-      const xaxis = g._fullLayout.xaxis;
-      const yaxis = g._fullLayout.yaxis;
-      if (yaxis & xaxis){
-        const l = g._fullLayout.margin.l;
-        const t = g._fullLayout.margin.t;
+      const { xaxis } = g._fullLayout;
+      const { yaxis } = g._fullLayout;
+      if (yaxis & xaxis) {
+        const { l } = g._fullLayout.margin;
+        const { t } = g._fullLayout.margin;
         const x = xaxis.p2c(evt.x - l);
         const y = yaxis.p2c(evt.y - t);
-        return {x, y}
+        return { x, y };
       }
-      else{
-        return { x: null, y: null }
-      }
+
+      return { x: null, y: null };
     },
-    registerEvents: function () {
-      const mapEvents = fp.map((eventName) => {
-        return {
-          fullName: `plotly_${eventName}`,
-          handler: x => {
-            this.$emit(eventName, x);
-          }
-        };
-      });
-      const register = fp.forEach(x => {
+    registerEvents() {
+      const mapEvents = fp.map(eventName => ({
+        fullName: `plotly_${eventName}`,
+        handler: (x) => {
+          this.$emit(eventName, x);
+        },
+      }));
+      const register = fp.forEach((x) => {
         this.$el.on(x.fullName, x.handler);
       });
       this.__generalListeners = fp.pipe([
         mapEvents,
-        register
+        register,
       ])(events);
     },
-    react: function () {
+    react() {
       return Plotly.react(
-        ...this.plotConfig
+        ...this.plotConfig,
       );
     },
-    gantt:function(seg){
-      return fp.map(range => {
-        return {
-          ...seg,
-          y: [seg.group, seg.group],
-          x: [range.from, range.to],
-          legendgroup: seg.name,
-          mode: 'lines',
-          visible: true,
-        };
-      })(seg.ranges)
+    gantt(seg) {
+      return fp.map(range => ({
+        ...seg,
+        y: [seg.group, seg.group],
+        x: [range.from, range.to],
+        legendgroup: seg.name,
+        mode: 'lines',
+        visible: true,
+      }))(seg.ranges);
     },
   },
-  computed:{
-    plotConfig:function(){
+  computed: {
+    plotConfig() {
       return [
         this.$el,
         this.data,
         this.layout,
-        this.option
-      ]
-    }
+        this.option,
+      ];
+    },
   },
-  beforeDestroy: function () {
-    fp.forEach(obj => {
+  beforeDestroy() {
+    fp.forEach((obj) => {
       this.$el.removeAllListeners(obj.fullName);
     })(this.__generalListeners);
     Plotly.purge(this.$el);
   },
   watch: {
-    plotConfig: function (oldValue, newValue) {
+    plotConfig(oldValue, newValue) {
       this.react()
-        .catch(e => {
+        .catch((e) => {
           this.newPlot();
-        })
+        });
     },
   },
-  mounted: function () {
-    this.newPlot()
-    this.$parent.$emit('ploted')
+  mounted() {
+    this.newPlot();
+    this.$parent.$emit('ploted');
   },
   render: function render(h) {
     return (
       <div></div>
-    )
+    );
   },
 };

@@ -1,39 +1,38 @@
-import { storiesOf } from '@storybook/vue'
-import * as ms from "@/services/models"
-import Component from '.'
-import uuid from "uuid";
-import moment from "moment";
+import { storiesOf } from '@storybook/vue';
+import * as ms from '@/services/models';
+import uuid from 'uuid';
+import moment from 'moment';
+import Component from '.';
 
 storiesOf(`${Component.name}`, module)
   .add('default', () => ({
     render(h) {
-      const experiments = [
+      const experimentSet = [
         new ms.Experiment({
           id: uuid(),
-          tag: "aaa",
+          tag: 'aaa',
           config: {
-            foo: "foo",
-            bar: "bar"
-          }
+            foo: 'foo',
+            bar: 'bar',
+          },
         }),
         new ms.Experiment({
           id: uuid(),
-          tag: "bbb",
+          tag: 'bbb',
           config: {
-            foo: "baz",
-            bar: "sfsd"
-          }
+            foo: 'baz',
+            bar: 'sfsd',
+          },
         }),
       ];
-      const selectedIds = [experiments[0].id]
+      const selectedIds = [experiments[0].id];
       return (
-        <Component 
-          experiments={experiments}
+        <Component
+          experimentSet={experimentSet}
           selectedIds={selectedIds}
-          vOn:refresh={x => alert(`refresh`)}
+          vOn:refresh={x => alert('refresh')}
           vOn:deleteClick={x => alert(`deleteClick, ${JSON.stringify(x)}`)}
         />
-      )
-    }
-  }))
-
+      );
+    },
+  }));

@@ -1,60 +1,60 @@
-import TreeView from "vue-json-tree-view/src/TreeView";
+import TreeView from 'vue-json-tree-view/src/TreeView';
 import FilterList from '@/components/FilterList';
 import SelectItem from '@/components/SelectItem';
 import ExperimentListItem from '@/components/ExperimentListItem';
-import fp from "lodash/fp";
+import fp from 'lodash/fp';
 
-export default { 
+export default {
   name: 'ExperimentList',
-  props:{
-    experiments: {
+  props: {
+    experimentSet: {
       type: Object,
-      default: () => [],
+      default: () => {},
     },
-    selectedIdList:{ 
-      type: Array, 
+    selectedIds: {
+      type: Array,
       default: () => [],
     },
   },
-  methods:{
-    handleRefreshClick(){
-      this.$emit("refresh")
+  methods: {
+    handleRefreshClick() {
+      this.$emit('refresh');
     },
-    handleDeleteClick(e){
-      this.$emit("deleteClick", e)
+    handleDeleteClick(e) {
+      this.$emit('deleteClick', e);
     },
-    handleChartClick(e){
-      this.$emit("chartClick", e)
+    handleChartClick(e) {
+      this.$emit('chartClick', e);
     },
-    getIsSelected(id){
-      return _.includes(this.selectedIds, id)
+    getIsSelected(id) {
+      return _.includes(this.selectedIds, id);
     },
   },
-  computed:{
-    orderedExperimentList(){
+  computed: {
+    orderedExperiments() {
       return fp.pipe(
         fp.toArrray,
-        fp.orderBy(x => x.createDate)
-      )(this.experiments)
-    }
+        fp.orderBy(x => x.createDate),
+      )(this.experimentSet);
+    },
   },
-  render(h){
+  render(h) {
     return (
-      <FilterList 
-        data={this.orderedExperimentList}
+      <FilterList
+        data={this.orderedExperiments}
         getKey={e => e.tag}
         scopedSlots={{
           row: experiment => (
             <SelectItem
               isSelected={this.getIsSelected(experiment.id)}
             >
-              <ExperimentListItem 
-                experiment={experiment} 
-                vOn:deleteClick={this.handleDeleteClick} 
-                vOn:chartClick={this.handleChartClick} 
+              <ExperimentListItem
+                experiment={experiment}
+                vOn:deleteClick={this.handleDeleteClick}
+                vOn:chartClick={this.handleChartClick}
               />
             </SelectItem>
-          )
+          ),
         }}
       >
         <template slot='header'>
@@ -68,6 +68,6 @@ export default {
           </span>
         </template>
       </FilterList>
-    )
-  }
+    );
+  },
 };

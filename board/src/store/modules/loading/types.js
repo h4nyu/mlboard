@@ -3,4 +3,3 @@ export default {
   DEACTIVATE: 'DEACTIVATE',
   DISPATCH: 'DISPATCH',
 };
-

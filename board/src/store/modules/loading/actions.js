@@ -1,24 +1,24 @@
 import types from './types';
 
 export default {
-  [types.ACTIVATE] ({commit, dispatch}) {
+  [types.ACTIVATE]({ commit }) {
     commit(types.ACTIVATE);
   },
 
-  [types.DEACTIVATE] ({commit, dispatch}, payload) {
+  [types.DEACTIVATE]({ commit }) {
     commit(types.DEACTIVATE);
   },
 
-  [types.DISPATCH] ({commit, dispatch, state}, callback) {
+  [types.DISPATCH]({ commit }, callback) {
     commit(types.ACTIVATE);
     return Promise.resolve(callback())
-      .then(res => {
+      .then((res) => {
         commit(types.DEACTIVATE);
         return res;
       })
-      .catch(r => {
+      .catch((r) => {
         commit(types.DEACTIVATE);
         throw r;
       });
-  }
+  },
 };

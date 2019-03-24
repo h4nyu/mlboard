@@ -1,4 +1,3 @@
 export default {
-  FETCH: 'FETCH'
+  FETCH: 'FETCH',
 };
-

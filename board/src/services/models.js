@@ -1,20 +1,16 @@
-import _ from 'lodash';
-
 class Model {
-  constructor(){
+  constructor() {
     this.id = null;
   }
 }
 
 export class Experiment {
-  constructor({id, tag, config}){
+  constructor({ id, tag, config }) {
     this.id = id;
     this.tag = tag;
     this.config = config;
   }
 }
-
-
 
 export class Trace extends Model {
   fromRes(obj) {

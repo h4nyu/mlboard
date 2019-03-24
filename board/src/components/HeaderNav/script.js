@@ -1,21 +1,21 @@
 export default {
   name: 'HeaderNav',
-  data(){
+  data() {
     return {
       tabStyle: {
         'navbar-item': true,
-        'is-tab':true,
+        'is-tab': true,
       },
-      menuStyle:{
-        "navbar-menu": true,
+      menuStyle: {
+        'navbar-menu': true,
       },
       toggle: false,
-    }
+    };
   },
   methods: {
-    handleBuarger(){
+    handleBuarger() {
       this.toggle = !this.toggle;
-    }
+    },
   },
   render: function render(h) {
     return (
@@ -30,14 +30,14 @@ export default {
             <span aria-hidden="true"></span>
           </a>
         </div>
-        <div class={{...this.menuStyle, "is-active": this.toggle}}>
+        <div class={{ ...this.menuStyle, 'is-active': this.toggle }}>
           <div class="navbar-start">
-            <a class={{...this.tabStyle, "is-active": this.$route.name === "TracePage"}}>
+            <a class={{ ...this.tabStyle, 'is-active': this.$route.name === 'TracePage' }}>
               Traces
             </a>
           </div>
         </div>
       </nav>
-    )
-  }
+    );
+  },
 };

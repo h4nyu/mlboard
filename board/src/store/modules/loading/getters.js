@@ -1,6 +1,5 @@
 export default {
-  isActive(state, getters, rootState, rootGetters){
+  isActive(state) {
     return state.pendingNum > 0;
   },
-}
-
+};

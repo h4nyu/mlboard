@@ -6,13 +6,12 @@ export default {
   name: 'Loading',
   computed: {
     ...mapGetters('loading', [
-      'isActive'
-    ])
+      'isActive',
+    ]),
   },
   render: function render(h) {
     return (
       <Loading active={this.isActive} width={150} height={150} />
-    )
-  }
+    );
+  },
 };
-

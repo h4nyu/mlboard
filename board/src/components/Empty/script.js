@@ -10,6 +10,6 @@ export default {
           <p>Nothing here.</p>
         </div>
       </section>
-    )
-  }
+    );
+  },
 };

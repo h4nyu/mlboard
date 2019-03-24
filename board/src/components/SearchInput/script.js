@@ -1,16 +1,16 @@
 export default {
   name: 'SearchInput',
-  data(){
+  data() {
     return {
-      inputValue: "",
-    }
+      inputValue: '',
+    };
   },
-  props:{
+  props: {
     placeholder: String,
   },
-  watch:{
-    inputValue(newValue, oldValue){
-      this.$emit('input', newValue)
+  watch: {
+    inputValue(newValue, oldValue) {
+      this.$emit('input', newValue);
     },
   },
   render: function render(h) {
@@ -22,6 +22,6 @@ export default {
           <i class="fas fa-search"></i>
         </span>
       </p>
-    )
-  }
+    );
+  },
 };
