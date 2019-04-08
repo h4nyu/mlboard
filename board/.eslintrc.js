@@ -9,21 +9,37 @@ module.exports = {
     Atomics: 'readonly',
     SharedArrayBuffer: 'readonly',
   },
-  parser: "babel-eslint",
   parserOptions: {
-    ecmaVersion: 2018,
-    sourceType: 'module',
+    ecmaVersion: 6,
+    sourceType: "module",
     ecmaFeatures: {
-      jsx: true
+      jsx: true,
+      legacyDecorators: true,
     }
   },
-  plugins: [
-    'vue',
-  ],
+  parser: "babel-eslint",
   rules: {
-    "no-param-reassign": [2, {"props": false}]
+    "import/no-named-as-default":"off",
+    "import/no-named-as-default-member":"off",
+    "no-unused-vars":"off",
+    "no-duplicates":"off",
+    "no-param-reassign":"off",
+    "no-shadow":"off",
+    "max-len":"off",
+    "no-underscore-dangle":"off",
+    "no-alert":"off",
+    "no-console":"off",
+    "import/extensions":"off",
+    "import/no-extraneous-dependencies":"off",
+    "import/no-duplicates":"off",
+    "eqeqeq":"off",
+    "class-methods-use-this":"off",
+    "radix":"off",
+    "no-dupe-keys":"off",
+    "prefer-destructuring":"off",
   },
   settings: {
-    "import/resolver": "webpack"
-  },
+    "import/resolver": "webpack",
+  }
 };
+

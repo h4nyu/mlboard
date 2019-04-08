@@ -1,6 +1,0 @@
-export default {
-  FETCH_ALL: 'FETCH_ALL',
-  DELETE: 'DELETE',
-  SELECT_ID: 'SELECT_ID',
-  UNSELECT_ID: 'UNSELECT_ID',
-};

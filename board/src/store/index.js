@@ -1,10 +1,14 @@
 import Vuex from 'vuex';
 import Vue from 'vue';
-import * as modules from './modules';
+import * as experimentStore from './experimentStore';
+import * as appStore from './appStore';
 
 Vue.use(Vuex);
 
+
 export default new Vuex.Store({
-  namespaced: true,
-  modules,
+  modules: {
+    [experimentStore.namespace]: experimentStore.store,
+    [appStore.namespace]: appStore.store,
+  },
 });

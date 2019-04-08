@@ -1,6 +1,6 @@
 import fp from 'lodash/fp';
 import types from './types';
-import { TraceApi } from '@/services/api';
+import TraceApi from '@/services/api/TraceApi';
 
 export default {
   [types.FETCH]({

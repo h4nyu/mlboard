@@ -5,6 +5,7 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /srv
 COPY ./package.json /srv/package.json
+COPY ./package-lock.json /srv/package-lock.json
 RUN npm install  --proxy=$http_proxy
 
 COPY ./  /srv

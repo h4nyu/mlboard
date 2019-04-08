@@ -41,7 +41,7 @@ services:
       - https_proxy
     volumes:
       - ./board:/srv
-    command: npm start
+    command: npm run watch
 
 
   storybook:
@@ -55,7 +55,7 @@ services:
       <<: *default-build
       context: ./web
     volumes:
-      - ./web/nginx.dev.conf:/etc/nginx/nginx.conf
+      - ./web/nginx.conf:/etc/nginx/nginx.conf
       - ./board/dist:/public/
     ports:
       - "${WEB_PORT}:80"

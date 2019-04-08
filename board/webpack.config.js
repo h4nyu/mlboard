@@ -1,13 +1,12 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
-const VueLoaderPlugin = require('vue-loader/lib/plugin')
-
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = {
-  devServer: {
-    disableHostCheck: true,
-    host: '0.0.0.0',
-    port: 80,
+  watchOptions: {
+    aggregateTimeout: 300,
+    poll: 1000
   },
+  devtool: 'inline-cheap-source-map',
   plugins: [
     new HtmlWebPackPlugin({
       template: "./public/index.html",
@@ -68,6 +67,7 @@ module.exports = {
   resolve: {
     alias: {
       '@': '/srv/src',
+      'package.json':'/srv/package.json',
     },
     extensions: ['*', '.js', '.json', '.vue']
   }

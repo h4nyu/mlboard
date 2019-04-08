@@ -1,8 +1,8 @@
 import TreeView from 'vue-json-tree-view/src/TreeView';
-import FilterList from '@/components/FilterList';
-import SelectItem from '@/components/SelectItem';
+import SelectCard from '@/components/SelectCard';
 import ExperimentListItem from '@/components/ExperimentListItem';
 import fp from 'lodash/fp';
+import _ from 'lodash/fp';
 
 export default {
   name: 'ExperimentList',
@@ -16,6 +16,9 @@ export default {
       default: () => [],
     },
   },
+  mounted() {
+    console.log(this);
+  },
   methods: {
     handleRefreshClick() {
       this.$emit('refresh');
@@ -26,48 +29,31 @@ export default {
     handleChartClick(e) {
       this.$emit('chartClick', e);
     },
-    getIsSelected(id) {
-      return _.includes(this.selectedIds, id);
+    getIsSelected({ experimentId }) {
+      return _.includes(this.selectedIds, experimentId);
     },
   },
   computed: {
     orderedExperiments() {
       return fp.pipe(
-        fp.toArrray,
-        fp.orderBy(x => x.createDate),
+        fp.toArray,
+        fp.sortBy(x => x.createDate),
       )(this.experimentSet);
     },
   },
   render() {
     return (
-      <FilterList
-        data={this.orderedExperiments}
-        getKey={e => e.tag}
-        scopedSlots={{
-          row: experiment => (
-            <SelectItem
-              isSelected={this.getIsSelected(experiment.id)}
-            >
+      <div class="card">
+        {
+          this.orderedExperiments.map(x => (
+            <SelectCard isSelected={this.getIsSelected({ experimentId: x.id })}>
               <ExperimentListItem
-                experiment={experiment}
-                vOn:deleteClick={this.handleDeleteClick}
-                vOn:chartClick={this.handleChartClick}
+                experiment={x}
               />
-            </SelectItem>
-          ),
-        }}
-      >
-        <template slot='header'>
-          <p class="card-header-title">
-            Experiments
-          </p>
-          <span class="card-header-icon">
-            <div class="button is-white" vOn:click={this.handleRefreshClick}>
-              <i class="fas fa-sync-alt"></i>
-            </div>
-          </span>
-        </template>
-      </FilterList>
+            </SelectCard>
+          ))
+        }
+      </div>
     );
   },
 };

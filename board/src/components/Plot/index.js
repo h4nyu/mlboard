@@ -1,4 +1,5 @@
-import Plotly from 'plotly.js-dist';
+import Plotly from 'plotly.js/lib/index-basic';
+import * as d3 from 'd3';
 import fp from 'lodash/fp';
 
 const events = [
@@ -18,6 +19,18 @@ const events = [
 
 export default {
   name: 'Plot',
+  data() {
+    return {
+      defaultOption: {
+        displaylogo: false,
+        responsive: true,
+        displayModeBar: false,
+      },
+      syncSizeId: null,
+      width: null,
+      height: null,
+    };
+  },
   props: {
     data: {
       type: Array,
@@ -30,15 +43,19 @@ export default {
     option: {
       type: Object,
       default() {
-        return {
-          responsive: true,
-        };
+        return {};
       },
     },
   },
   methods: {
+    syncSize() {
+      if (this.$el) {
+        this.width = this.$el.clientWidth;
+        this.height = this.$el.clientHeight;
+      }
+    },
     newPlot() {
-      Plotly.newPlot(this.$el, this.data, this.layout, this.option)
+      Plotly.newPlot(this.$el, this.data, this.layout, this._option)
         .then(this.attach)
         .then(this.registerEvents);
     },
@@ -52,7 +69,7 @@ export default {
       const g = this.$el;
       const { xaxis } = g._fullLayout;
       const { yaxis } = g._fullLayout;
-      if (yaxis & xaxis) {
+      if (yaxis && xaxis) {
         const { l } = g._fullLayout.margin;
         const { t } = g._fullLayout.margin;
         const x = xaxis.p2c(evt.x - l);
@@ -78,9 +95,12 @@ export default {
       ])(events);
     },
     react() {
-      return Plotly.react(
-        ...this.plotConfig,
-      );
+      if (this.$el) {
+        const config = [this.$el, ...this.plotConfig];
+        Plotly.react(
+          ...config,
+        );
+      }
     },
     gantt(seg) {
       return fp.map(range => ({
@@ -94,16 +114,29 @@ export default {
     },
   },
   computed: {
+    _option() {
+      return {
+        ...this.defaultOption,
+        ...this.option,
+      };
+    },
+    _layout() {
+      return {
+        ...this.layout,
+        width: this.width,
+        height: this.height,
+      };
+    },
     plotConfig() {
       return [
-        this.$el,
         this.data,
-        this.layout,
-        this.option,
+        this._layout,
+        this._option,
       ];
     },
   },
   beforeDestroy() {
+    clearInterval(this.syncSizeId);
     fp.forEach((obj) => {
       this.$el.removeAllListeners(obj.fullName);
     })(this.__generalListeners);
@@ -111,17 +144,15 @@ export default {
   },
   watch: {
     plotConfig(oldValue, newValue) {
-      this.react()
-        .catch((e) => {
-          this.newPlot();
-        });
+      this.react();
     },
   },
   mounted() {
     this.newPlot();
     this.$parent.$emit('ploted');
+    this.syncSizeId = setInterval(this.syncSize, 0.5);
   },
-  render() {
+  render: function render(h) {
     return (
       <div></div>
     );

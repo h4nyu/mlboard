@@ -2,11 +2,10 @@ import axios from 'axios';
 import _ from 'lodash';
 import snakeCaseKeys from 'snakecase-keys';
 import camelcaseKeys from 'camelcase-keys';
-import * as ms from './models';
 
 axios.defaults.headers.get['Content-Type'] = 'application/json';
 
-class JsonAPI {
+export default class JsonApi {
   _toCamelCase(res) {
     let converted;
     if (_.isObject(res.data)) {
@@ -47,35 +46,3 @@ class JsonAPI {
       .then(this._toCamelCase);
   }
 }
-
-export class ExperimentApi extends JsonAPI {
-  all() {
-    return this._post('api/experiment/all').then(res => ({
-      ...res,
-      data: res.data.map(x => new ms.Experiment(x)),
-    }));
-  }
-}
-
-// export class TraceApi extends QueryApi {
-//   constructor () {
-//     super('Trace');
-//   }
-//
-//   get ModelCls(){
-//     return ms.Trace;
-//   }
-//
-//   searchRange(sensorId, fromDate, toDate) {
-//     this.payload.method = {
-//       name: 'search_range',
-//       args: [],
-//       kwargs: {
-//         sensor_id: sensorId,
-//         from_date: fromDate,
-//         to_date: toDate,
-//       }
-//     }
-//     return this._post(this.url, this.payload)
-//   }
-// }

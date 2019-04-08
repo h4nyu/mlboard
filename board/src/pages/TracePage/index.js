@@ -1,4 +1,4 @@
-import TheExperimentList from '@/containers/TheExperimentList';
+import TheExperimentList from '@/connectors/TheExperimentList';
 
 export default {
   name: 'TracePage',

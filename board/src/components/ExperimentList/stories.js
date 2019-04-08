@@ -7,31 +7,34 @@ import Component from '.';
 storiesOf(`${Component.name}`, module)
   .add('default', () => ({
     render() {
-      const experimentSet = [
-        new ms.Experiment({
-          id: uuid(),
-          tag: 'aaa',
-          config: {
-            foo: 'foo',
-            bar: 'bar',
-          },
-        }),
-        new ms.Experiment({
-          id: uuid(),
-          tag: 'bbb',
-          config: {
-            foo: 'baz',
-            bar: 'sfsd',
-          },
-        }),
-      ];
-      const selectedIds = [experiments[0].id];
+      const experiment0 = new ms.Experiment({
+        id: uuid(),
+        tag: 'aaa',
+        config: {
+          foo: 'foo',
+          bar: 'bar',
+        },
+      });
+      const experiment1 = new ms.Experiment({
+        id: uuid(),
+        tag: 'bbb',
+        config: {
+          foo: 'baz',
+          bar: 'sfsd',
+        },
+      });
+
+      const experimentSet = {
+        [experiment0.id]: experiment0,
+        [experiment1.id]: experiment1,
+      };
+
+      const selectedIds = [experiment0.id];
+
       return (
         <Component
           experimentSet={experimentSet}
           selectedIds={selectedIds}
-          vOn:refresh={x => alert('refresh')}
-          vOn:deleteClick={x => alert(`deleteClick, ${JSON.stringify(x)}`)}
         />
       );
     },
