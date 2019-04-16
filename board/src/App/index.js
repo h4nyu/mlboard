@@ -5,7 +5,7 @@ import Loading from '@/components/Loading';
 import Layout from '@/components/Layout';
 import '@/styles/theme.scss';
 import '@fortawesome/fontawesome-free/css/all.css';
-import * as appStore from "@/store/appStore";
+import * as appStore from '@/store/appStore';
 
 import Vue from 'vue';
 

@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import ExperimentApi from '@/services/api/ExperimentApi';
+import * as loadingStore from "../loadingStore";
 
 export const namespace = 'experiment';
 export const actionTypes = {
@@ -29,10 +30,10 @@ export const store = {
         new ExperimentApi()
           .all()
           .then((res) => {
-            commit(mutationTypes.SET, res.data);
+            commit(mutationTypes.BULK_SET, {experiments: res.data});
           });
       };
-      dispatch('loading/DISPATCH', callback, { root: true });
+      return dispatch(loadingStore.actionTypes.DISPATCH, {callback});
     },
 
     [actionTypes.DELETE]({ commit, dispatch }, { experimentId }) {
@@ -43,7 +44,7 @@ export const store = {
             commit(mutationTypes.BULK_SET, res.data);
           });
       };
-      dispatch('loading/DISPATCH', callback, { root: true });
+      dispatch(loadingStore.actionTypes.DISPATCH, {callback});
     },
 
     [actionTypes.SELECT_ID]({ commit }, { experimentId }) {
