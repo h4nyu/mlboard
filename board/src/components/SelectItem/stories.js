@@ -1,8 +1,9 @@
 import { storiesOf } from '@storybook/vue';
 import moment from 'moment';
 import Component from '.';
+import { base } from 'paths.macro';
 
-storiesOf(`${Component.name}`, module)
+storiesOf(base, module)
   .add('selected', () => ({
     render() {
       return (

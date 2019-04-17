@@ -1,7 +1,8 @@
 import { storiesOf } from '@storybook/vue';
+import { base } from 'paths.macro';
 import Component from '.';
 
-storiesOf(Component.name, module)
+storiesOf(base, module)
   .add('simple', () => ({
     render(h) {
       return (

@@ -2,9 +2,10 @@ import { storiesOf } from '@storybook/vue';
 import * as ms from '@/services/models';
 import moment from 'moment';
 import uuid from 'uuid';
-import TraceListItem from './index.js';
+import { base } from 'paths.macro';
+import TraceListItem from '.';
 
-storiesOf('TraceListItem', module)
+storiesOf(base, module)
   .add('default', () => ({
     render() {
       const traces = [

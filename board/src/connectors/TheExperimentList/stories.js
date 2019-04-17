@@ -3,9 +3,10 @@ import * as ms from '@/services/models';
 import uuid from 'uuid';
 import moment from 'moment';
 import Component from '.';
+import { base } from 'paths.macro';
 import store from '@/store';
 
-storiesOf(`${Component.name}`, module)
+storiesOf(base, module)
   .add('default', () => ({
     store,
     mounted() {
