@@ -1,6 +1,6 @@
 import { configure } from '@storybook/vue';
 import Vue from 'vue';
-import App from "@/App"
+import App from "@/containers/App"
 
 function loadStories() {
   const req = require.context("../src", true, /stories.js$/);

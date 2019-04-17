@@ -2,9 +2,10 @@ import { storiesOf } from '@storybook/vue';
 import * as ms from '@/services/models';
 import uuid from 'uuid';
 import moment from 'moment';
+import { base } from 'paths.macro';
 import Component from '.';
 
-storiesOf(`${Component.name}`, module)
+storiesOf(base, module)
   .add('default', () => ({
     render() {
       const experiment = new ms.Experiment({

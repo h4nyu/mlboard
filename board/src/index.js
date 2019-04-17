@@ -1,7 +1,10 @@
 import Vue from 'vue';
-import App from '@/App';
+import TheApp from '@/connectors/TheApp';
 import store from '@/store';
 import router from '@/router';
+import { sync } from 'vuex-router-sync';
+
+sync(store, router);
 
 /* eslint-disable no-new */
 new Vue({
@@ -10,7 +13,7 @@ new Vue({
   router,
   render() {
     return (
-      <App/>
+      <TheApp/>
     );
   },
 });
