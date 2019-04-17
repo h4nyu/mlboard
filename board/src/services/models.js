@@ -5,10 +5,18 @@ class Model {
 }
 
 export class Experiment {
-  constructor({ id, tag, config }) {
+  constructor({ 
+    id, 
+    name, 
+    memo,
+    config,
+    createDate,
+  }) {
     this.id = id;
-    this.tag = tag;
+    this.name = name;
+    this.memo = memo;
     this.config = config;
+    this.createDate = createDate;
   }
 }
 

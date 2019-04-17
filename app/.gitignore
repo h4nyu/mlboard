@@ -26,6 +26,7 @@ src
 .cache/
 .coverage
 *.egg-info
+.mypy_cache/
 
 
 #docker
@@ -41,3 +42,4 @@ docs/site
 .coverage*
 .pytest_cache
 *.db
+*.dat

@@ -1,6 +1,8 @@
+import style from './style.css?module';
 import TreeView from 'vue-json-tree-view/src/TreeView';
 import SelectCard from '@/components/SelectCard';
 import ExperimentListItem from '@/components/ExperimentListItem';
+import SearchInput from "@/components/SearchInput";
 import fp from 'lodash/fp';
 import _ from 'lodash/fp';
 
@@ -15,9 +17,6 @@ export default {
       type: Array,
       default: () => [],
     },
-  },
-  mounted() {
-    console.log(this);
   },
   methods: {
     handleRefreshClick() {
@@ -44,15 +43,23 @@ export default {
   render() {
     return (
       <div class="card">
-        {
-          this.orderedExperiments.map(x => (
-            <SelectCard isSelected={this.getIsSelected({ experimentId: x.id })}>
-              <ExperimentListItem
-                experiment={x}
-              />
-            </SelectCard>
-          ))
-        }
+        <div class={style.header}>
+          <p class="card-header-title">
+            Experiments
+          </p>
+        </div>
+        <SearchInput />
+        <div class={style.content}>
+          {
+            this.orderedExperiments.map(x => (
+              <SelectCard isSelected={this.getIsSelected({ experimentId: x.id })}>
+                <ExperimentListItem
+                  experiment={x}
+                />
+              </SelectCard>
+            ))
+          }
+        </div>
       </div>
     );
   },

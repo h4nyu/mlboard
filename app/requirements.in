@@ -1,8 +1,11 @@
 ciso8601
 flask
-cytoolz
+toolz
 python-dateutil
 pyyaml
 peewee
 psycopg2-binary
+pandas
 gunicorn
+simplejson
+dask

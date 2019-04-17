@@ -1,5 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .api import create_api
+from .webapi import create_app
 
-api = create_api()
+webapi_app = create_app()

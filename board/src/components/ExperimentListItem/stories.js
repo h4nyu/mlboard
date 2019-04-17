@@ -10,11 +10,12 @@ storiesOf(base, module)
     render() {
       const experiment = new ms.Experiment({
         id: uuid(),
-        tag: 'aaa',
+        name: 'aaa',
         config: {
           foo: 'foo',
           bar: 'bar',
         },
+        createDate: moment().format(),
       });
       return (
         <Component

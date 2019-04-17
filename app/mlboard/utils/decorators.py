@@ -3,7 +3,7 @@
 import datetime
 import dateutil
 import functools
-from cytoolz.curried import keymap, merge, filter, pipe
+from toolz.curried import keymap, merge, filter, pipe
 
 
 def map_kwargs(bind={}):

@@ -1,0 +1,33 @@
+from flask import Flask
+from ..config import config
+from .encoders import StrictEncoder
+from .services.experiment import bp as experiemnt_bp
+from mlboard.orm import models as ms
+from logging import getLogger, Formatter, StreamHandler, DEBUG
+
+logger = getLogger("api")
+formatter = Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler = StreamHandler()
+handler.setLevel(DEBUG)
+handler.setFormatter(formatter)
+logger.setLevel(DEBUG)
+logger.addHandler(handler)
+
+
+def open_db():
+    ms.db.connect(reuse_if_open=True)
+
+
+def close_db(exc):
+    if not ms.db.is_closed():
+        ms.db.close()
+
+
+def create_app(test_config=None):
+    app = Flask(__name__, instance_relative_config=True)
+    app.before_request(open_db)
+    app.teardown_request(close_db)
+    app.config.update(**config)
+    app.json_encoder = StrictEncoder
+    app.register_blueprint(experiemnt_bp)
+    return app

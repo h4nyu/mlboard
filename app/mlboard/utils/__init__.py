@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from datetime import datetime
-from cytoolz import curry
+from toolz import curry
 
 
 def check_progress(from_date, to_date, delta):

@@ -12,8 +12,8 @@ export default {
   },
   computed: {
     ...mapState({
-      experimentSet: state => state.experiment.experimentSet,
-      selectedIds: state => state.experiment.selectedIds,
+      experimentSet: state => state[experimentStore.namespace].experimentSet,
+      selectedIds: state => state[experimentStore.namespace].selectedIds,
     }),
   },
   render() {

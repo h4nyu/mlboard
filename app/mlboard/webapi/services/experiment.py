@@ -7,9 +7,9 @@ from logging import getLogger
 import os
 logger = getLogger("api")
 
-healthcheck_bp = Blueprint('healthcheck_bp', __name__)
+bp = Blueprint('experiment', __name__)
 
-
-@healthcheck_bp.route('/', methods=["POST", "GET", "PUT", "DELETE"])
-def heartbeat():
-    return jsonify(True)
+@bp.route('/experiment/all', methods=["POST"])
+def all():
+    res = qs.Experiment().all()
+    return jsonify(res)

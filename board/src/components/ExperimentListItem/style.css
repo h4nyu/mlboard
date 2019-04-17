@@ -2,7 +2,8 @@
   display: grid;
   padding: 0.5em;
   grid-template-areas:
-    "content action";
+    "content action"
+    "date action";
   grid-template-columns: 1fr auto;
 }
 
@@ -12,4 +13,8 @@
 
 .action {
   grid-area: action;
+}
+
+.date {
+  grid-area: date;
 }

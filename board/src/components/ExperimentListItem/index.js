@@ -1,5 +1,6 @@
 import style from './style.css?module';
 import TreeView from 'vue-json-tree-view/src/TreeView';
+import moment from "moment";
 import * as ms from '@/services/models';
 
 export default {
@@ -19,6 +20,11 @@ export default {
       }
     },
   },
+  computed:{
+    relativeDate(){
+      return moment(this.experiment.createDate).fromNow(); 
+    }
+  },
   render() {
     return (
       <div class="card">
@@ -26,10 +32,13 @@ export default {
           <div class={style.content}>
             <TreeView
               data={this.experiment.config}
-              options={{ maxDepth: 0, rootObjectKey: this.experiment.tag }}
+              options={{ maxDepth: 0, rootObjectKey: this.experiment.name }}
             >
             </TreeView>
           </div>
+          <span class={[style.date]}>
+            {this.relativeDate}
+          </span>
           <div class={style.action}>
             <a class="button is-small" vOn:click={() => this.$emit('chartClick', { experimentId: this.experiment.id })}>
               <i class="fas fa-chart-line"></i>

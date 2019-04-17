@@ -14,7 +14,7 @@ services:
     build: 
       <<: *default-build
       context: ./app
-    command: gunicorn --bind 0.0.0.0:5000 mlboard:api
+    command: gunicorn --bind 0.0.0.0:5000 mlboard:webapi_app
     volumes:
       - ./app:/srv
     environment: &python-env
@@ -26,6 +26,8 @@ services:
     build: 
       <<: *default-build
       context: ./migration
+    volumes:
+      - ./migration:/srv
     depends_on:
       - db
 

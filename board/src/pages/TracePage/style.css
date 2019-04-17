@@ -1,3 +1,33 @@
-.menu {
-    margin: 10px;
+.layout {
+  display: grid;
+  grid-template-areas:
+    "header header"
+    "experiment trace";
+  grid-template-columns: auto 1fr ;
+  grid-template-rows: auto 1fr;
+  height: 100vh;
 }
+
+.header {
+  grid-area: header;
+  height: 52px;
+}
+
+.trace {
+  grid-area: trace;
+  max-height: calc(100vh - 52px);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+
+.experiment {
+  grid-area: experiment;
+  max-height: calc(100vh - 52px);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-width: 100px;
+}
+
