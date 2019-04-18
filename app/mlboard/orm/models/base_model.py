@@ -6,6 +6,6 @@ from .serialize_mixin import SerializeMixIn
 db = connect(DB_CONN)
 
 
-class BaseModel(Model, SerializeMixIn):
+class BaseModel(SerializeMixIn, Model):
     class Meta:
         database = db

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from flask import Flask, jsonify
-from flask.json import JSONEncoder
+from json import JSONEncoder
 from datetime import datetime
 from mlboard.orm.models.base_model import BaseModel
 

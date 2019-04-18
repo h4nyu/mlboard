@@ -3,6 +3,10 @@ from playhouse.shortcuts import model_to_dict, update_model_from_dict
 
 class SerializeMixIn(object):
 
+    @property
+    def __dict__(self):
+        return model_to_dict(self)
+
     def to_dict(self):
         return model_to_dict(self)
 

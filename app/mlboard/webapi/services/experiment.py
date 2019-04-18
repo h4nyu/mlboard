@@ -1,15 +1,24 @@
-from flask import Blueprint
-from flask import jsonify
-from flask import request, send_file
-from mlboard.orm import models as ms
+from fastapi import APIRouter
+from fastapi.encoders import jsonable_encoder
 from mlboard.orm import queries as qs
 from logging import getLogger
+from ..encoders import StrictEncoder
+from pydantic import BaseModel
+from typing import List, Dict, Any, Optional
 import os
+import uuid
 logger = getLogger("api")
 
-bp = Blueprint('experiment', __name__)
+router = APIRouter()
 
-@bp.route('/experiment/all', methods=["POST"])
+class Experiment(BaseModel):
+    id: uuid.UUID
+    name: str
+    memo: Optional[str]
+    config: Dict
+
+@router.get('/experiment/all', response_model=List[Experiment])
 def all():
     res = qs.Experiment().all()
-    return jsonify(res)
+    aa  = Experiment()
+    return aa

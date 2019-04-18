@@ -14,7 +14,7 @@ services:
     build: 
       <<: *default-build
       context: ./app
-    command: gunicorn --bind 0.0.0.0:5000 mlboard:webapi_app
+    command: uvicorn mlboard:webapi_app --reload --host 0.0.0.0 --port 5000 
     volumes:
       - ./app:/srv
     environment: &python-env
