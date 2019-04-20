@@ -1,5 +1,4 @@
-import Plotly from 'plotly.js/lib/index-basic';
-import * as d3 from 'd3';
+import Plotly from 'plotly.js-dist';
 import fp from 'lodash/fp';
 
 const events = [
@@ -152,7 +151,7 @@ export default {
     this.$parent.$emit('ploted');
     this.syncSizeId = setInterval(this.syncSize, 0.5);
   },
-  render: function render(h) {
+  render() {
     return (
       <div></div>
     );

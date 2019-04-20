@@ -4,14 +4,14 @@ import Component from '.';
 
 storiesOf(base, module)
   .add('simple', () => ({
-    render(h) {
+    render() {
       return (
         <Component/>
       );
     },
   }))
   .add('scatter', () => ({
-    render(h) {
+    render() {
       const data = [
         {
           x: [0, 1, 2],
@@ -31,29 +31,38 @@ storiesOf(base, module)
       );
     },
   }))
-  .add('mulit', () => ({
+  .add('scattergl', () => ({
     render(h) {
-      const trace1 = {
-        x: [1, 2, 3, 4, 5],
-        y: [1, 6, 3, 6, 1],
-        mode: 'markers',
-        type: 'scatter',
-        name: 'Team A',
-        text: ['A-1', 'A-2', 'A-3', 'A-4', 'A-5'],
-        marker: { size: 12 },
-      };
+      function gaussianRand() {
+        let rand = 0;
+        for (let i = 0; i < 6; i += 1) {
+          rand += Math.random();
+        }
+        return (rand / 6) - 0.5;
+      }
 
-      const trace2 = {
-        x: [1.5, 2.5, 3.5, 4.5, 5.5],
-        y: [4, 1, 7, 1, 4],
-        mode: 'markers',
-        type: 'scatter',
-        name: 'Team B',
-        text: ['B-a', 'B-b', 'B-c', 'B-d', 'B-e'],
-        marker: { size: 12 },
-      };
+      const X = [];
+      const Y = [];
+      const n = 100000;
+      let i;
 
-      const data = [trace1, trace2];
+      for (i = 0; i < n; i += 1) {
+        X.push(gaussianRand());
+        Y.push(gaussianRand());
+      }
+
+      const data = [{
+        type: 'scattergl',
+        mode: 'markers',
+        marker: {
+          line: {
+            width: 1,
+            color: 'rgb(0,0,0)',
+          },
+        },
+        x: X,
+        y: Y,
+      }];
       return (
         <Component
           data={data}
