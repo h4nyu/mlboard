@@ -1,0 +1,24 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pytest = "*"
+faker = "*"
+
+[packages]
+cytoolz = "*"
+fastapi = "*"
+peewee = "*"
+pyyaml = "*"
+python-dateutil = "*"
+psycopg2-binary = "*"
+mlboard = {editable = true,path = "."}
+
+[requires]
+python_version = "3.7"
+
+[scripts]
+api = "uvicorn mlboard:webapi_app --reload --host 0.0.0.0 --port 5000"
+test = "pytest"

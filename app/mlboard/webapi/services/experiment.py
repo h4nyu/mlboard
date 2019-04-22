@@ -1,11 +1,10 @@
 from fastapi import APIRouter
-from fastapi.encoders import jsonable_encoder
 from mlboard.orm import queries as qs
 from logging import getLogger
 from cytoolz.curried import pipe, map
 from pydantic import BaseModel
 from datetime import datetime
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Union
 import uuid
 logger = getLogger("api")
 
@@ -16,12 +15,11 @@ class Experiment(BaseModel):
     id: uuid.UUID
     name: str
     memo: Optional[str]
-    config: Dict
-    create_date: datetime
+    config: Dict[str, Optional[Union[str, int, float]]]
 
 
 @router.get('/experiment/all', response_model=List[Experiment])
-async def all():
+def all():
     res = pipe(
         qs.Experiment().all(),
         map(lambda x: Experiment(
@@ -29,6 +27,7 @@ async def all():
             name=x.name,
             memo=x.memo,
             config=x.config,
+            create_date=x.create_date,
         )),
         list
     )

@@ -1,4 +1,4 @@
-FROM python:3.6-slim AS prod
+FROM python:3.7-slim as prod
 
 RUN apt-get update \
     && apt-get install -y \
@@ -7,12 +7,9 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/*
 
-WORKDIR /srv
-COPY ./requirements.txt /srv/requirements.txt
-COPY ./dev-requirements.txt /srv/dev-requirements.txt
-RUN pip install -r requirements.txt --no-cache-dir  && \
-    pip install -r dev-requirements.txt  --no-cache-dir
+RUN pip install pipenv
 
 COPY ./ /srv
-ENV MYPYPATH /srv/stubs
-RUN python setup.py develop
+WORKDIR /srv
+RUN pipenv install --dev
+RUN pipenv install -e .
