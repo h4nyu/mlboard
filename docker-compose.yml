@@ -9,8 +9,7 @@ services:
         - https_proxy
     ports:
       - "${DB_PORT}:5432"
-
-  api:
+  app: &default-app 
     build: 
       <<: *default-build
       context: ./app
@@ -19,6 +18,10 @@ services:
       - ./app:/srv
     environment: &python-env
       - PYTHON_ENV=development
+
+  api:
+    <<: *default-app
+    command: uvicorn mlboard:webapi_app --reload --host 0.0.0.0 --port 5000 
     depends_on:
       - db
 
