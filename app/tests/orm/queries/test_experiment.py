@@ -12,6 +12,7 @@ def setup():
 def test_upsert():
     experiment = ms.Experiment(
         id=uuid.uuid4(),
+        name="foo",
     )
     qs.Experiment().upsert(experiment)
     queried = qs.Experiment().get_or_none(id=experiment.id)

@@ -14,7 +14,6 @@ export default {
     },
   },
   render() {
-    const bindTarget = this.inputValue;
     return (
       <p class="control has-icons-left has-icons-right">
         <input class="input" placeholder={this.placeholder} vModel={this.inputValue}></input>

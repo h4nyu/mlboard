@@ -33,7 +33,7 @@ def upgrade():
 
         CREATE TABLE experiments
             (
-                name text,
+                name text NOT NULL,
                 memo text,
                 config json DEFAULT '{}'::json,
                 CONSTRAINT uq_experiment_name UNIQUE (name)
@@ -67,6 +67,7 @@ def downgrade():
         DROP TABLE experiments;
         DROP TABLE trace_points;
         DROP TABLE traces;
+        DROP TABLE configs;
         DROP EXTENSION "uuid-ossp";
         """
     ))

@@ -9,11 +9,11 @@ services:
         - https_proxy
     ports:
       - "${DB_PORT}:5432"
+
   app: &default-app 
     build: 
       <<: *default-build
       context: ./app
-    command: uvicorn mlboard:webapi_app --reload --host 0.0.0.0 --port 5000 
     volumes:
       - ./app:/srv
     environment: &python-env
@@ -21,7 +21,7 @@ services:
 
   api:
     <<: *default-app
-    command: uvicorn mlboard:webapi_app --reload --host 0.0.0.0 --port 5000 
+    command:  pipenv run api
     depends_on:
       - db
 

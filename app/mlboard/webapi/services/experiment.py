@@ -16,6 +16,7 @@ class Experiment(BaseModel):
     name: str
     memo: Optional[str]
     config: Dict[str, Optional[Union[str, int, float]]]
+    create_date: datetime
 
 
 @router.get('/experiment/all', response_model=List[Experiment])
