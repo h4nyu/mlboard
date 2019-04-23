@@ -20,16 +20,18 @@ class Experiment(BaseModel):
 
 
 @router.get('/experiment/all', response_model=List[Experiment])
-def all():
-    res = pipe(
-        qs.Experiment().all(),
-        map(lambda x: Experiment(
-            id=x.id,
-            name=x.name,
-            memo=x.memo,
-            config=x.config,
-            create_date=x.create_date,
-        )),
-        list
-    )
-    return res
+async def all():
+    rows = await qs.Experiment.all()
+    return rows
+    #  res = pipe(
+    #      qs.Experiment().all(),
+    #      map(lambda x: Experiment(
+    #          id=x.id,
+    #          name=x.name,
+    #          memo=x.memo,
+    #          config=x.config,
+    #          create_date=x.create_date,
+    #      )),
+    #      list
+    #  )
+    #  return res

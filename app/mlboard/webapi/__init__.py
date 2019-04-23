@@ -33,11 +33,23 @@
 #      return app
 
 from fastapi import FastAPI
+from starlette.requests import Request
 from .services import experiment
+from mlboard.orm import db
+
+
+async def db_session_middleware(request: Request, call_next):
+    await db.connect()
+    try:
+        response = await call_next(request)
+    finally:
+        await db.disconnect()
+    return response
 
 def create_app():
     app = FastAPI()
     app.title = 'MLBoard'
     app.openapi_prefix="/api"
     app.include_router(experiment.router)
+    app.middleware("http")(db_session_middleware)
     return app

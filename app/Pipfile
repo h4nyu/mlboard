@@ -4,17 +4,9 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-pytest = "*"
-faker = "*"
 
 [packages]
-cytoolz = "*"
-fastapi = "*"
-peewee = "*"
-pyyaml = "*"
-python-dateutil = "*"
-psycopg2-binary = "*"
-mlboard = {editable = true,path = "."}
+mlboard = {editable = true,extras = ["dev"],path = "."}
 
 [requires]
 python_version = "3.7"

@@ -1,16 +1,18 @@
-from .base_model import BaseModel
-from peewee import FloatField, TextField, IntegerField
-from playhouse.postgres_ext import UUIDField, DateTimeTZField, JSONField
-from .. import enums as es
+import sqlalchemy as sa
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.dialects.postgresql import UUID
 import uuid
-from mlboard.config import TZ
-from datetime import datetime
+Base = declarative_base()
 
-class TracePoint(BaseModel):
-    class Meta:
-        table_name = "trace_points"
-    id = UUIDField(primary_key=True, default=uuid.uuid4)
-    x = FloatField()
-    y = FloatField()
-    collect_date = DateTimeTZField(default=lambda: datetime.now(TZ))
-    trace_id = UUIDField()
+
+class TracePoint(Base):
+    __tablename__ = "trace_points"
+    id = sa.Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4
+    )
+    trace_id = sa.Column(UUID(as_uuid=True))
+    x = sa.Column(sa.Float)
+    y = sa.Column(sa.Float)
+    collect_date = sa.Column(sa.DateTime, default=lambda: datetime.now(TZ))

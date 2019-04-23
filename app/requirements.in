@@ -1,9 +1,0 @@
-ciso8601
-python-dateutil
-pyyaml
-peewee
-psycopg2-binary
-fastapi
-uvicorn
-cytoolz
-requests

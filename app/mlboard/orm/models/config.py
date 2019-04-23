@@ -1,14 +1,12 @@
-from .base_model import BaseModel
-from peewee import TextField
-from playhouse.postgres_ext import UUIDField, DateTimeTZField
+import sqlalchemy as sa
 from datetime import datetime
 from mlboard.config import TZ
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.dialects.postgresql import UUID
 import uuid
+from .mixins import ConfigMixin
 
+Base = declarative_base()
 
-class Config(BaseModel):
-    class Meta:
-        table_name = "configs"
-    id = UUIDField(primary_key=True, default=uuid.uuid4)
-    hash = UUIDField(default=uuid.uuid4)
-    create_date = DateTimeTZField(default=lambda: datetime.now(TZ))
+class Config(ConfigMixin, Base):
+    __tablename__ = "configs"

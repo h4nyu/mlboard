@@ -1,11 +1,11 @@
-from .config import Config
-from playhouse.postgres_ext import UUIDField
-from peewee import FloatField, TextField
+from .mixins import ConfigMixin
+import sqlalchemy as sa
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.dialects.postgresql import UUID
+Base = declarative_base()
 
 
-class Trace(Config):
-    class Meta:
-        table_name = "traces"
-    name = TextField()
-    experiment_id = UUIDField()
-
+class Trace(ConfigMixin, Base):
+    __tablename__ = "traces"
+    name = sa.Column(sa.Text)
+    experiment_id = sa.Column(UUID)
