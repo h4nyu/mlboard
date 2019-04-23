@@ -11,5 +11,4 @@ RUN pip install pipenv
 
 COPY ./ /srv
 WORKDIR /srv
-RUN pipenv install --dev
-RUN pipenv install -e .
+RUN pipenv install

@@ -26,16 +26,16 @@ def upgrade():
             (
                 id uuid NOT NULL DEFAULT uuid_generate_v4(),
                 hash uuid NOT NULL DEFAULT uuid_generate_v4(),
-                create_date timestamp with time zone DEFAULT clock_timestamp(),
-                edit_date timestamp with time zone DEFAULT clock_timestamp(),
-                is_deleted boolean DEFAULT false
+                create_date timestamp with time zone NOT NULL DEFAULT clock_timestamp(),
+                edit_date timestamp with time zone NOT NULL DEFAULT clock_timestamp(),
+                is_deleted boolean NOT NULL DEFAULT false
             );
 
         CREATE TABLE experiments
             (
                 name text NOT NULL,
                 memo text,
-                config json DEFAULT '{}'::json,
+                config json NOT NULL DEFAULT '{}'::json,
                 CONSTRAINT uq_experiment_name UNIQUE (name)
             ) INHERITS (configs);
 

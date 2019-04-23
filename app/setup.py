@@ -11,6 +11,7 @@ install_reqs = [
     "python-dateutil",
     "databases",
     "asyncpg",
+    "uvicorn",
 ]
 
 dev_reqs = [

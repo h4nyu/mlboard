@@ -15,23 +15,22 @@ class Experiment(BaseModel):
     id: uuid.UUID
     name: str
     memo: Optional[str]
-    config: Dict[str, Optional[Union[str, int, float]]]
+    config: Optional[Dict[str, Optional[Union[str, int, float]]]]
     create_date: datetime
 
 
 @router.get('/experiment/all', response_model=List[Experiment])
 async def all():
     rows = await qs.Experiment.all()
-    return rows
-    #  res = pipe(
-    #      qs.Experiment().all(),
-    #      map(lambda x: Experiment(
-    #          id=x.id,
-    #          name=x.name,
-    #          memo=x.memo,
-    #          config=x.config,
-    #          create_date=x.create_date,
-    #      )),
-    #      list
-    #  )
-    #  return res
+    res = pipe(
+        rows,
+        map(lambda x: Experiment(
+            id=x.id,
+            name=x.name,
+            memo=x.memo,
+            config=x.config,
+            create_date=x.create_date,
+        )),
+        list
+    )
+    return res

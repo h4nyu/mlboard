@@ -28,6 +28,7 @@ class BaseQuery(object):
     @classmethod
     async def upsert(cls, obj, getkey=lambda x: x.id) -> uuid.UUID:
         model_cls = cls.get_model_cls()
+        print(obj.to_dict())
         key = await db.fetch_val(sa.select([getkey(model_cls)]))
         if(key is None):
             await db.execute(sa.insert(

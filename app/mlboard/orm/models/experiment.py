@@ -12,10 +12,4 @@ class Experiment(ConfigMixin, Base):
     config = sa.Column(JSON)
 
     def to_dict(self):
-        return {
-            "id": self.id,
-            "name": self.name,
-            "memo": self.memo,
-            "config": self.config,
-            "hash": self.hash,
-        }
+        return {c.key: getattr(self, c.key) for c in self.__mapper__.columns}
