@@ -17,6 +17,11 @@ export default {
       default: () => [],
     },
   },
+  data(){
+    return {
+      keyword: "",
+    }
+  },
   methods: {
     handleRefreshClick() {
       this.$emit('refresh');
@@ -30,11 +35,16 @@ export default {
     getIsSelected({ experimentId }) {
       return fp.includes(experimentId)(this.selectedIds);
     },
+    handeSeach(keyword){
+      this.keyword = keyword;
+    },
   },
   computed: {
     orderedExperiments() {
+      const regex = new RegExp(this.keyword);
       return fp.pipe(
         fp.toArray,
+        fp.filter(x => !fp.isNil(x.name.match(regex))),
         fp.sortBy(x => x.createDate),
       )(this.experimentSet);
     },
@@ -47,7 +57,7 @@ export default {
             Experiments
           </p>
         </div>
-        <SearchInput />
+        <SearchInput vOn:input={this.handeSeach} />
         <div class={style.content}>
           {
             this.orderedExperiments.map(x => (
