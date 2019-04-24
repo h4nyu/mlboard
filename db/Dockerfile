@@ -1,4 +1,4 @@
-FROM postgres:11
+FROM postgres:latest
 ENV POSTGRES_USER mlboard
 ENV POSTGRES_PASSWORD mlboard
 ENV POSTGRES_DB mlboard
