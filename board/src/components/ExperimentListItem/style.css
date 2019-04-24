@@ -10,6 +10,7 @@
 .content {
   grid-area: content;
   min-height: 2em;
+  cursor:pointer;
 }
 
 .action {
@@ -18,4 +19,5 @@
 
 .date {
   grid-area: date;
+  cursor:pointer;
 }

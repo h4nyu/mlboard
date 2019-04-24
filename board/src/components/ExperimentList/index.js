@@ -4,7 +4,6 @@ import SelectCard from '@/components/SelectCard';
 import ExperimentListItem from '@/components/ExperimentListItem';
 import SearchInput from "@/components/SearchInput";
 import fp from 'lodash/fp';
-import _ from 'lodash/fp';
 
 export default {
   name: 'ExperimentList',
@@ -25,11 +24,11 @@ export default {
     handleDeleteClick(e) {
       this.$emit('deleteClick', e);
     },
-    handleChartClick(e) {
-      this.$emit('chartClick', e);
+    handleSelect({experimentId}) {
+      this.$emit('select', {experimentId});
     },
     getIsSelected({ experimentId }) {
-      return _.includes(this.selectedIds, experimentId);
+      return fp.includes(experimentId)(this.selectedIds);
     },
   },
   computed: {
@@ -54,6 +53,7 @@ export default {
             this.orderedExperiments.map(x => (
               <SelectCard isSelected={this.getIsSelected({ experimentId: x.id })}>
                 <ExperimentListItem
+                  vOn:dateClick={this.handleSelect}
                   experiment={x}
                 />
               </SelectCard>

@@ -15,7 +15,7 @@ class Experiment(BaseModel):
     id: uuid.UUID
     name: str
     memo: Optional[str]
-    config: Optional[Dict[str, Optional[Union[str, int, float]]]]
+    config: Optional[Dict[Any, Any]]
     create_date: datetime
 
 

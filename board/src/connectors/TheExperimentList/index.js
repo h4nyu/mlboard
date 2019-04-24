@@ -7,7 +7,7 @@ export default {
   methods: {
     ...mapActions({
       deleteClick: experimentStore.actionTypes.DELETE,
-      chartClick: experimentStore.actionTypes.SELECT_ID,
+      select: experimentStore.actionTypes.TOGGLE_ID,
     }),
   },
   computed: {
@@ -22,7 +22,7 @@ export default {
         experimentSet={this.experimentSet}
         selectedIds={this.selectedIds}
         vOn:deleteClick={this.deleteClick}
-        vOn:chartClick={this.chartClick}
+        vOn:select={this.select}
       />
     );
   },

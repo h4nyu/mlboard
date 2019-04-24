@@ -8,14 +8,13 @@ export const actionTypes = {
   FETCH_ALL: `${namespace}/FETCH_ALL`,
   DELETE: `${namespace}/DELETE`,
   SELECT: `${namespace}/SELECT`,
-  UNSELECT: `${namespace}/UNSELECT`,
+  TOGGLE_ID: `${namespace}/TOGGLE_ID`,
 };
 
 export const mutationTypes = {
   BULK_SET: `${namespace}/BULK_SET`,
   DELETE: `${namespace}/DELETE`,
-  SELECT: `${namespace}/SELECT`,
-  UNSELECT: `${namespace}/UNSELECT`,
+  TOGGLE_ID: `${namespace}/TOGGLE_ID`,
 };
 
 
@@ -36,8 +35,13 @@ export const store = {
       state.experimentSet = fp.pickBy((value, key) => key !== experimentId)(state.experimentSet);
     },
 
-    [mutationTypes.SELECT](state, {experimentId}) {
-      state.selectedIds = [...state.selectedIds, experimentId];
+    [mutationTypes.TOGGLE_ID](state, {experimentId}) {
+      const isExist = fp.includes(experimentId)(state.selectedIds)
+      if(isExist){
+        state.selectedIds = fp.filter(x => x !== experimentId)(state.selectedIds)
+      }else{
+        state.selectedIds = [...state.selectedIds, experimentId]
+      }
     },
 
     [mutationTypes.UNSELECT](state, {experimentId}) {
@@ -72,9 +76,8 @@ export const store = {
       dispatch(traceStore.actionTypes.FETCH, {experimentId});
     },
 
-    [actionTypes.UNSELECT_ID]({ commit }, id) {
-      commit(mutationTypes.UNSELECT_ID, id);
-      // dispatch('trace/DELETE', id, {root: true});
+    [actionTypes.TOGGLE_ID]({ commit }, {experimentId}) {
+      commit(mutationTypes.TOGGLE_ID, {experimentId});
     },
   },
 };

@@ -8,16 +8,12 @@ export default {
   props: {
     experiment: {
       required: true,
-      type: ms.Experiment,
+      type: Object,
     },
   },
   methods: {
-    emitCheck(checkedValue) {
-      if (checkedValue) {
-        this.$emit('check', this.data.id);
-      } else {
-        this.$emit('uncheck', this.data.id);
-      }
+    handleDateClick() {
+      this.$emit('dateClick', {experimentId: this.experiment.id})
     },
   },
   computed:{
@@ -36,7 +32,7 @@ export default {
             >
             </TreeView>
           </div>
-          <span class={[style.date]}>
+          <span class={[style.date]} vOn:click={this.handleDateClick}>
             {this.relativeDate}
           </span>
           <div class={style.action}>
