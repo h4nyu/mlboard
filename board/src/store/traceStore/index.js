@@ -7,13 +7,14 @@ export const namespace = 'trace';
 export const actionTypes = {
   FETCH: `${namespace}/FETCH`,
   FETCH_ALL: `${namespace}/FETCH_ALL`,
-  DELETE: `${namespace}/DELETE`,
+  SELECT: `${namespace}/SELECT`,
 };
 
 export const mutationTypes = {
   BULK_SET: `${namespace}/BULK_SET`,
-  DELETE: `${namespace}/DELETE`,
   DELETE_BY_EXPERIMET_ID: `${namespace}/DELETE_BY_EXPERIMET_ID`,
+  POP_SELECTED_ID: `${namespace}/POP_SELECTED_ID`,
+  ADD_SELECTED_ID: `${namespace}/ADD_SELECTED_ID`,
 };
 
 
@@ -21,7 +22,8 @@ export const store = {
   namespaced: false,
   state(){
     return {
-      traceSet: {}
+      traceSet: {},
+      selectedIds: [],
     }
   },
   mutations: {
@@ -33,10 +35,14 @@ export const store = {
     },
     [mutationTypes.DELETE_BY_EXPERIMET_ID](state, {experimentId}) {
       state.traceSet = fp.pickBy(x => x.experimentId !== experimentId)(state.traceSet);
+      const ids = Object.keys(state.traceSet);
+      state.selectedIds = fp.filter(x => fp.includes(x)(ids))(state.selectedIds);
     },
-
-    [mutationTypes.DELETE](state, {experimentId}) {
-      state.experimentSet = fp.pickBy((value, key) => key !== experimentId)(state.experimentSet);
+    [mutationTypes.ADD_SELECTED_ID](state, {traceId}) {
+      state.selectedIds = [...state.selectedIds, traceId];
+    },
+    [mutationTypes.POP_SELECTED_ID](state, {traceId}) {
+      state.selectedIds = fp.filter(x => x !== traceId)(state.selectedIds);
     },
   },
   actions: {
@@ -50,6 +56,13 @@ export const store = {
       }
       return dispatch(loadingStore.actionTypes.DISPATCH, {callback})
     },
+    [actionTypes.SELECT]({ commit, dispatch }, {traceId, isSelected}) {
+      if(isSelected){
+        commit(mutationTypes.ADD_SELECTED_ID, {traceId});
+      }else{
+        commit(mutationTypes.POP_SELECTED_ID, {traceId});
+      }
+    }
   },
 };
 

@@ -1,6 +1,6 @@
 import style from './style.css?module';
 import TheExperimentList from '@/connectors/TheExperimentList';
-import TheMetricList from '@/containers/TheMetricList';
+import TheTraceList from '@/connectors/TheTraceList';
 import TheHeaderNav from '@/connectors/TheHeaderNav';
 
 export default {
@@ -10,7 +10,7 @@ export default {
       <div class={[style.layout]}>
         <TheHeaderNav class={[style.header]}/>
         <TheExperimentList class={[style.experiment]}/>
-        <TheMetricList class={[style.metric]}/>
+        <TheTraceList class={[style.trace]}/>
       </div>
     );
   },

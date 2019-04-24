@@ -2,7 +2,7 @@
   display: grid;
   grid-template-areas:
     "header header header"
-    "experiment metric trace";
+    "experiment trace trace";
   grid-template-columns: auto auto 1fr ;
   grid-template-rows: auto 1fr;
   height: 100vh;
@@ -32,8 +32,8 @@
 }
 
 
-.metric {
-  grid-area: metric;
+.trace {
+  grid-area: trace;
   max-height: calc(100vh - 52px);
   display: flex;
   flex-direction: column;

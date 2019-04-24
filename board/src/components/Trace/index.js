@@ -6,7 +6,7 @@ import * as ms from '@/services/models';
 export default {
   name: 'Metric',
   props: {
-    metric: {
+    trace: {
       required: true,
       type: Object,
     },
@@ -16,7 +16,7 @@ export default {
       <div class="card">
         <div class={style.layout}>
           <div class={[style.content]}>
-            { this.metric.name }
+            { this.trace.name }
           </div>
         </div>
       </div>

@@ -8,12 +8,12 @@ import Component from '.';
 storiesOf(base, module)
   .add('default', () => ({
     render() {
-      const metric = {
+      const trace = {
         name: "train/iou",
       }
       return (
         <Component
-          metric={metric}
+          trace={trace}
           value={1.3}
         />
       );
