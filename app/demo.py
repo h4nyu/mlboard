@@ -63,7 +63,6 @@ async def main():
     qs.TracePoint.bulk_insert(trace_points)
 
     await db.disconnect()
-    print('aaa')
 
 
 loop = asyncio.get_event_loop()

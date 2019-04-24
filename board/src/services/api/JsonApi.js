@@ -6,7 +6,7 @@ import camelcaseKeys from 'camelcase-keys';
 axios.defaults.headers.get['Content-Type'] = 'application/json';
 
 export default class JsonApi {
-  _toCamelCase(res) {
+  static _toCamelCase(res) {
     let converted;
     if (_.isObject(res.data)) {
       converted = camelcaseKeys(res.data, { deep: true });
@@ -20,7 +20,7 @@ export default class JsonApi {
     };
   }
 
-  _toSnakeCase(payload) {
+  static _toSnakeCase(payload) {
     let converted;
     if (_.isObject(payload)) {
       converted = snakeCaseKeys(payload, { deep: true });
@@ -30,19 +30,26 @@ export default class JsonApi {
     return converted;
   }
 
-  _post(url, data) {
-    return axios.post(url, this._toSnakeCase(data)).then(this._toCamelCase);
+  static post(url, data) {
+    return axios.post(url, JsonApi._toSnakeCase(data)).then(JsonApi._toCamelCase);
   }
 
-  _put(url, data) {
-    return axios.put(url, this._toSnakeCase(data)).then(this._toCamelCase);
+  static put(url, data) {
+    return axios.put(url, JsonApi._toSnakeCase(data)).then(JsonApi._toCamelCase);
   }
 
-  _get(url, data) {
+  static get(url, param) {
     return axios
       .get(url, {
-        params: this._toSnakeCase(data),
+        params: JsonApi._toSnakeCase(param),
       })
-      .then(this._toCamelCase);
+      .then(JsonApi._toCamelCase);
+  }
+  static delete(url, param) {
+    return axios
+      .delete(url, {
+        params: JsonApi._toSnakeCase(param),
+      })
+      .then(JsonApi._toCamelCase);
   }
 }

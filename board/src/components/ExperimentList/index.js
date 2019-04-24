@@ -26,13 +26,13 @@ export default {
     handleRefreshClick() {
       this.$emit('refresh');
     },
-    handleDeleteClick(e) {
-      this.$emit('deleteClick', e);
+    handleDeleteClick({experimentId}) {
+      this.$emit('deleteClick', {experimentId});
     },
     handleSelect({experimentId}) {
-      this.$emit('select', {experimentId});
-    },
-    getIsSelected({ experimentId }) {
+      const isSelected = !this.getIsSelected({experimentId});
+      this.$emit('select', {experimentId, isSelected});
+    }, getIsSelected({ experimentId }) {
       return fp.includes(experimentId)(this.selectedIds);
     },
     handeSeach(keyword){
@@ -64,6 +64,7 @@ export default {
               <SelectCard isSelected={this.getIsSelected({ experimentId: x.id })}>
                 <ExperimentListItem
                   vOn:dateClick={this.handleSelect}
+                  vOn:deleteClick={this.handleDeleteClick}
                   experiment={x}
                 />
               </SelectCard>

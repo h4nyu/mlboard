@@ -8,13 +8,13 @@ export const actionTypes = {
   FETCH_ALL: `${namespace}/FETCH_ALL`,
   DELETE: `${namespace}/DELETE`,
   SELECT: `${namespace}/SELECT`,
-  TOGGLE_ID: `${namespace}/TOGGLE_ID`,
 };
 
 export const mutationTypes = {
   BULK_SET: `${namespace}/BULK_SET`,
   DELETE: `${namespace}/DELETE`,
-  TOGGLE_ID: `${namespace}/TOGGLE_ID`,
+  POP_SELECTED_ID: `${namespace}/POP_SELECTED_ID`,
+  ADD_SELECTED_ID: `${namespace}/ADD_SELECTED_ID`,
 };
 
 
@@ -33,19 +33,15 @@ export const store = {
 
     [mutationTypes.DELETE](state, {experimentId}) {
       state.experimentSet = fp.pickBy((value, key) => key !== experimentId)(state.experimentSet);
+      state.selectedIds = fp.filter(x => x !== experimentId)(state.selectedIds);
     },
 
-    [mutationTypes.TOGGLE_ID](state, {experimentId}) {
-      const isExist = fp.includes(experimentId)(state.selectedIds)
-      if(isExist){
-        state.selectedIds = fp.filter(x => x !== experimentId)(state.selectedIds)
-      }else{
-        state.selectedIds = [...state.selectedIds, experimentId]
-      }
+    [mutationTypes.ADD_SELECTED_ID](state, {experimentId}) {
+      state.selectedIds = [...state.selectedIds, experimentId];
     },
 
-    [mutationTypes.UNSELECT](state, {experimentId}) {
-      state.selectedIds = [...state.selectedIds.filter(row => row !== experimentId)];
+    [mutationTypes.POP_SELECTED_ID](state, {experimentId}) {
+      state.selectedIds = fp.filter(x => x !== experimentId)(state.selectedIds);
     },
   },
   actions: {
@@ -62,22 +58,24 @@ export const store = {
 
     [actionTypes.DELETE]({ commit, dispatch }, { experimentId }) {
       const callback = () => {
-        new ExperimentApi()
-          .deleteById({ experimentId })
+        const api = new ExperimentApi()
+        return api.deleteBy({ id: experimentId })
           .then((res) => {
+            commit(traceStore.mutationTypes.DELETE_BY_EXPERIMET_ID, {experimentId: res.data});
             commit(mutationTypes.DELETE, {experimentId: res.data});
           });
       };
       return dispatch(loadingStore.actionTypes.DISPATCH, {callback});
     },
 
-    [actionTypes.SELECT]({ commit }, { experimentId }) {
-      commit(mutationTypes.SELECT_ID, experimentId);
-      dispatch(traceStore.actionTypes.FETCH, {experimentId});
-    },
-
-    [actionTypes.TOGGLE_ID]({ commit }, {experimentId}) {
-      commit(mutationTypes.TOGGLE_ID, {experimentId});
+    [actionTypes.SELECT]({ commit, dispatch }, { experimentId, isSelected }) {
+      if(isSelected){
+        commit(mutationTypes.ADD_SELECTED_ID, {experimentId});
+        dispatch(traceStore.actionTypes.FETCH, {experimentId});
+      }else{
+        commit(mutationTypes.POP_SELECTED_ID, {experimentId});
+        commit(traceStore.mutationTypes.DELETE_BY_EXPERIMET_ID, {experimentId});
+      }
     },
   },
 };

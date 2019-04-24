@@ -48,6 +48,19 @@ class BaseQuery(object):
         await db.execute(sa.delete(model_cls))
 
     @classmethod
+    async def delete_by(cls, **kwargs) -> None:
+        model_cls = cls.get_model_cls()
+        conds = pipe(
+            kwargs.items(),
+            map(lambda x: (getattr(model_cls, x[0]) == x[1])),
+            list
+        )
+        q = sa.delete(model_cls)
+        for c in conds:
+            q = q.where(c)
+        await db.fetch_all(q)
+
+    @classmethod
     async def get_or_none(cls, **kwargs):
         model_cls = cls.get_model_cls()
         q = sa.select([model_cls])
@@ -59,7 +72,10 @@ class BaseQuery(object):
         for c in conds:
             q = q.where(c)
         res = await db.fetch_one(q)
-        return model_cls(**dict(res))
+        if  res is not None:
+            return model_cls(**dict(res))
+        else:
+            return None
 
     @classmethod
     async def filter_by(cls, **kwargs):
@@ -78,7 +94,7 @@ class BaseQuery(object):
             map(lambda x: model_cls(**dict(x))),
             list
         )
-    #
+
     @classmethod
     async def filter_in(cls, **kwargs):
         model_cls = cls.get_model_cls()

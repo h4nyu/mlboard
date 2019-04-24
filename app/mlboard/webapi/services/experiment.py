@@ -34,3 +34,8 @@ async def all():
         list
     )
     return res
+
+@router.delete('/experiment', response_model=uuid.UUID)
+async def all(*, id: uuid.UUID):
+    await qs.Experiment.delete_by(id=id)
+    return id

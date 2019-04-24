@@ -7,7 +7,7 @@ export default {
   methods: {
     ...mapActions({
       deleteClick: experimentStore.actionTypes.DELETE,
-      select: experimentStore.actionTypes.TOGGLE_ID,
+      select: experimentStore.actionTypes.SELECT,
     }),
   },
   computed: {

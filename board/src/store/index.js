@@ -6,6 +6,7 @@ import * as experimentStore from './experimentStore';
 import * as appStore from './appStore';
 import * as loadingStore from "./loadingStore";
 import * as metricStore from "./metricStore";
+import * as traceStore from "./traceStore";
 
 Vue.use(Vuex);
 
@@ -18,5 +19,6 @@ export default new Vuex.Store({
     [appStore.namespace]: appStore.store,
     [loadingStore.namespace]: loadingStore.store,
     [metricStore.namespace]: metricStore.store,
+    [traceStore.namespace]: traceStore.store,
   },
 });
