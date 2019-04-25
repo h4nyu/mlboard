@@ -14,20 +14,18 @@ handler.setFormatter(formatter)
 logger.setLevel(DEBUG)
 logger.addHandler(handler)
 
-
-async def db_session_middleware(request: Request, call_next):
+async def startup():
     await db.connect()
-    try:
-        response = await call_next(request)
-    finally:
-        await db.disconnect()
-    return response
+
+async def shutdown():
+    await db.disconnect()
 
 def create_app():
     app = FastAPI()
     app.title = 'MLBoard'
     app.openapi_prefix="/api"
-    app.middleware("http")(db_session_middleware)
+    app.on_event("startup")(startup)
+    app.on_event("shutdown")(shutdown)
     app.include_router(experiment.router)
     app.include_router(trace.router)
     return app
