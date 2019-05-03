@@ -4,6 +4,7 @@ import SelectCard from '@/components/SelectCard';
 import ExperimentListItem from '@/components/ExperimentListItem';
 import SearchInput from "@/components/SearchInput";
 import fp from 'lodash/fp';
+import _ from 'lodash';
 
 export default {
   name: 'ExperimentList',
@@ -20,6 +21,17 @@ export default {
   data(){
     return {
       keyword: "",
+      sortKey: "createDate",
+      sortOptions: [
+        {
+          key: "score",
+          label: 'score',
+        },
+        {
+          key: "createDate",
+          label: 'create date',
+        },
+      ],
     }
   },
   methods: {
@@ -32,7 +44,11 @@ export default {
     handleSelect({experimentId}) {
       const isSelected = !this.getIsSelected({experimentId});
       this.$emit('select', {experimentId, isSelected});
-    }, getIsSelected({ experimentId }) {
+    },
+    handleScoreSortClick({key}) {
+      this.sortKey = key;
+    },
+    getIsSelected({ experimentId }) {
       return fp.includes(experimentId)(this.selectedIds);
     },
     handeSeach(keyword){
@@ -45,19 +61,35 @@ export default {
       return fp.pipe(
         fp.toArray,
         fp.filter(x => !fp.isNil(x.name.match(regex))),
-        fp.sortBy(x => x.createDate),
+        fp.sortBy(x => -x[this.sortKey]),
       )(this.experimentSet);
     },
   },
   render() {
+    const sortOptionsElm = this.sortOptions.map(x => {
+      const isSelectedStyles = x.key == this.sortKey ? ["is-info", "is-selected"] : [];
+      return (
+        <span 
+          class={["button", ...isSelectedStyles]}
+          vOn:click={() => this.handleScoreSortClick({key: x.key})}
+        >
+          {x.label}
+        </span>
+      )
+    })
     return (
-      <div class="card">
+      <div class={["card", style.layout]}>
         <div class={style.header}>
           <p class="card-header-title">
             Experiments
           </p>
         </div>
-        <SearchInput vOn:input={this.handeSeach} />
+        <SearchInput vOn:input={this.handeSeach} class={style.search} />
+        <div class={style.sort}>
+          <div class="buttons has-addons">
+            {sortOptionsElm}
+          </div>
+        </div>
         <div class={style.content}>
           {
             this.orderedExperiments.map(x => (
