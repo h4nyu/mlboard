@@ -1,19 +1,15 @@
 import style from './style.css?module';
 import TreeView from 'vue-json-tree-view/src/TreeView';
 import SelectCard from '@/components/SelectCard';
-import Trace from '@/components/Trace';
+import TraceGroupItem from '@/components/TraceGroupItem';
 import SearchInput from "@/components/SearchInput";
 import fp from 'lodash/fp';
 import _ from 'lodash/fp';
 
 export default {
-  name: 'TraceList',
+  name: 'TraceGroupList',
   props: {
     traceSet: {
-      type: Object,
-      default: () => {},
-    },
-    currentSet: {
       type: Object,
       default: () => {},
     },
@@ -23,19 +19,21 @@ export default {
     },
   },
   methods: {
-    handleSelect({traceId}) {
-      const isSelected = !this.getIsSelected({traceId});
-      this.$emit('select', {traceId, isSelected});
-    },
-    getIsSelected({ traceId }) {
-      return fp.includes(traceId)(this.selectedIds);
+    handleSelect({traceIds}) {
+      this.$emit('select', {traceIds: traceIds});
     },
   },
   computed: {
     orderedItems() {
       return fp.pipe(
         fp.toArray,
-        fp.sortBy(x => x.name),
+        fp.groupBy(x => x.name),
+        fp.map.convert({cap:false})((v, k) => {
+          return {
+            name: k,
+            traceIds: fp.map(x => x.id)(v)
+          }
+        })
       )(this.traceSet);
     },
   },
@@ -51,14 +49,11 @@ export default {
         <div class={style.content}>
           {
             this.orderedItems.map(x => (
-              <SelectCard 
-                isSelected={this.getIsSelected({ traceId: x.id })}
-                vOn:click_native={() => this.handleSelect({traceId: x.id})}
-              >
-                <Trace
-                  trace={x}
+                <TraceGroupItem
+                  name={x.name}
+                  traceIds={x.traceIds}
+                  vOn:select={this.handleSelect}
                 />
-              </SelectCard>
             ))
           }
         </div>

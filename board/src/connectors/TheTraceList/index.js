@@ -1,5 +1,5 @@
 import { mapState, mapActions } from 'vuex';
-import TraceList from '@/components/TraceList';
+import TraceGroupList from '@/components/TraceGroupList';
 import * as traceStore from "@/store/traceStore";
 
 export default {

@@ -8,13 +8,15 @@ import Component from '.';
 storiesOf(base, module)
   .add('default', () => ({
     render() {
-      const trace = {
+      const traceGroup = {
         name: "train/iou",
+        traceIds: [1, 2, 3],
       }
       return (
         <Component
-          trace={trace}
-          value={1.3}
+          name={traceGroup.name}
+          traceIds={traceGroup.traceIds}
+          vOn:select={x => alert(`click, ${JSON.stringify(x)}`)}
         />
       );
     },
