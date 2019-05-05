@@ -13,10 +13,6 @@ export default {
       type: Object,
       default: () => {},
     },
-    selectedIds: {
-      type: Array,
-      default: () => [],
-    },
   },
   methods: {
     handleSelect({traceIds}) {
