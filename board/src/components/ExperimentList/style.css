@@ -1,10 +1,11 @@
 .layout {
   display: grid;
   grid-template-areas:
-    "header"
-    "search"
-    "content";
+    "header sort"
+    "search search"
+    "content content";
   grid-template-rows: auto auto 1fr;
+  grid-template-columns: 1fr auto;
 }
 
 .header {
@@ -17,7 +18,13 @@
   height: 52px;
 }
 
+.sort {
+  margin:0.5em;
+  grid-area: sort;
+}
+
 .content {
   grid-area: content;
   overflow-y: scroll;
 }
+

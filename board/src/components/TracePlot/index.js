@@ -6,7 +6,7 @@ export default {
   name: 'TracePlot',
   props: {
     traces: { type: Array, default: () => ([]) },
-    xAixs: { type: String, default: () => 'Timestamp' },
+    xAixs: { type: String, default: () => 'DATE' },
   },
   data() {
     return {

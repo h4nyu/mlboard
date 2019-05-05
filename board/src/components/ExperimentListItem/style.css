@@ -2,9 +2,8 @@
   display: grid;
   padding: 0.5em;
   grid-template-areas:
-    "content action"
-    "date action";
-  grid-template-columns: 1fr auto;
+    "content score date action";
+  grid-template-columns: 2fr 1fr 1fr auto;
 }
 
 .content {
@@ -15,9 +14,19 @@
 
 .action {
   grid-area: action;
+  cursor:pointer;
+}
+
+.score {
+  grid-area: score;
+  padding:0.2em;
+  cursor:pointer;
+  text-align: center;
 }
 
 .date {
   grid-area: date;
+  padding:0.2em;
   cursor:pointer;
+  text-align: center;
 }

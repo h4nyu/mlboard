@@ -8,6 +8,7 @@
 
 .content {
   grid-area: content;
+  cursor:pointer;
 }
 
 .value {

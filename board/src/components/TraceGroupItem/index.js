@@ -4,19 +4,28 @@ import moment from "moment";
 import * as ms from '@/services/models';
 
 export default {
-  name: 'Metric',
+  name: 'TraceGroupItem',
   props: {
-    trace: {
+    name: {
       required: true,
-      type: Object,
+      type: String,
     },
+    traceIds: {
+      required: true,
+      type: Array,
+    },
+  },
+  methods: {
+    handleClick(){
+      this.$emit('select', {traceIds:this.traceIds});
+    }
   },
   render() {
     return (
       <div class="card">
         <div class={style.layout}>
-          <div class={[style.content]}>
-            { this.trace.name }
+          <div class={[style.content]} vOn:click={this.handleClick}>
+            { this.name }
           </div>
         </div>
       </div>

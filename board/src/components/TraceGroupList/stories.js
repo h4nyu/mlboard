@@ -16,10 +16,15 @@ storiesOf(base, module)
         id: uuid(),
         name: 'loss/train'
       }
+      const metric2 = {
+        id: uuid(),
+        name: 'loss/val'
+      }
 
       const metricSet = {
         [metric0.id]: metric0,
         [metric1.id]: metric1,
+        [metric2.id]: metric2,
       };
 
       const selectedIds = [metric1.id];
@@ -28,6 +33,7 @@ storiesOf(base, module)
         <Component
           traceSet={metricSet}
           selectedIds={selectedIds}
+          vOn:select={x => alert(`select, ${JSON.stringify(x)}`)}
         />
       );
     },
