@@ -31,6 +31,9 @@ class Database:
         await self.pool.close()
         self.is_connected = False
 
+    def get_conn(self):
+        return Connection(db.pool)
+
 
 class Connection:
     def __init__(self, pool):

@@ -29,3 +29,15 @@ class Experiment(BaseQuery):
             *params
         )
         return queried_id
+
+    async def delete_by(self, id) -> uuid.UUID:
+        sql = f"""
+            DELETE FROM {self.table_name}
+            WHERE id = $1
+            RETURNING id
+        """
+        queried_id = await self.conn.fetchval(
+            sql,
+            id
+        )
+        return queried_id

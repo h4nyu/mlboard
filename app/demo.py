@@ -1,7 +1,7 @@
 from mlboard.orm import queries as qs
 from cytoolz.curried import pipe, map, first, itemfilter, reduce, concat
 from mlboard.orm import models as ms
-from mlboard.orm import db
+from mlboard.orm import db, get_conn
 import cytoolz
 from faker import Faker
 import asyncio
@@ -30,6 +30,7 @@ async def main():
             id=uuid.uuid4(),
             name=fake.name(),
             memo=fake.text(),
+            score=0.6,
             config={
                 "loss": 1,
                 "layer": 2,
@@ -43,7 +44,10 @@ async def main():
         list
     )
 
-    await qs.Experiment.bulk_insert(expriments)
+    for e in expriments:
+        async with get_conn() as conn:
+            await qs.Experiment(conn).upsert(e)
+
     traces = pipe(
         expriments,
         map(lambda x: ms.Trace(
@@ -53,14 +57,18 @@ async def main():
         )),
         list,
     )
-    await qs.Trace.bulk_insert(traces)
+    for t in traces:
+        async with get_conn() as conn:
+            await qs.Trace(conn).upsert(t)
+
     trace_points = pipe(
         traces,
         map(lambda x: get_dummy_points(x.id)),
         concat,
         list
     )
-    qs.TracePoint.bulk_insert(trace_points)
+    async with get_conn() as conn:
+        await qs.TracePoint(conn).bulk_insert(trace_points)
 
     await db.disconnect()
 

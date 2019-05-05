@@ -95,7 +95,7 @@ export default {
             this.orderedExperiments.map(x => (
               <SelectCard isSelected={this.getIsSelected({ experimentId: x.id })}>
                 <ExperimentListItem
-                  vOn:dateClick={this.handleSelect}
+                  vOn:select={this.handleSelect}
                   vOn:deleteClick={this.handleDeleteClick}
                   experiment={x}
                 />

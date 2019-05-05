@@ -13,11 +13,8 @@ export default {
     },
   },
   methods: {
-    handleDateClick() {
-      this.$emit('dateClick', {experimentId: this.experiment.id})
-    },
-    handleScoreClick() {
-      this.$emit('scoreClick', {experimentId: this.experiment.id})
+    handleSelect() {
+      this.$emit('select', {experimentId: this.experiment.id})
     },
   },
   computed:{
@@ -44,17 +41,14 @@ export default {
             </TreeView>
           </div>
           <div class={style.action}>
-            <a class="button is-small" vOn:click={() => this.$emit('chartClick', { experimentId: this.experiment.id })}>
-              <i class="fas fa-chart-line"></i>
-            </a>
             <a class="button is-small" vOn:click={() => this.$emit('deleteClick', { experimentId: this.experiment.id })}>
               <i class="fas fa-trash"></i>
             </a>
           </div>
-          <span class={[style.score]}>
+          <span class={[style.score]} vOn:click={this.handleSelect}>
             {this.score}
           </span>
-          <span class={[style.date]} vOn:click={this.handleDateClick}>
+          <span class={[style.date]} vOn:click={this.handleSelect}>
             {this.relativeDate}
           </span>
         </div>
