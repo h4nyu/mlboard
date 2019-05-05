@@ -1,4 +1,5 @@
-FROM postgres:latest
+FROM timescale/timescaledb:latest-pg11
+
 ENV POSTGRES_USER mlboard
 ENV POSTGRES_PASSWORD mlboard
 ENV POSTGRES_DB mlboard

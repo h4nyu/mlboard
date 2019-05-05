@@ -1,21 +1,15 @@
-from .base_model import Base
-import sqlalchemy as sa
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.dialects.postgresql import UUID
+from dataclasses import field, dataclass
 import uuid
+from mlboard.config import TZ
+import datetime
 
 
-class TracePoint(Base):
-    __tablename__ = "trace_points"
-    id = sa.Column(
-        UUID,
-        primary_key=True,
-        server_default="uuid_generate_v4()",
-    )
-    trace_id = sa.Column(UUID)
-    x = sa.Column(sa.Float)
-    y = sa.Column(sa.Float)
-    ts = sa.Column(
-        sa.DateTime(timezone=True),
-        server_default="clock_timestamp()"
-    )
+@dataclass
+class TracePoint:
+    id: uuid.UUID = field(default_factory=uuid.uuid4)
+    trace_id: uuid.UUID = None
+    x: float = None
+    y: float = None
+    ts: datetime.datetime = field(default_factory=lambda:datetime.datetime.now(TZ))
+    class Config:
+        table_name = "trace_points"

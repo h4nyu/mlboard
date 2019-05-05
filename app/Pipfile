@@ -13,4 +13,6 @@ python_version = "3.7"
 
 [scripts]
 api = "uvicorn mlboard:webapi_app --reload --host 0.0.0.0 --port 5000"
+scheduler = "dask-scheduler"
+worker = "dask-worker scheduler:8786"
 test = "pytest"

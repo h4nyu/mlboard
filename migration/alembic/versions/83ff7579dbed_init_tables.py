@@ -35,6 +35,7 @@ def upgrade():
             (
                 name text NOT NULL,
                 memo text,
+                score double precision,
                 config json NOT NULL DEFAULT '{}'::json,
                 CONSTRAINT uq_experiment_name UNIQUE (name)
             ) INHERITS (configs);
@@ -56,6 +57,7 @@ def upgrade():
                 trace_id uuid NOT NULL
             );
 
+        SELECT create_hypertable('trace_points', 'ts');
         """
     ))
 

@@ -8,10 +8,15 @@ install_reqs = [
     "cytoolz",
     "fastapi",
     "pyyaml",
-    "python-dateutil",
     "databases",
+    "python-dateutil",
     "asyncpg",
     "uvicorn",
+    "ujson",
+    "dask",
+    "distributed",
+    "psycopg2-binary",
+    "email-validator",
 ]
 
 dev_reqs = [

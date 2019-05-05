@@ -1,11 +1,13 @@
-from .mixins import ConfigMixin
-from .base_model import Base
-import sqlalchemy as sa
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.dialects.postgresql import UUID
+from dataclasses import field
+from pydantic.dataclasses import dataclass
+import uuid
 
 
-class Trace(ConfigMixin, Base):
-    __tablename__ = "traces"
-    name = sa.Column(sa.Text)
-    experiment_id = sa.Column(UUID)
+@dataclass
+class Trace:
+    id: uuid.UUID = field(default_factory=uuid.uuid4)
+    name: str = ""
+    experiment_id: uuid.UUID = None
+
+    class Config:
+        table_name = "traces"

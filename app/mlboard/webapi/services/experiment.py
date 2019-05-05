@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from mlboard.orm import queries as qs
+from mlboard.orm import models as ms
 from logging import getLogger
 from cytoolz.curried import pipe, map
 from pydantic import BaseModel
@@ -14,12 +15,11 @@ router = APIRouter()
 class Experiment(BaseModel):
     id: uuid.UUID
     name: str
-    memo: Optional[str]
-    config: Optional[Dict[Any, Any]]
+    memo: str
+    config: Dict[Any, Any]
     create_date: datetime
 
-
-@router.get('/experiment/all', response_model=List[Experiment])
+@router.get('/experiment/all', response_model=List[ms.Experiment])
 async def all():
     rows = await qs.Experiment.all()
     res = pipe(
