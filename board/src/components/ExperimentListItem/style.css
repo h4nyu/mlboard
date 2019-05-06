@@ -3,7 +3,7 @@
   padding: 0.5em;
   grid-template-areas:
     "content score date action";
-  grid-template-columns: 2fr 1fr 1fr auto;
+  grid-template-columns: 2fr auto 1fr auto;
 }
 
 .content {
