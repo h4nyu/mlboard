@@ -21,31 +21,13 @@ class Trace(BaseModel):
 
 @router.get('/trace/all', response_model=List[Trace])
 async def all():
-    rows = await qs.Trace.all()
-    res = pipe(
-        rows,
-        map(lambda x: Trace(
-            id=x.id,
-            name=x.name,
-            experiment_id=x.experiment_id,
-            create_date=x.create_date,
-        )),
-        list
-    )
-    return res
+    async with db.get_conn() as conn:
+        rows = await qs.Trace.all()
+    return rows
 
 
 @router.get('/trace/filter-by', response_model=List[Trace])
 async def all(experiment_id: uuid.UUID):
     async with db.get_conn() as conn:
         rows = await qs.Trace(conn).filter_by(experiment_id=experiment_id)
-    return pipe(
-        rows,
-        map(lambda x: Trace(
-            id=x.id,
-            name=x.name,
-            experiment_id=x.experiment_id,
-            create_date=x.create_date,
-        )),
-        list
-    )
+    return rows

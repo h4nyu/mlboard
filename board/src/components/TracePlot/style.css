@@ -1,0 +1,18 @@
+.layout {
+  display: grid;
+  padding: 0.5em;
+  grid-template-areas:
+    "title"
+    "plot";
+  grid-template-columns: auto;
+  grid-template-columns: auto;
+}
+
+.plot {
+  grid-area: plot;
+  height: 200px;
+}
+
+.title {
+  grid-area: title;
+}

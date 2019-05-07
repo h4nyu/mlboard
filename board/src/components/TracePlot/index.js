@@ -1,11 +1,14 @@
 import Plot from '@/components/Plot';
-import { ToggleButton } from 'vue-js-toggle-button';
+import style from './style.css?module';
 
 
 export default {
   name: 'TracePlot',
   props: {
-    traces: { type: Array, default: () => ([]) },
+    tracePointSet: { type: Object, default: () => ([]) },
+    traceGroupe: { type: Object, required: true },
+    traceSet: { type: Object, required: true },
+    experimentSet: { type: Object, required: true },
     xAixs: { type: String, default: () => 'DATE' },
   },
   data() {
@@ -20,20 +23,24 @@ export default {
   },
   computed: {
     plotData() {
-      let x = [];
-      if (this.xAixsType === 'DATE') {
-        x = this.traces.map(t => t.ts);
-      } else {
-        x = this.traces.map(t => t.x);
-      }
-      return [
-        {
-          x,
-          y: this.traces.map(t => t.y),
+      return this.traceGroupe.traceIds.map(traceId => {
+        const trace = this.traceSet[traceId];
+        console.log(trace);
+        const experiment = this.experimentSet[trace.experimentId];
+        let x = [];
+        if (this.xAixsType === 'DATE') {
+          x = this.tracePointSet[traceId].map(t => t.ts);
+        } else {
+          x = this.tracePointSet[traceId].map(t => t.x);
+        }
+
+        return {
+          y: this.tracePointSet[traceId].map(t => t.y),
           mode: 'markers+lines',
-          type: 'scatter',
-        },
-      ];
+          type: 'scattergl',
+          name: experiment.name,
+        }
+      })
     },
     yaxisType() {
       if (this.isLog) {
@@ -46,7 +53,7 @@ export default {
         showlegend: true,
         margin: {
           r: 0,
-          t: 40,
+          t: 5,
           b: 20,
           l: 20,
         },
@@ -54,18 +61,21 @@ export default {
         yaxis: {
           type: this.yaxisType,
         },
+        legend: {
+          orientation: "h",
+        },
       };
     },
   },
   render: function render(h) {
     return (
-      <div class="card">
-        <ToggleButton value={true} labels={{ checked: 'log', unchecked: '' }}/>
-        <div class="field">
-          <input id="switchExample" type="checkbox" name="switchExample" class="switch" checked="checked"/>
-          <label for="switchExample">Switch example</label>
+      <div class={["card", style.layout]}>
+        <div class={[style.title]}>
+          <div class={['is-size-5']}>
+            {this.traceGroupe.name}
+          </div>
         </div>
-        <Plot style={{ height: '200px' }} data={this.plotData} layout={this.plotLayout} />
+        <Plot class={[style.plot]} data={this.plotData} layout={this.plotLayout} />
       </div>
     );
   },

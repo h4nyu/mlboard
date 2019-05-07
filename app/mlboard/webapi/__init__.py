@@ -26,6 +26,6 @@ def create_app():
     app.openapi_prefix="/api"
     app.on_event("startup")(startup)
     app.on_event("shutdown")(shutdown)
-    app.include_router(experiment.router)
-    app.include_router(trace.router)
+    app.include_router(experiment.router, tags=['experiment'])
+    app.include_router(trace.router, tags=['trace'])
     return app
