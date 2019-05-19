@@ -33,27 +33,30 @@ export default {
   },
   watch:{
     option(newValue, oldValue){
-      console.log('aaa');
       this.chart.setOption(newValue);
     },
-    width(){
-      this.resize()
+    width(newValue, oldValue){
+      if(newValue !== oldValue){
+        this.resize()
+      }
     },
-    height(){
-      this.resize()
+    height(newValue, oldValue){
+      if(newValue !== oldValue){
+        this.resize()
+      }
     }
   },
   beforeDestroy() {
     clearInterval(this.syncSizeId);
   },
   mounted() {
-    this.syncSizeId = setInterval(this.syncSize, 0.5);
+    this.syncSizeId = setInterval(this.syncSize, 500);
     this.chart = echarts.init(this.$el);
     this.chart.setOption(this.option);
   },
   render() {
     return (
-      <div style="width: 100%;height:400px;"></div>
+      <div></div>
     );
   },
 };

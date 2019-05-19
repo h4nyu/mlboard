@@ -22,6 +22,7 @@ storiesOf(base, module)
       return (
         <Component
           option={ option }
+          style="width: 100%;height:400px;"
         />
       );
     },

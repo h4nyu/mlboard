@@ -1,4 +1,4 @@
-import Plot from '@/components/Plot';
+import EChart from '@/components/EChart';
 import style from './style.css?module';
 
 
@@ -22,49 +22,35 @@ export default {
     },
   },
   computed: {
-    plotData() {
-      return this.traceGroupe.traceIds.map(traceId => {
+    plotOption() {
+      const baseOption = {
+        xAxis: {},
+        yAxis: {},
+        legend: {
+          type: 'plain',
+          orient: 'horizontal',
+        },
+        grid: {
+          right: 20,
+          bottom: 50,
+        }
+      };
+      const series = this.traceGroupe.traceIds.map(traceId => {
         const trace = this.traceSet[traceId];
-        console.log(trace);
         const experiment = this.experimentSet[trace.experimentId];
         let x = [];
-        if (this.xAixsType === 'DATE') {
-          x = this.tracePointSet[traceId].map(t => t.ts);
-        } else {
-          x = this.tracePointSet[traceId].map(t => t.x);
-        }
+        x = this.tracePointSet[traceId].map(t => t.x);
 
         return {
-          y: this.tracePointSet[traceId].map(t => t.y),
-          mode: 'markers+lines',
-          type: 'scattergl',
-          name: experiment.name,
+          name: trace.name,
+          data: this.tracePointSet[traceId].map(t => ([t.x, t.y])),
+          type: 'scatter',
         }
       })
-    },
-    yaxisType() {
-      if (this.isLog) {
-        return 'log';
-      }
-      return 'liner';
-    },
-    plotLayout() {
       return {
-        showlegend: true,
-        margin: {
-          r: 0,
-          t: 5,
-          b: 20,
-          l: 20,
-        },
-        autosize: true,
-        yaxis: {
-          type: this.yaxisType,
-        },
-        legend: {
-          orientation: "h",
-        },
-      };
+        ...baseOption,
+        series,
+      }
     },
   },
   render: function render(h) {
@@ -75,7 +61,7 @@ export default {
             {this.traceGroupe.name}
           </div>
         </div>
-        <Plot class={[style.plot]} data={this.plotData} layout={this.plotLayout} />
+        <EChart class={[style.plot]} option={this.plotOption}/>
       </div>
     );
   },

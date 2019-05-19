@@ -13,44 +13,60 @@ storiesOf(base, module)
   .add('default', () => ({
     store,
     render() {
-      const traceId = uuid()
+      const traceId0 = uuid()
+      const traceId1 = uuid()
       const tracePointSet = {
-        [traceId]: [
-          new TracePoint({
+        [traceId0]: [
+          {
             x: 1,
             y: 1,
             ts: moment("2000-01-01").format(),
-            traceId,
-          }),
-          new TracePoint({
+          },
+          {
             x: 2,
             y: 2,
             ts: moment("3000-01-01").format(),
-            traceId,
-          }),
+          },
+        ],
+        [traceId1]: [
+          {
+            x: 1,
+            y: 0,
+            ts: moment("2000-01-01").format(),
+          },
+          {
+            x: 2,
+            y: 1,
+            ts: moment("3000-01-01").format(),
+          },
         ]
       }
 
-      const traceGroupe = new TraceGroup({
+      const traceGroupe = {
         id: uuid(),
         name: "foo",
-        traceIds: [traceId],
-      });
+        traceIds: [traceId0, traceId1],
+      };
 
       const experimentId = uuid()
       const traceSet = {
-        [traceId]: new Trace({
-          id: traceId,
-          name: 'foo',
+        [traceId0]: {
+          id: traceId0,
+          name: 'trace0',
           experimentId,
-        })
+        },
+        [traceId1]: {
+          id: traceId1,
+          name: 'trace1',
+          experimentId,
+        }
       };
 
       const experimentSet = {
-        [experimentId]: new Experiment({
+        [experimentId]: {
           id: experimentId,
           name: 'experiment name',
-        })
+        }
       }
 
       return (
