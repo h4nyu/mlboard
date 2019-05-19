@@ -12,6 +12,7 @@
     "bulma-extensions": "^4.1.0",
     "camelcase-keys": "^5.0.0",
     "d3": "^5.9.1",
+    "echarts": "^4.2.1",
     "element-ui": "^2.5.4",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
