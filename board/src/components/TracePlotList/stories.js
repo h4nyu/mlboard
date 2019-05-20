@@ -4,33 +4,24 @@ import uuid from 'uuid';
 import moment from 'moment';
 import { base } from 'paths.macro';
 import Component from '.';
+import {sample} from "../TracePlot/stories.js";
 
 storiesOf(base, module)
   .add('default', () => ({
     render() {
-      const trace0 = {
-        id: uuid(),
+      const traceGroups = [
+        sample.traceGroup
+      ]
+      const dummy = {
+        ...sample,
+        traceGroups
       }
-      const trace1 = {
-        id: uuid(),
-      }
-      const traceSet = {
-        [trace0.id]: trace0,
-        [trace1.id]: trace1,
-      }
-      const group0 = {
-        id: uuid(),
-        name: 'loss/val',
-        traceIds: [trace0, trace1],
-      }
-
-      const traceGroupSet = {
-        [group0.id]: group0,
-      };
-
       return (
         <Component
-          traceGroupSet={traceGroupSet}
+          traceGroups={dummy.traceGroups}
+          tracePointSet={dummy.tracePointSet}
+          experimentSet={dummy.experimentSet}
+          traceSet={dummy.traceSet}
           vOn:select={x => alert(`select, ${JSON.stringify(x)}`)}
         />
       );

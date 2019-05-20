@@ -1,7 +1,7 @@
 import style from './style.css?module';
 import TreeView from 'vue-json-tree-view/src/TreeView';
 import SelectCard from '@/components/SelectCard';
-import TraceGroupItem from '@/components/TraceGroupItem';
+import TracePlot from '@/components/TracePlot';
 import SearchInput from "@/components/SearchInput";
 import fp from 'lodash/fp';
 import _ from 'lodash/fp';
@@ -9,48 +9,46 @@ import _ from 'lodash/fp';
 export default {
   name: 'TracePlotList',
   props: {
-    traceGroupSet: {
+    traceGroups: {
+      type: Array,
+      required: true,
+    },
+    tracePointSet: {
       type: Object,
-      default: () => {},
+      required: true,
+    },
+    experimentSet: {
+      type: Object,
+      required: true,
+    },
+    traceSet: {
+      type: Object,
+      required: true,
     },
   },
-  methods: {
-    handleSelect({traceIds}) {
-      this.$emit('select', {traceIds: traceIds});
-    },
+  methods:{
+    getItemElm(traceGroup){
+      return (
+        <TracePlot
+          tracePointSet={this.tracePointSet}
+          traceGroup={traceGroup}
+          traceSet={this.traceSet}
+          experimentSet={this.experimentSet}
+        />
+      )
+    }
   },
   computed: {
-    orderedItems() {
-      return fp.pipe(
-        fp.toArray,
-        fp.groupBy(x => x.name),
-        fp.map.convert({cap:false})((v, k) => {
-          return {
-            name: k,
-            traceIds: fp.map(x => x.id)(v)
-          }
-        })
-      )(this.traceSet);
-    },
+    items() {
+      return fp.toArray(this.traceGroupSet)
+    }
   },
   render() {
     return (
       <div class="card">
-        <div class={style.header}>
-          <p class="card-header-title">
-            Traces
-          </p>
-        </div>
-        <SearchInput />
         <div class={style.content}>
           {
-            this.orderedItems.map(x => (
-                <TraceGroupItem
-                  name={x.name}
-                  traceIds={x.traceIds}
-                  vOn:select={this.handleSelect}
-                />
-            ))
+            this.traceGroups.map(this.getItemElm)
           }
         </div>
       </div>

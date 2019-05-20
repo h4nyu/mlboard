@@ -22,20 +22,20 @@ export const store = {
   namespaced: false,
   state(){
     return {
-      traceSet: {},
+      set: {},
       selectedIds: [],
     }
   },
   mutations: {
     [mutationTypes.BULK_SET](state, {traces}) {
-      state.traceSet = {
-        ...state.traceSet,
+      state.set = {
+        ...state.set,
         ...fp.keyBy(x => x.id)(traces)
       }
     },
     [mutationTypes.DELETE_BY_EXPERIMET_ID](state, {experimentId}) {
-      state.traceSet = fp.pickBy(x => x.experimentId !== experimentId)(state.traceSet);
-      const ids = Object.keys(state.traceSet);
+      state.set = fp.pickBy(x => x.experimentId !== experimentId)(state.set);
+      const ids = Object.keys(state.set);
       state.selectedIds = fp.filter(x => fp.includes(x)(ids))(state.selectedIds);
     },
     [mutationTypes.ADD_SELECTED_ID](state, {traceId}) {

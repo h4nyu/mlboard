@@ -5,11 +5,23 @@ import style from './style.css?module';
 export default {
   name: 'TracePlot',
   props: {
-    tracePointSet: { type: Object, default: () => ([]) },
-    traceGroupe: { type: Object, required: true },
-    traceSet: { type: Object, required: true },
-    experimentSet: { type: Object, required: true },
-    xAixs: { type: String, default: () => 'DATE' },
+    tracePointSet: { 
+      type: Object, 
+      required: true,
+      default: () => ([]) 
+    },
+    traceGroup: { 
+      type: Object, 
+      required: true 
+    },
+    traceSet: { 
+      type: Object, 
+      required: true 
+    },
+    experimentSet: { 
+      type: Object, 
+      required: true 
+    },
   },
   data() {
     return {
@@ -31,20 +43,23 @@ export default {
           orient: 'horizontal',
         },
         grid: {
-          right: 20,
-          bottom: 50,
+          right: 10,
+          left: "10%",
+          bottom: 30,
+          top: 30,
         }
       };
-      const series = this.traceGroupe.traceIds.map(traceId => {
+      const series = this.traceGroup.traceIds.map(traceId => {
         const trace = this.traceSet[traceId];
         const experiment = this.experimentSet[trace.experimentId];
-        let x = [];
-        x = this.tracePointSet[traceId].map(t => t.x);
-
+        let data = []
+        if(this.tracePointSet[traceId]){
+          data = this.tracePointSet[traceId].map(t => ([t.x, t.y]));
+        }
         return {
-          name: trace.name,
-          data: this.tracePointSet[traceId].map(t => ([t.x, t.y])),
-          type: 'scatter',
+          name: experiment.name,
+          data: data,
+          type: 'line',
         }
       })
       return {
@@ -58,7 +73,7 @@ export default {
       <div class={["card", style.layout]}>
         <div class={[style.title]}>
           <div class={['is-size-5']}>
-            {this.traceGroupe.name}
+            {this.traceGroup.name}
           </div>
         </div>
         <EChart class={[style.plot]} option={this.plotOption}/>

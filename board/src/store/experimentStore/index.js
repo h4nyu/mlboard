@@ -22,17 +22,17 @@ export const store = {
   namespaced: false,
   state(){
     return {
-      experimentSet: {},
+      set: {},
       selectedIds: [],
     }
   },
   mutations: {
     [mutationTypes.BULK_SET](state, {experiments}) {
-      state.experimentSet = fp.keyBy(x => x.id)(experiments);
+      state.set = fp.keyBy(x => x.id)(experiments);
     },
 
     [mutationTypes.DELETE](state, {experimentId}) {
-      state.experimentSet = fp.pickBy((value, key) => key !== experimentId)(state.experimentSet);
+      state.set = fp.pickBy((value, key) => key !== experimentId)(state.set);
       state.selectedIds = fp.filter(x => x !== experimentId)(state.selectedIds);
     },
 

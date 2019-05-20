@@ -19,9 +19,9 @@ export default {
     handleClick() {
       this.$emit('click', { isChecked: this.domValue });
     },
-    // syncValue() {
-    //   this.domValue = this.value;
-    // },
+    syncValue() {
+      this.domValue = this.value;
+    },
   },
   watch: {
     domValue() {
@@ -29,7 +29,6 @@ export default {
   },
   render(){
     let slider;
-    console.log(this.domValue);
     if(this.domValue){
       slider = (
         <div class={[style.slider]}></div>

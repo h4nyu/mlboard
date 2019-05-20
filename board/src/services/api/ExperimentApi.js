@@ -1,11 +1,11 @@
 import JsonApi from './JsonApi';
-import * as ms from '@/services/models';
+import Experiment from '@/services/models/Experiment';
 
 export default class ExperimentApi {
   all() {
     return JsonApi.get('api/experiment/all').then(res => ({
       ...res,
-      data: res.data.map(x => new ms.Experiment(x)),
+      data: res.data.map(x => new Experiment(x)),
     }));
   }
   deleteBy({id}){

@@ -48,6 +48,7 @@ export default {
   },
   beforeDestroy() {
     clearInterval(this.syncSizeId);
+    echarts.dispose(this.$el);
   },
   mounted() {
     this.syncSizeId = setInterval(this.syncSize, 500);
