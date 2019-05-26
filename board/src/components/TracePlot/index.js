@@ -1,11 +1,14 @@
-import Plot from '@/components/Plot';
-import { ToggleButton } from 'vue-js-toggle-button';
+import EChart from '@/components/EChart';
+import style from './style.css?module';
 
 
 export default {
   name: 'TracePlot',
   props: {
-    traces: { type: Array, default: () => ([]) },
+    tracePointSet: { type: Object, default: () => ([]) },
+    traceGroupe: { type: Object, required: true },
+    traceSet: { type: Object, required: true },
+    experimentSet: { type: Object, required: true },
     xAixs: { type: String, default: () => 'DATE' },
   },
   data() {
@@ -19,53 +22,46 @@ export default {
     },
   },
   computed: {
-    plotData() {
-      let x = [];
-      if (this.xAixsType === 'DATE') {
-        x = this.traces.map(t => t.ts);
-      } else {
-        x = this.traces.map(t => t.x);
-      }
-      return [
-        {
-          x,
-          y: this.traces.map(t => t.y),
-          mode: 'markers+lines',
-          type: 'scatter',
+    plotOption() {
+      const baseOption = {
+        xAxis: {},
+        yAxis: {},
+        legend: {
+          type: 'plain',
+          orient: 'horizontal',
         },
-      ];
-    },
-    yaxisType() {
-      if (this.isLog) {
-        return 'log';
-      }
-      return 'liner';
-    },
-    plotLayout() {
-      return {
-        showlegend: true,
-        margin: {
-          r: 0,
-          t: 40,
-          b: 20,
-          l: 20,
-        },
-        autosize: true,
-        yaxis: {
-          type: this.yaxisType,
-        },
+        grid: {
+          right: 20,
+          bottom: 50,
+        }
       };
+      const series = this.traceGroupe.traceIds.map(traceId => {
+        const trace = this.traceSet[traceId];
+        const experiment = this.experimentSet[trace.experimentId];
+        let x = [];
+        x = this.tracePointSet[traceId].map(t => t.x);
+
+        return {
+          name: trace.name,
+          data: this.tracePointSet[traceId].map(t => ([t.x, t.y])),
+          type: 'scatter',
+        }
+      })
+      return {
+        ...baseOption,
+        series,
+      }
     },
   },
   render: function render(h) {
     return (
-      <div class="card">
-        <ToggleButton value={true} labels={{ checked: 'log', unchecked: '' }}/>
-        <div class="field">
-          <input id="switchExample" type="checkbox" name="switchExample" class="switch" checked="checked"/>
-          <label for="switchExample">Switch example</label>
+      <div class={["card", style.layout]}>
+        <div class={[style.title]}>
+          <div class={['is-size-5']}>
+            {this.traceGroupe.name}
+          </div>
         </div>
-        <Plot style={{ height: '200px' }} data={this.plotData} layout={this.plotLayout} />
+        <EChart class={[style.plot]} option={this.plotOption}/>
       </div>
     );
   },

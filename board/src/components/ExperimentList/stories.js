@@ -8,7 +8,7 @@ import Component from '.';
 storiesOf(base, module)
   .add('default', () => ({
     render() {
-      const experiment0 = new ms.Experiment({
+      const experiment0 = {
         id: uuid(),
         name: 'aaa',
         score:0.777,
@@ -17,8 +17,8 @@ storiesOf(base, module)
           bar: 'bar',
         },
         createDate: moment("2018-01-01"),
-      });
-      const experiment1 = new ms.Experiment({
+      };
+      const experiment1 = {
         id: uuid(),
         name: 'bbb',
         config: {
@@ -26,8 +26,8 @@ storiesOf(base, module)
           bar: 'sfsd',
         },
         createDate: moment("2019-01-01"),
-      });
-      const experiment2 = new ms.Experiment({
+      };
+      const experiment2 = {
         id: uuid(),
         name: 'ccc',
         score: 0.222,
@@ -36,7 +36,7 @@ storiesOf(base, module)
           bar: 'sfsd',
         },
         createDate: moment("2020-01-01"),
-      });
+      };
 
       const experimentSet = {
         [experiment0.id]: experiment0,

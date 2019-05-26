@@ -8,7 +8,7 @@ import Component from '.';
 storiesOf(base, module)
   .add('default', () => ({
     render() {
-      const experiment = new ms.Experiment({
+      const experiment = {
         id: uuid(),
         name: 'test-name',
         score: 0.888,
@@ -17,7 +17,7 @@ storiesOf(base, module)
           bar: 'bar',
         },
         createDate: moment().format(),
-      });
+      };
       return (
         <Component
           experiment={experiment}
@@ -30,7 +30,7 @@ storiesOf(base, module)
   }))
   .add('no-score', () => ({
     render() {
-      const experiment = new ms.Experiment({
+      const experiment = {
         id: uuid(),
         name: 'test-name',
         config: {
@@ -38,7 +38,7 @@ storiesOf(base, module)
           bar: 'bar',
         },
         createDate: moment().format(),
-      });
+      };
       return (
         <Component
           experiment={experiment}
