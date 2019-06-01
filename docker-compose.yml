@@ -63,6 +63,22 @@ services:
     ports:
       - "19000-19002:19000-19002"
 
+  mobile:
+    build: 
+      <<: *default-build
+      context: ./mobile
+    environment: 
+      - NODE_ENV=development
+      - http_proxy
+      - https_proxy
+      - REACT_NATIVE_PACKAGER_HOSTNAME=$HOST_IP
+    volumes:
+      - ./mobile:/srv
+    command: react-native start
+    ports:
+      - "8081:8081"
+
+
 
   storybook:
     <<: *node-env
