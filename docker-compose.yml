@@ -48,21 +48,6 @@ services:
       - ./board:/srv
     command: npm run watch
 
-  expo:
-    build: 
-      <<: *default-build
-      context: ./expo
-    environment: 
-      - NODE_ENV=development
-      - http_proxy
-      - https_proxy
-      - REACT_NATIVE_PACKAGER_HOSTNAME=$HOST_IP
-    volumes:
-      - ./expo:/srv
-    command: npx expo start
-    ports:
-      - "19000-19002:19000-19002"
-
   mobile:
     build: 
       <<: *default-build
@@ -71,14 +56,12 @@ services:
       - NODE_ENV=development
       - http_proxy
       - https_proxy
-      - REACT_NATIVE_PACKAGER_HOSTNAME=$HOST_IP
+
     volumes:
       - ./mobile:/srv
     command: react-native start
     ports:
       - "8081:8081"
-
-
 
   storybook:
     <<: *node-env

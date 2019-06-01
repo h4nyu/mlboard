@@ -11,7 +11,6 @@ RUN mkdir $ANDROID_HOME && \
     rm sdk.zip && \
     mkdir ~/.android && \
     touch ~/.android/repositories.cfg
-
 RUN yes | sdkmanager --licenses
 RUN npm install -g react-native-cli
 
