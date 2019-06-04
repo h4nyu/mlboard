@@ -59,9 +59,9 @@ services:
 
     volumes:
       - ./mobile:/srv
-    command: react-native start
+    command: react-native start -- --reset-cache
     ports:
-      - "8081:8081"
+      - "${METRO_PORT}:8081"
 
   storybook:
     <<: *node-env

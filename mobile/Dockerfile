@@ -1,4 +1,8 @@
-FROM nikolaik/python-nodejs:python3.7-nodejs12
+FROM node:12-slim
+RUN apt-get update \
+    && apt-get install -y \
+    unzip
+
 RUN wget https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u212-b03/OpenJDK8U-jdk_x64_linux_hotspot_8u212b03.tar.gz \
     && tar -xf OpenJDK8U-jdk_x64_linux_hotspot_8u212b03.tar.gz \
     && rm OpenJDK8U-jdk_x64_linux_hotspot_8u212b03.tar.gz
