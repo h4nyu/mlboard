@@ -1,12 +1,4 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
-import React, {Component} from 'react';
+import React from 'react';
 import {Platform, StyleSheet, Text, View} from 'react-native';
 
 const instructions = Platform.select({
@@ -16,21 +8,6 @@ const instructions = Platform.select({
     'Shake or press menu button for dev menu',
 });
 
-type Props = {};
-export default class App extends Component<Props> {
-  render() {
-    console.log('aaa');
-    console.log('aaa');
-    console.log('aaa');
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}> ReactApp !!!! </Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text style={styles.instructions}>{instructions}</Text>
-      </View>
-    );
-  }
-}
 
 const styles = StyleSheet.create({
   container: {
@@ -50,3 +27,15 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
+
+const App: React.SFC<{}> = () => {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.welcome}> adasdaadfas </Text>
+      <Text style={styles.welcome}> adasdaadfas </Text>
+      <Text style={styles.welcome}> adasdaadfas </Text>
+      <Text style={styles.welcome}> adasdaadfas </Text>
+    </View>
+  );
+}
+export default App;
