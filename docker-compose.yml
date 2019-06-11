@@ -67,7 +67,7 @@ services:
     <<: *node-env
     command: npm run storybook
     ports:
-      - "${STORYBOOK_PORT}:9001"
+      - "${STORYBOOK_PORT}:6006"
 
   web:
     build: 

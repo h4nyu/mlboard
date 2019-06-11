@@ -1,14 +1,13 @@
-const config = require("../webpack.config.js");
+const projectConfig = require("../webpack.config.js");
 
-module.exports = (baseConfig, env, defaultConfig) => {
-  defaultConfig.resolve.alias = {
-    ...defaultConfig.resolve.alias,
-    ...config.resolve.alias
-  };
-
-  defaultConfig.module.rules = [
-    ...config.module.rules,
-  ];
-
-  return defaultConfig;
+module.exports = ({config}) => {
+  config.module.rules.push({
+    test: /\.tsx?$/,
+    exclude: /node_modules/,
+    use: {
+      loader: "ts-loader"
+    },
+  });
+  config.resolve.extensions.push('.ts', '.tsx');
+  return config
 };

@@ -1,58 +1,25 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
-const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 module.exports = {
   watchOptions: {
     aggregateTimeout: 300,
     poll: 1000
   },
+  entry: './src/index.ts',
   devtool: 'inline-cheap-source-map',
   plugins: [
     new HtmlWebPackPlugin({
       template: "./public/index.html",
     }),
-    new VueLoaderPlugin(),
   ],
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/,
+        test: /\.tsx?$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader"
-        }
-      },
-      {
-        test: /\.vue$/,
-        loader: 'vue-loader',
-      },
-      {
-        test: /\.(css|scss|sass)$/,
-        oneOf: [
-          // this matches `<style module>`
-          {
-            resourceQuery: /module/,
-            use: [
-              'style-loader',
-              {
-                loader: 'css-loader',
-                options: {
-                  modules: true,
-                  localIdentName: '[local]_[hash:base64:5]'
-                }
-              },
-              "sass-loader",
-            ]
-          },
-          // this matches plain `<style>` or `<style scoped>`
-          {
-            use: [
-              'vue-style-loader',
-              'css-loader',
-              "sass-loader",
-            ]
-          }
-        ],
+          loader: "ts-loader"
+        },
       },
       {
         test: /\.(png|jpe?g|gif|svg|woff2?|eot|ttf|otf)(\?.*)?$/,
@@ -66,9 +33,9 @@ module.exports = {
   },
   resolve: {
     alias: {
-      '@': '/srv/src',
+      '~': '/srv/src',
       'package.json':'/srv/package.json',
     },
-    extensions: ['*', '.js', '.json', '.vue']
+    extensions: [ '.tsx', '.ts', '.js' ]
   }
 };
