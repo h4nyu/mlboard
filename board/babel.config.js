@@ -1,16 +1,9 @@
 module.exports = function (api) {
   api.cache(true);
   const presets = [
-    "@babel/preset-env",
-    "@vue/babel-preset-jsx",
+    "@babel/preset-env", 
   ];
-
-  const plugins = [
-    'macros'
-  ];
-
   return {
     presets,
-    plugins,
   };
 }

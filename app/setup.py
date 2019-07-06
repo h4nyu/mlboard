@@ -1,41 +1,41 @@
 #!/usr/bin/env python
-
 # -*- coding: utf-8 -*-
+
 from setuptools import setup, find_packages
 
-install_reqs = [
-    "SQLAlchemy",
+requires = [
     "cytoolz",
+    "pandas",
+    "uvicorn",
     "fastapi",
     "pyyaml",
-    "databases",
-    "python-dateutil",
     "asyncpg",
-    "uvicorn",
     "ujson",
-    "dask",
-    "distributed",
-    "psycopg2-binary",
-    "email-validator",
 ]
-
-dev_reqs = [
+dev_requires = [
+    "requests",
     "pytest",
+    "pytest-mock",
+    "faker",
+    "flake8",
+    "autopep8",
     "pytest-asyncio",
-    'faker',
-    'requests',
+    "profilehooks",
+    "mypy",
+    "pytest-mypy",
+    "typing_extensions",
 ]
 
 setup(
     name="mlboard",
-    version="0.3.0",
+    version="0.5.0",
     description="TODO",
     author='Xinyuan Yao',
     author_email='yao.ntno@google.com',
     license="TODO",
     packages=find_packages(),
-    install_requires=install_reqs,
+    install_requires=requires,
     extras_require={
-        'dev': dev_reqs,
+        'dev': dev_requires
     }
 )

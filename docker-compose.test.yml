@@ -1,0 +1,63 @@
+version: '2.4'
+
+services:
+  db:
+    build: &default-build
+      context: ./db
+      args:
+        - http_proxy
+        - https_proxy
+    environment:
+      - TZ=Asia/Tokyo
+      - PGTZ=Asia/Tokyo
+    ports:
+      - "${DB_PORT}:5432"
+
+  api: &default-app
+    build : 
+      <<: *default-build
+      context: ./app
+    command: gunicorn --reload --bind 0.0.0.0:5000 mlboard:api 
+    environment:
+      - TZ=Asia/Tokyo
+      - FLASK_DEBUG=1
+      - PYTHON_ENV=development
+    depends_on:
+      - db
+      - migration
+
+  migration:
+    build:
+      <<: *default-build
+      context: ./migration
+    depends_on:
+      - db
+
+  board: &default-node
+    build:
+      <<: *default-build
+      target: dev
+      context: ./board
+    environment: 
+      - NODE_ENV=development
+      - http_proxy
+      - https_proxy
+    command: npm run watch
+
+  web:
+    build:
+      <<: *default-build
+      context: ./web
+    ports:
+      - "${WEB_PORT}:80"
+    depends_on:
+      - api
+      - board
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: ${SUBNET}

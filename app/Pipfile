@@ -4,6 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+cython = "*"
 
 [packages]
 mlboard = {editable = true,extras = ["dev"],path = "."}
@@ -12,7 +13,8 @@ mlboard = {editable = true,extras = ["dev"],path = "."}
 python_version = "3.7"
 
 [scripts]
-api = "uvicorn mlboard:webapi_app --reload --host 0.0.0.0 --port 5000"
-scheduler = "dask-scheduler"
-worker = "dask-worker scheduler:8786"
+api = "uvicorn api:app --host 0.0.0.0 --port 5000"
+stress_test = "python stress_test.py"
 test = "pytest"
+format = "autopep8 -ivr ."
+lint = "flake8 --show-source ."

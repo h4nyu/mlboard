@@ -4,29 +4,38 @@ services:
   db:
     build: &default-build
       context: ./db
-      args: 
+      args:
         - http_proxy
         - https_proxy
+    volumes:
+      - ./db/postgresql.conf:/etc/postgresql.conf
+    environment:
+      - TZ=Asia/Tokyo
+      - PGTZ=Asia/Tokyo
     ports:
       - "${DB_PORT}:5432"
 
-  app: &default-app 
-    build: 
+  app: &default-app
+    build : 
       <<: *default-build
       context: ./app
-    volumes:
-      - ./app:/srv
-    environment: &python-env
+    environment:
+      - TZ=Asia/Tokyo
+      - FLASK_DEBUG=1
       - PYTHON_ENV=development
+    volumes: 
+      - ./app:/srv
+      - ./store:/store
 
   api:
+    command:  pipenv run api --reload
     <<: *default-app
-    command:  pipenv run api
     depends_on:
       - db
+      - migration
 
   migration:
-    build: 
+    build:
       <<: *default-build
       context: ./migration
     volumes:
@@ -34,12 +43,11 @@ services:
     depends_on:
       - db
 
-  board: &node-env
-    build: 
+  board: &default-node
+    build:
       <<: *default-build
-      context: ./board
       target: dev
-
+      context: ./board
     environment: 
       - NODE_ENV=development
       - http_proxy
@@ -48,22 +56,29 @@ services:
       - ./board:/srv
     command: npm run watch
 
-
   storybook:
-    <<: *node-env
+    <<: *default-node
     command: npm run storybook
     ports:
       - "${STORYBOOK_PORT}:9001"
 
   web:
-    build: 
+    build:
       <<: *default-build
       context: ./web
     volumes:
-      - ./web/nginx.conf:/etc/nginx/nginx.conf
+      - ./web/nginx.prod.conf:/etc/nginx/nginx.conf
       - ./board/dist:/public/
     ports:
       - "${WEB_PORT}:80"
     depends_on:
       - api
       - board
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: ${SUBNET}

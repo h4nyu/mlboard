@@ -8,7 +8,7 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
     && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
     && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
-COPY ./nginx.conf /etc/nginx/nginx.conf    
+COPY ./nginx.prod.conf /etc/nginx/nginx.conf    
 WORKDIR /srv
 
 ENTRYPOINT ["dockerize", "-wait", "tcp://api:5000", "-timeout", "30s"]
