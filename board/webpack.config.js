@@ -1,12 +1,12 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
+const path = require('path');
 
 module.exports = {
   watchOptions: {
-    aggregateTimeout: 300,
+    aggregateTimeout: 600,
     poll: 1000
   },
-  entry: './src/index.ts',
-  devtool: 'inline-cheap-source-map',
+  entry: './src/index.tsx',
   plugins: [
     new HtmlWebPackPlugin({
       template: "./public/index.html",
@@ -22,12 +22,20 @@ module.exports = {
         },
       },
       {
+        test: /\.(css|scss)$/,
+        use: [
+          'style-loader',
+          'css-loader',
+          'sass-loader'
+        ]
+      },
+      {
         test: /\.(png|jpe?g|gif|svg|woff2?|eot|ttf|otf)(\?.*)?$/,
-        loader: 'url-loader',
+        loader: 'file-loader',
         options: {
           limit: 10000,
           name: '[name].[hash:7].[ext]'
-        }
+        },
       },
     ]
   },
@@ -36,6 +44,6 @@ module.exports = {
       '~': '/srv/src',
       'package.json':'/srv/package.json',
     },
-    extensions: [ '.tsx', '.ts', '.js' ]
+    extensions: ['*', '.tsx', '.ts', '.js' ]
   }
 };

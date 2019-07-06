@@ -1,0 +1,3 @@
+mlboard/config /srv/.pytype/pyi/mlboard/config.pyi
+asyncpg/__init__ /srv/.pytype/imports/default.pyi
+mlboard/core/database /srv/.pytype/pyi/mlboard/core/database.pyi

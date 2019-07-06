@@ -1,14 +1,19 @@
-FROM python:3.7-slim as prod
+FROM python:3.7-slim AS prod
 
 RUN apt-get update \
     && apt-get install -y \
     unzip \
     gcc \
+    wget \
     && apt-get clean \
     && rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/*
+ENV DOCKERIZE_VERSION v0.6.1
+RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
-RUN pip install pipenv
-
-COPY ./ /srv
 WORKDIR /srv
+COPY ./ /srv
+RUN pip install pipenv
 RUN pipenv install
+ENTRYPOINT ["dockerize", "-wait", "tcp://db:5432", "-timeout", "30s"]

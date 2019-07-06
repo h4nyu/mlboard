@@ -1,4 +1,4 @@
-DB_URI: "postgresql://mlboard:mlboard@db/mlboard"
+DB_CONN: "postgresql://mlboard:mlboard@db/mlboard"
 STORE_DIR: "/store"
 DEBUG: True
 TZ: "Asia/Tokyo"
