@@ -5,26 +5,6 @@ import {
   TraceEventName 
 } from './enums'
 
-export interface IChamber {
-  id: string;
-  name: string;
-  blockName: string;
-  status: StatusLevel;
-  errorCount: number;
-  warningCount: number;
-}
-
-export interface ITarget {
-  id: string;
-  name: string;
-  chamberId: string;
-  status: StatusLevel;
-  type: TargetType;
-  unit: string | null;
-  value: number | null;
-  categoryname: string | null;
-}
-
 export interface IPoint {
   value: number;
   ts: string;

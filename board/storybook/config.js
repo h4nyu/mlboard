@@ -1,8 +1,7 @@
 import { configure } from '@storybook/react';
 import '@fortawesome/fontawesome-free/css/all.css'
-import '~/styles/app.scss'
 
-const req = require.context('../src', true, /stories\.tsx$/);
+const req = require.context('./stories', true, /.tsx$/);
 
 function loadStories() {
   req.keys().forEach(req);

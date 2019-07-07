@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { IDiff } from "~/core/models"
+import { IPoint } from "~/core/models"
 
 
 export const rangeBy =  async (
   id: string, fromDate: string, toDate: string, limit: number=10000
-): IDiff[]  => {
+): Promise<IPoint[]>  => {
   const res = await axios.get('api/trace/range-by', {
     params: {
       id: id,
