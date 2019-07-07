@@ -64,26 +64,9 @@ jobs:
             sudo mv ~/docker-compose /usr/local/bin/docker-compose
             docker-compose -v
 
-      - run:
-          name: Build Production Images
-          command: |
-            docker-compose -f ./docker-compose.yml -f ./docker-compose.build.yml build
-      - run:
-          name: Push Images
-          command: |
-            docker login -u $DOCKER_USER -p $DOCKER_PASS
-            docker-compose -f ./docker-compose.yml -f ./docker-compose.build.yml push
-
-
 
 workflows:
   version: 2
   test_and_deploy:
     jobs:
       - test
-      - deploy:
-          requires:
-            - test
-          filters:
-            branches:
-              only: master
