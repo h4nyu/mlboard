@@ -9,6 +9,7 @@
     "strict": true,
     "jsx": "react",
     "isolatedModules": true,
+    "outDir": "./.output",
     "noImplicitAny": true,
     "noImplicitThis": true,
     "lib": ["dom"],

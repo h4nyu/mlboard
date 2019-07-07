@@ -44,6 +44,6 @@ module.exports = {
       '~': '/srv/src',
       'package.json':'/srv/package.json',
     },
-    extensions: ['*', '.tsx', '.ts', '.js' ]
+    extensions: ['.tsx', '.ts', '.js' ]
   }
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
-import TheApp from '~/connectors/TheApp';
+import App from '~/connectors/App';
 import '@fortawesome/fontawesome-free/css/all.css'
 import '~/styles/app.scss'
 import qs from 'qs';
@@ -10,5 +10,4 @@ axios.defaults.headers.get['Content-Type'] = 'application/json';
 axios.defaults.paramsSerializer = params => {
   return qs.stringify(params, {arrayFormat: 'repeat'});
 };
-
-render(<TheApp/>, document.getElementById('app'));
+render(<App/>, document.getElementById('app'));
