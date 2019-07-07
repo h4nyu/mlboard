@@ -90,7 +90,6 @@
     "webpack-dev-server": "^3.1.14"
   },
   "scripts": {
-    "test": "jest tests/**/*.ts",
     "build": "webpack --mode development --debug --progress",
     "watch": "webpack --mode development --watch --progress --colors",
     "watch-ts": "tsc --noEmit -w",
