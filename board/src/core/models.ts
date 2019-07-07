@@ -1,10 +1,3 @@
-import { 
-  TargetType, 
-  StatusLevel, 
-  AxisType, 
-  TraceEventName 
-} from './enums'
-
 export interface IPoint {
   value: number;
   ts: string;
@@ -12,86 +5,6 @@ export interface IPoint {
 
 export interface ITrace {
   id: string;
-  targetId: string; 
-  fromDate: string; 
-  toDate: string; 
-  points: IPoint[];
+  name: string
 }
 
-export interface IMaintenanceLog {
-  id: string;
-  maintenanceId: string; 
-  occurredDate: string; 
-}
-
-export interface ITraceLevel {
-  id: string;
-  warningLevel: number;
-  errorLevel: number;
-}
-
-export interface IDiff {
-  id: string;
-  value: number;
-}
-
-export interface ITraceEvent {
-  id: string;
-  configId: string; 
-  occurredDate: string; 
-  name: TraceEventName; 
-}
-
-export interface IEventSection {
-  id: string;
-  fromDate: string; 
-  toDate: string; 
-  status: StatusLevel; 
-  code: number;
-  message: string; 
-  chamberId: string; 
-  substractId: string; 
-}
-
-export interface ITransition {
-  id: string;
-  chamberId: string;
-  targetId: string;
-  traceId: string;
-  isLocked: boolean;
-  isScatter: boolean;
-  isLog: boolean;
-}
-
-export interface IMaintenance {
-  id: string;
-  name: string;
-  chamberId: string;
-  collectDate: string;
-  value: number; 
-  status: StatusLevel;
-}
-
-export interface IMultiTrace {
-  id: string;
-  traceIds: string[];
-  fromDate: string;
-  toDate: string;
-  isScatter: boolean;
-  interval: number;
-}
-
-export interface ICorrelation {
-  id: string;
-  fromDate: string;
-  toDate: string;
-  isScatter: boolean;
-  xTraceId: string | null;
-  yTraceIds:  string[];
-  inputAxisType: AxisType;
-}
-
-export interface ITraceDiff {
-  id: string;
-  value: number;
-}
