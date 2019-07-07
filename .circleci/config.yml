@@ -14,9 +14,18 @@ jobs:
             docker-compose -v
 
       - run:
+          name: Set Environment variables
+          command: |
+            echo 'export SUBNET=192.168.10.1/24' >> $BASH_ENV
+            echo 'export WEB_PORT=8000' >> $BASH_ENV
+            echo 'export DB_PORT=8001' >> $BASH_ENV
+            echo 'export STORYBOOK_PORT=8002' >> $BASH_ENV
+
+      - run:
           name: Build Docker Test Images
           command: |
             docker-compose -f ./docker-compose.yml build
+
 
       - run:
           name: Test Migration
