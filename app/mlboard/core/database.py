@@ -8,16 +8,28 @@ import uuid
 
 IRecord = t.Dict[str, t.Any]
 
-class IConnection(Protocol):
-    async def fetch(self, sql:str, *args: t.Any) -> t.List[IRecord]:...
-    async def fetchval(self, sql:str, *args: t.Any)-> t.Optional[t.Any]:...
-    async def fetchrow(self, sql:str, *args: t.Any) -> t.Optional[IRecord]:...
-    async def execute(self, sql:str, *args: t.Any) -> None:...
-    async def copy_records_to_table(self, table_name:str, columns:t.Iterable[str], records:t.Iterable[t.Tuple]) -> None:...
-    def transaction(self) -> t.AsyncContextManager:...
 
-class IPool(Protocol):
-    async def close(self) -> None:...
+class IConnection(Protocol):
+    async def fetch(self, sql: str, *args: t.Any) -> t.List[IRecord]:
+        ...
+
+    async def fetchval(self, sql: str, *args: t.Any) -> t.Optional[t.Any]:
+        ...
+
+    async def fetchrow(self, sql: str, *args: t.Any) -> t.Optional[IRecord]:
+        ...
+
+    async def execute(self, sql: str, *args: t.Any) -> None:
+        ...
+
+    async def copy_records_to_table(
+        self, table_name: str, columns: t.Iterable[str], records: t.Iterable[t.Tuple]
+    ) -> None:
+        ...
+
+    def transaction(self) -> t.AsyncContextManager:
+        ...
+
 
 class ConnectionPool:
     def __init__(self, pool):
@@ -40,6 +52,7 @@ class ConnectionPool:
     async def __aexit__(self, exc_type, exc, tb):
         await self._pool.release(self._conn)
 
+
 class Database:
     def __init__(self,
                  url: str,
@@ -49,7 +62,7 @@ class Database:
         self.is_connected = False
         self._max_size = max_size
         self._min_size = min_size
-        self.pool:t.Optional[IPool] = None
+        self.pool: t.Optional[t.Any] = None
 
     async def __aenter__(self):
         await self.connect()

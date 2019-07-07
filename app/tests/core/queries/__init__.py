@@ -1,6 +1,3 @@
-import pytest
-from mlboard.core import db
-
 from logging import getLogger, Formatter, StreamHandler, DEBUG
 
 logger = getLogger("query")

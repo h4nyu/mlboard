@@ -25,13 +25,13 @@ class Sensor:
         chamber_id: uuid.UUID,
         log_define_id: uuid.UUID,
         col_name: str,
-        id:t.Optional[uuid.UUID]=None,
+        id: t.Optional[uuid.UUID] = None,
         unit: str = "",
-        category_name:str="",
+        category_name: str = "",
         value: t.Optional[float] = None,
         collect_date: t.Optional[datetime] = None,
         status: int = 0,
-        create_date:datetime=datetime.now(TZ),
+        create_date: datetime = datetime.now(TZ),
     ):
         self.id = id if id is not None else uuid.uuid4()
         self.name = name
@@ -39,8 +39,8 @@ class Sensor:
         self.collect_date = collect_date
         self.value = value
         self.create_date = datetime.now(TZ)
-        self.log_define_id=log_define_id
+        self.log_define_id = log_define_id
         self.chamber_id = chamber_id
         self.col_name = col_name
-        self.create_date=create_date
-        self.category_name=category_name
+        self.create_date = create_date
+        self.category_name = category_name

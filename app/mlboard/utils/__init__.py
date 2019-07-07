@@ -21,4 +21,4 @@ def cast_to_date(from_date, to_date, delta):
 @curry
 def chunks(n, l):
     for i in range(0, len(l), n):
-        yield l[i:i+n]
+        yield l[i:i + n]

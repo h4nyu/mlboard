@@ -8,4 +8,3 @@ class StatusLevel(int, Enum):
     WARNING = 30
     INFO = 20
     NOTSET = 0
-
