@@ -1,7 +1,7 @@
 import React from "react";
-import { HashRouter as Router, Route, Link, Redirect } from "react-router-dom";
+import { HashRouter as Router } from "react-router-dom";
 
-const AppRouter: React.FC<{}> = () => {
+const AppRouter = (): React.ReactElement => {
   return (
     <Router>
     </Router>

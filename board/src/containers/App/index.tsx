@@ -4,13 +4,13 @@ import AppRouter from "~/router/AppRouter";
 
 
 interface IProps {
-  onInit: () => void
+  onInit: () => void;
 }
 export default class App extends React.Component<IProps> {
-  componentDidMount = () => {
+  public componentDidMount = (): void => {
     this.props.onInit()
   }
-  render = () => {
+  render = (): React.ReactElement => {
     return (
       <div>
         <AppRouter />
