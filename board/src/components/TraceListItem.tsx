@@ -9,7 +9,7 @@ const Container = styled.div`
   padding: 0.5em;
   &:hover {
     background-color: #EEEEEE;
-  }
+  };
 `
 
 const Content = styled.div`
