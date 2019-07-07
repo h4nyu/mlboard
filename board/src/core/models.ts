@@ -6,5 +6,6 @@ export interface IPoint {
 export interface ITrace {
   id: string;
   name: string;
+  value: number;
 }
 

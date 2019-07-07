@@ -5,15 +5,23 @@ import {
 import styled from 'styled-components';
 
 const Container = styled.div`
-  display: flex;
+  display: grid;
+  grid-area: content;
+  grid-template-areas: 
+  "header"
+  "value";
   padding: 0.5em;
   &:hover {
     background-color: #EEEEEE;
   };
 `
 
-const Content = styled.div`
-  grid-area: content;
+const HeaderArea = styled.div`
+  grid-area: header;
+`
+
+const ValueArea = styled.div`
+  grid-area: value;
 `
 
 interface ITraceListItemProps {
@@ -26,11 +34,16 @@ export default class TraceListItem extends React.Component<ITraceListItemProps> 
     return (
       <div className='card'>
         <Container onClick={() => this.props.onSelect(trace.id)}>
-          <Content>
+          <HeaderArea>
             <a className="title is-4"> 
               {trace.name}
             </a>
-          </Content>
+          </HeaderArea>
+          <ValueArea>
+            <a className="is-size-6"> 
+              {trace.value}
+            </a>
+          </ValueArea>
         </Container>
       </div>
     )

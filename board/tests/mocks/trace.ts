@@ -4,5 +4,6 @@ import {
 
 export  const simple:ITrace = {
   id:'trace-id',
-  name:'trace-mock'
+  name:'trace-mock',
+  value: 300,
 }
