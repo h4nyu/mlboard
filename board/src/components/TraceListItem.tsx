@@ -17,8 +17,8 @@ const Content = styled.div`
 `
 
 interface ITraceListItemProps {
-  trace: ITrace
-  onSelect: (traceId: string) => void
+  trace: ITrace;
+  onSelect: (traceId: string) => void;
 }
 export default class TraceListItem extends React.Component<ITraceListItemProps> {
   render = () => {

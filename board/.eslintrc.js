@@ -14,7 +14,7 @@ module.exports = {
   settings: {
     react: {
       version: "detect"
-    }
+    },
   },
   rules:  {
     "@typescript-eslint/indent": ['error', 2],

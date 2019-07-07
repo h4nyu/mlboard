@@ -24,24 +24,22 @@ jobs:
       - run:
           name: Build Docker Test Images
           command: |
-            docker-compose -f ./docker-compose.yml build
-
+            docker-compose build
 
       - run:
           name: Test Migration
           command: |
-            docker-compose -f ./docker-compose.yml up migration
+            docker-compose run --rm migration alembic upgrade head
 
       - run:
-          name: Test Api
+          name: Test App
           command: |
-            docker-compose -f ./docker-compose.yml up -d api
-            docker-compose -f ./docker-compose.yml run --rm api pytest
+            docker-compose run --rm  app pipenv run test
 
       - run:
-          name: Test Board
+          name: Board Lint
           command: |
-            docker-compose -f ./docker-compose.yml run --rm board npm run test
+            docker-compose run --rm board npm run lint
 
 
   deploy:

@@ -8,4 +8,3 @@ const Component = (): React.ReactElement => (
   />
 )
 export default observer(Component);
-
