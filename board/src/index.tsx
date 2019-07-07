@@ -10,5 +10,4 @@ axios.defaults.headers.get['Content-Type'] = 'application/json';
 axios.defaults.paramsSerializer = params => {
   return qs.stringify(params, {arrayFormat: 'repeat'});
 };
-
 render(<App/>, document.getElementById('app'));

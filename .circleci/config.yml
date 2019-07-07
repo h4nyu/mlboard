@@ -37,6 +37,11 @@ jobs:
             docker-compose run --rm  app pipenv run test
 
       - run:
+          name: Install Dependencies
+          command: |
+            docker-compose run --rm board npm i
+
+      - run:
           name: Board Lint
           command: |
             docker-compose run --rm board npm run lint
