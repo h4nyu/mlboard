@@ -17,11 +17,11 @@ module.exports = {
     },
   },
   rules:  {
+    "semi": ["error", "always"],
     "@typescript-eslint/indent": ['error', 2],
     "@typescript-eslint/interface-name-prefix": "always",
     "@typescript-eslint/explicit-function-return-type": ["error", {
       "allowExpressions": true,
-      "allowTypedFunctionExpressions": true,
     }],
     "@typescript-eslint/explicit-member-accessibility": { 
       "accessibility": "no-public" 

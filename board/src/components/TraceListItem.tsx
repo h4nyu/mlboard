@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import { 
   ITrace 
 } from '~/core/models'; 
@@ -14,15 +14,15 @@ const Container = styled.div`
   &:hover {
     background-color: #EEEEEE;
   };
-`
+`;
 
 const HeaderArea = styled.div`
   grid-area: header;
-`
+`;
 
 const ValueArea = styled.div`
   grid-area: value;
-`
+`;
 
 interface IProps {
   trace: ITrace;
@@ -30,7 +30,7 @@ interface IProps {
 }
 export default class TraceListItem extends React.Component<IProps> {
   render = () => {
-    const {trace} = this.props
+    const {trace} = this.props;
     return (
       <div className='card'>
         <Container onClick={() => this.props.onSelect(trace.id)}>
@@ -46,6 +46,6 @@ export default class TraceListItem extends React.Component<IProps> {
           </ValueArea>
         </Container>
       </div>
-    )
+    );
   }
 }

@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import { 
   ITrace 
 } from '~/core/models'; 
@@ -8,7 +8,7 @@ import {IProps as IChildProps} from '~/connectors/TraceListItem';
 
 const Layout = styled.div`
   display: flex;
-`
+`;
 
 interface IProps {
   traceSet: Map<string, ITrace>;
@@ -16,7 +16,7 @@ interface IProps {
 }
 export default class TraceList extends React.Component<IProps> {
   render = () => {
-    const {traceSet, Child} = this.props
+    const {traceSet, Child} = this.props;
     return (
       <Layout className='card'>
         {
@@ -28,7 +28,7 @@ export default class TraceList extends React.Component<IProps> {
           ))
         }
       </Layout>
-    )
+    );
   }
 }
 

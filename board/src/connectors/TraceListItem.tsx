@@ -13,5 +13,5 @@ const Component = (props: IProps): React.ReactElement => (
     trace={props.trace}
     onSelect={console.debug}
   />
-)
+);
 export default observer(Component);

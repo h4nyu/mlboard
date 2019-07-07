@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { IPoint } from "~/core/models"
+import { IPoint } from "~/core/models";
 
 
 export const rangeBy =  async (
@@ -12,16 +12,16 @@ export const rangeBy =  async (
       to_date: toDate,
       limit: limit,
     }
-  })
+  });
   const resData = res.data as {
     value: number;
     ts: string;
-  }[]
+  }[];
 
   return resData.map(x => { 
     return {
       value: x.value,
       ts: x.ts,
-    }
-  })
-}
+    };
+  });
+};

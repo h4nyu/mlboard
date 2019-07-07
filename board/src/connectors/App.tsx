@@ -6,5 +6,5 @@ const Component = (): React.ReactElement => (
   <App 
     onInit={console.log}
   />
-)
+);
 export default observer(Component);

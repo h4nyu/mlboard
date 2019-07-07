@@ -9,6 +9,6 @@ const Component = (): React.ReactElement => (
     traceSet={traceStore.traceSet}
     Child={TraceListItem}
   />
-)
+);
 export default observer(Component);
 
