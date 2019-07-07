@@ -16,6 +16,7 @@
     "d3": "^5.7.0",
     "file-saver": "^2.0.1",
     "identity-obj-proxy": "^3.0.0",
+    "immutable": "^4.0.0-rc.12",
     "lodash": "^4.17.11",
     "mobx": "^5.10.1",
     "mobx-react": "^6.0.3",

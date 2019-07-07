@@ -3,6 +3,8 @@ import {
   ITrace 
 } from '~/core/models'; 
 import styled from 'styled-components';
+import {Map} from 'immutable';
+import {IProps as IChildProps} from '~/connectors/TraceListItem';
 
 const Container = styled.div`
   display: grid;
@@ -25,27 +27,23 @@ const ValueArea = styled.div`
 `
 
 interface IProps {
-  trace: ITrace;
-  onSelect: (traceId: string) => void;
+  traceSet: Map<string, ITrace>;
+  Child: React.FC<IChildProps>;
 }
-export default class TraceListItem extends React.Component<IProps> {
+export default class TraceList extends React.Component<IProps> {
   render = () => {
-    const {trace} = this.props
+    const {traceSet, Child} = this.props
     return (
       <div className='card'>
-        <Container onClick={() => this.props.onSelect(trace.id)}>
-          <HeaderArea>
-            <a className="title is-4"> 
-              {trace.name}
-            </a>
-          </HeaderArea>
-          <ValueArea>
-            <a className="is-size-6"> 
-              {trace.value}
-            </a>
-          </ValueArea>
-        </Container>
+        {
+          traceSet.toList().map(x => (
+            <Child
+              trace={x}
+            />
+          ))
+        }
       </div>
     )
   }
 }
+

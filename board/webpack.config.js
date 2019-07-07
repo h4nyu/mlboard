@@ -42,6 +42,7 @@ module.exports = {
   resolve: {
     alias: {
       '~': '/srv/src',
+      'storybook': '/srv/storybook',
       'package.json':'/srv/package.json',
     },
     extensions: ['.tsx', '.ts', '.js' ]
