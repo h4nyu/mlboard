@@ -6,24 +6,8 @@ import styled from 'styled-components';
 import {Map} from 'immutable';
 import {IProps as IChildProps} from '~/connectors/TraceListItem';
 
-const Container = styled.div`
-  display: grid;
-  grid-area: content;
-  grid-template-areas: 
-  "header"
-  "value";
-  padding: 0.5em;
-  &:hover {
-    background-color: #EEEEEE;
-  };
-`
-
-const HeaderArea = styled.div`
-  grid-area: header;
-`
-
-const ValueArea = styled.div`
-  grid-area: value;
+const Layout = styled.div`
+  display: flex;
 `
 
 interface IProps {
@@ -34,15 +18,16 @@ export default class TraceList extends React.Component<IProps> {
   render = () => {
     const {traceSet, Child} = this.props
     return (
-      <div className='card'>
+      <Layout className='card'>
         {
           traceSet.toList().map(x => (
             <Child
+              key={x.id}
               trace={x}
             />
           ))
         }
-      </div>
+      </Layout>
     )
   }
 }
