@@ -8,23 +8,25 @@ import uuid
 
 U = t.TypeVar('U')
 T = t.TypeVar('T')
+
+
 class Crud:
     def __init__(
-        self, conn:IConnection,
-        table_name:str,
+        self, conn: IConnection,
+        table_name: str,
         model_factory: t.Type[T],
-        id_cls:t.Type[U],
+        id_cls: t.Type[U],
     ) -> None:
         self.conn = conn
         self.table_name = table_name
         self.model_factory = model_factory
         self.id_type = id_cls
 
-    def to_models(self, rows:t.List[IRecord]) -> t.List[T]:
+    def to_models(self, rows: t.List[IRecord]) -> t.List[T]:
         return [self.to_model(row) for row in rows]
 
-    def to_model(self, row:IRecord) -> T:
-        return self.model_factory(**row) # type: ignore
+    def to_model(self, row: IRecord) -> T:
+        return self.model_factory(**row)  # type: ignore
 
     async def all(self) -> t.List[T]:
         sql = f"""
@@ -33,7 +35,7 @@ class Crud:
         rows = await self.conn.fetch(sql)
         return self.to_models(rows)
 
-    async def insert(self, obj:T) -> t.Optional[U]:
+    async def insert(self, obj: T) -> t.Optional[U]:
         prop_dict = obj.__dict__
         keys = prop_dict.keys()
         keys_str = ",".join(keys)
@@ -50,11 +52,10 @@ class Crud:
         )
         return queried_id
 
-    async def update(self, id:U, **kwargs) -> t.Optional[U]:
+    async def update(self, id: U, **kwargs) -> t.Optional[U]:
         keys = kwargs.keys()
-        keys_str = ",".join(keys)
         map_str = ",".join([f"{k}=${i}" for i, k in enumerate(keys, start=2)])
-        queried_id =  await self.conn.fetchval(
+        queried_id = await self.conn.fetchval(
             f"""
                 UPDATE {self.table_name}
                 SET {map_str}
@@ -66,7 +67,7 @@ class Crud:
         )
         return queried_id
 
-    async def get_by(self, **kwargs:t.Any) -> t.Optional[T]:
+    async def get_by(self, **kwargs: t.Any) -> t.Optional[T]:
         map_str = " AND ".join(
             [f"{k}=(${i})" for i, k in enumerate(kwargs.keys(), start=1)])
         values = kwargs.values()
@@ -83,14 +84,13 @@ class Crud:
         else:
             return None
 
-
     async def delete(self) -> None:
         sql = f"""
             DELETE FROM {self.table_name}
         """
         await self.conn.execute(sql)
 
-    async def delete_by(self, **kwargs:t.Dict[str, t.Any]) -> None:
+    async def delete_by(self, **kwargs: t.Dict[str, t.Any]) -> None:
         map_str = " AND ".join(
             [f"{k}=(${i})" for i, k in enumerate(kwargs.keys(), start=1)])
         values = kwargs.values()
@@ -103,8 +103,7 @@ class Crud:
             *values,
         )
 
-
-    async def filter_by(self, **kwargs:t.Any) -> t.List[T]:
+    async def filter_by(self, **kwargs: t.Any) -> t.List[T]:
         map_str = " AND ".join(
             [f"{k}=(${i})" for i, k in enumerate(kwargs.keys(), start=1)])
         sql = f"""
@@ -117,7 +116,7 @@ class Crud:
         )
         return self.to_models(rows)
 
-    async def bulk_insert(self, objects:t.List[T]) -> int:
+    async def bulk_insert(self, objects: t.List[T]) -> int:
         if len(objects) > 0:
             dicts = [o.__dict__ for o in objects]
             header_dict = dicts[0]

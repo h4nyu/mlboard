@@ -1,9 +1,6 @@
-import pytest
 import datetime
 import uuid
-from mlboard.core import models as ms
-from mlboard.core import db
-from .fixtures import client
+from .fixtures import client  # noqa: F401;
 
 
 def test_all(client):

@@ -32,6 +32,11 @@ jobs:
             docker-compose run --rm migration alembic upgrade head
 
       - run:
+          name: Lint App
+          command: |
+            docker-compose run --rm  app pipenv run lint
+
+      - run:
           name: Test App
           command: |
             docker-compose run --rm  app pipenv run test
@@ -42,7 +47,7 @@ jobs:
             docker-compose run --rm board npm i
 
       - run:
-          name: Board Lint
+          name: Lint Board 
           command: |
             docker-compose run --rm board npm run lint
 

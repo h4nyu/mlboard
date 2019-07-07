@@ -23,7 +23,7 @@ async def startup() -> None:
         try:
             logger.info('try connect to database')
             await db.connect()
-        except:
+        except Exception:
             logger.info('connection fail')
             logger.info('try reconecting in 5s')
             await asyncio.sleep(5)
