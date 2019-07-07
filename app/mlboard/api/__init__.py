@@ -1,7 +1,6 @@
 #  from flask import Flask
 #  from ..config import config
 from fastapi import FastAPI
-from .services import sensor
 from .services import trace
 from mlboard.core import db
 import asyncio
@@ -43,6 +42,5 @@ def create_app() -> FastAPI:
     app.redoc_url = None
     app.on_event("startup")(startup)
     app.on_event("shutdown")(shutdown)
-    app.include_router(sensor.router, tags=['sensor'])
     app.include_router(trace.router, tags=['trace'])
     return app
