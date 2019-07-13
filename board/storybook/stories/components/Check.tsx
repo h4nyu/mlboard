@@ -14,4 +14,4 @@ storiesOf('Check', module)
       value={false}
       onClick={console.debug}
     />
-  ))
+  ));

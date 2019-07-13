@@ -8,6 +8,6 @@ storiesOf('TraceListItem', module)
   .add('default', () => (
     <TraceListItem
       trace={simple}
-      onSelect={(traceId:string) => {console.log}}>
+      onSelect={console.debug}>
     </TraceListItem>
-  ))
+  ));

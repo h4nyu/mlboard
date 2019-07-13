@@ -6,12 +6,17 @@ import {
   ITrace 
 } from '~/core/models'; 
 import {Map} from 'immutable';
+import * as traceApi from '~/core/api/trace';
 
-export class TraceStore {
-  @observable traceSet: Map<string, ITrace> = Map({});
+export class TraceStore{
+  @observable traceMap:Map<string, ITrace> = Map({})
 
-  @action setTraceSet = (traces: ITrace[]) => {
-    traces.forEach(x => this.traceSet.set(x.id, x));
+  @action setMap = (rows:ITrace[]) => {
+    rows.map(x => this.traceMap.set(x.id, x));
+  }
+
+  fetch = async () => {
+    const rows = await traceApi.all();
   }
 }
 

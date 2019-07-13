@@ -43,6 +43,7 @@ module.exports = {
     alias: {
       '~': '/srv/src',
       'storybook': '/srv/storybook',
+      'tests': '/srv/tests',
       'package.json':'/srv/package.json',
     },
     extensions: ['.tsx', '.ts', '.js' ]
