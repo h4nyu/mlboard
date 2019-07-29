@@ -13,13 +13,13 @@ storiesOf('TransitionPlot', module)
       ...transitionMock,
       traceSegmentId: 'aaa',
       traceId: 'aaa'
-    }
+    };
     const traceSegmentMap = Map({
       'aaa': tracesSegmentMock
-    })
+    });
     const traceMap= Map({
       'aaa': traceMock
-    })
+    });
 
     return (
       <TransitionPlot
@@ -27,6 +27,6 @@ storiesOf('TransitionPlot', module)
         traceSegmentMap={traceSegmentMap}
         traceMap={traceMap}
       />
-    )
+    );
   });
 

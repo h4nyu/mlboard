@@ -31,7 +31,7 @@ const PlotContainer = styled.div`
 export interface IProps {
   transition: ITransition;
   traceSegmentMap: Map<string, ITraceSegment>;
-  traceMap:Map<string, ITrace>;
+  traceMap: Map<string, ITrace>;
 }
 export class TransitionPlot extends React.Component<IProps> {
   getTraceName = () => {
@@ -91,13 +91,13 @@ export class TransitionPlot extends React.Component<IProps> {
   getPlotConfig = () => {
     return {
       displayModeBar: false
-    }
+    };
   }
 
   render = (): React.ReactElement => {
-    const plotData = this.getPlotData()
-    const plotLayout = this.getPlotLayout()
-    const plotConfig = this.getPlotConfig()
+    const plotData = this.getPlotData();
+    const plotLayout = this.getPlotLayout();
+    const plotConfig = this.getPlotConfig();
     const traceName = this.getTraceName();
     return (
       <Layout>
@@ -112,8 +112,8 @@ export class TransitionPlot extends React.Component<IProps> {
                   data={plotData}
                   layout={{
                     ...plotLayout,
-                      height: height,
-                      width: width,
+                    height: height,
+                    width: width,
                   }}
                   config={plotConfig}
                 />

@@ -11,11 +11,11 @@ const Layout = styled.div`
   display: flex;
   flex-direction: column;
   ${styles.card}
-`
+`;
 const Header = styled.div`
   ${styles.text}
   font-size: 1.5em;
-`
+`;
 
 interface IProps {
   traceMap: Map<string, ITrace>;

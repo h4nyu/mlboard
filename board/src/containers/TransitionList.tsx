@@ -14,7 +14,7 @@ const Layout = styled.div`
 const Header = styled.div`
   ${styles.text}
   font-size: 1.5em;
-`
+`;
 
 interface IProps {
   transitionMap: Map<string, ITransition>;

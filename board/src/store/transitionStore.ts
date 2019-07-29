@@ -1,6 +1,5 @@
 import { 
   observable, 
-  action,
 } from 'mobx';
 import { 
   ITransition
