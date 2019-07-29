@@ -10,6 +10,7 @@ import {IProps as IChildProps} from '~/connectors/TraceListItem';
 const Layout = styled.div`
   display: flex;
   flex-direction: column;
+  ${styles.card}
 `
 const Header = styled.div`
   ${styles.text}

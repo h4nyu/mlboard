@@ -14,19 +14,19 @@ const Layout = styled.div`
 const Header = styled.div`
   ${styles.text}
   font-size: 1.5em;
-`;
+`
 
 interface IProps {
   transitionMap: Map<string, ITransition>;
   Child: React.FC<IChildProps>;
 }
-export default class TraceList extends React.Component<IProps> {
+export default class TransitionList extends React.Component<IProps> {
   render = () => {
     const {transitionMap, Child} = this.props;
     return (
-      <Layout>
+      <Layout className='card'>
         <Header>
-          Traces
+          Transition
         </Header>
         {
           transitionMap.toList().map(x => (
