@@ -8,6 +8,7 @@ import {IProps as IChildProps} from '~/connectors/TraceListItem';
 
 const Layout = styled.div`
   display: flex;
+  flex-direction: column;
 `
 
 interface IProps {
