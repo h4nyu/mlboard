@@ -1,27 +1,21 @@
 import axios from 'axios';
-import { IPoint } from "~/core/models"
+import { ITrace } from "~/core/models";
 
 
-export const rangeBy =  async (
-  id: string, fromDate: string, toDate: string, limit: number=10000
-): Promise<IPoint[]>  => {
-  const res = await axios.get('api/trace/range-by', {
-    params: {
-      id: id,
-      from_date: fromDate,
-      to_date: toDate,
-      limit: limit,
-    }
-  })
+export const all =  async (
+): Promise<ITrace[]>  => {
+  const res = await axios.get('api/trace/all');
   const resData = res.data as {
+    id: string;
+    name: string;
     value: number;
-    ts: string;
-  }[]
+  }[];
 
   return resData.map(x => { 
     return {
+      id: x.id,
+      name: x.name,
       value: x.value,
-      ts: x.ts,
-    }
-  })
-}
+    };
+  });
+};

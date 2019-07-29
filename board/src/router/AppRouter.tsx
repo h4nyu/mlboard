@@ -5,7 +5,7 @@ const AppRouter = (): React.ReactElement => {
   return (
     <Router>
     </Router>
-  )
-}
+  );
+};
 
-export default AppRouter
+export default AppRouter;

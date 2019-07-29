@@ -1,5 +1,5 @@
+import '~/config'
 import { configure } from '@storybook/react';
-import '@fortawesome/fontawesome-free/css/all.css'
 
 const req = require.context('./stories', true, /.tsx$/);
 

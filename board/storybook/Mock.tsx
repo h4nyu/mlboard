@@ -6,7 +6,7 @@ const StyledDiv = styled.div`
   color: palevioletred;
   border-color: red;
   border-width: 1px;
-`
+`;
 
 const Component = () => (
   <StyledDiv>
@@ -14,5 +14,5 @@ const Component = () => (
       Mock
     </span>
   </StyledDiv>
-)
+);
 export default Component;

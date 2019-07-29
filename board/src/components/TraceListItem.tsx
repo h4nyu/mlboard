@@ -1,10 +1,12 @@
-import React from 'react'
+import React from 'react';
 import { 
   ITrace 
 } from '~/core/models'; 
 import styled from 'styled-components';
+import * as styles from '~/styles';
+console.log(styles);
 
-const Container = styled.div`
+const Layout = styled.div`
   display: grid;
   grid-area: content;
   grid-template-areas: 
@@ -14,15 +16,18 @@ const Container = styled.div`
   &:hover {
     background-color: #EEEEEE;
   };
-`
+  ${styles.card}
+`;
 
-const HeaderArea = styled.div`
+const Header = styled.div`
   grid-area: header;
-`
+  ${styles.text}
+`;
 
-const ValueArea = styled.div`
+const Value = styled.div`
   grid-area: value;
-`
+  ${styles.text}
+`;
 
 interface IProps {
   trace: ITrace;
@@ -30,22 +35,16 @@ interface IProps {
 }
 export default class TraceListItem extends React.Component<IProps> {
   render = () => {
-    const {trace} = this.props
+    const {trace} = this.props;
     return (
-      <div className='card'>
-        <Container onClick={() => this.props.onSelect(trace.id)}>
-          <HeaderArea>
-            <a className="title is-4"> 
-              {trace.name}
-            </a>
-          </HeaderArea>
-          <ValueArea>
-            <a className="is-size-6"> 
-              {trace.value}
-            </a>
-          </ValueArea>
-        </Container>
-      </div>
-    )
+      <Layout onClick={() => this.props.onSelect(trace.id)}>
+        <Header>
+          {trace.name}
+        </Header>
+        <Value>
+          {trace.value}
+        </Value>
+      </Layout>
+    );
   }
 }
