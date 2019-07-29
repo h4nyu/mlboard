@@ -17,7 +17,7 @@ storiesOf('TransitionPlot', module)
     const traceSegmentMap = Map({
       'aaa': tracesSegmentMock
     })
-    const traceSet = Map({
+    const traceMap= Map({
       'aaa': traceMock
     })
 
@@ -25,7 +25,7 @@ storiesOf('TransitionPlot', module)
       <TransitionPlot
         transition={transition}
         traceSegmentMap={traceSegmentMap}
-        traceSet={traceSet}
+        traceMap={traceMap}
       />
     )
   });

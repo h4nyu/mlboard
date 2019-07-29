@@ -9,21 +9,12 @@ import {IProps as IChildProps} from '~/connectors/TraceListItem';
 
 const Layout = styled.div`
   display: flex;
-<<<<<<< HEAD
   flex-direction: column;
 `
-||||||| merged common ancestors
-`
-=======
-  flex-direction: column;
-  ${styles.card}
-`;
-
 const Header = styled.div`
   ${styles.text}
   font-size: 1.5em;
-`;
->>>>>>> af488d78fdc3d1a897a54f2bf407e058c4be9d23
+`
 
 interface IProps {
   traceMap: Map<string, ITrace>;

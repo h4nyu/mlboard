@@ -88,10 +88,16 @@ export class TransitionPlot extends React.Component<IProps> {
       },
     };
   }
+  getPlotConfig = () => {
+    return {
+      displayModeBar: false
+    }
+  }
 
   render = (): React.ReactElement => {
     const plotData = this.getPlotData()
     const plotLayout = this.getPlotLayout()
+    const plotConfig = this.getPlotConfig()
     const traceName = this.getTraceName();
     return (
       <Layout>
@@ -109,6 +115,7 @@ export class TransitionPlot extends React.Component<IProps> {
                       height: height,
                       width: width,
                   }}
+                  config={plotConfig}
                 />
               )
             }

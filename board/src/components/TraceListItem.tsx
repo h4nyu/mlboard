@@ -4,7 +4,7 @@ import {
 } from '~/core/models'; 
 import styled from 'styled-components';
 import * as styles from '~/styles';
-console.log(styles);
+
 
 const Layout = styled.div`
   display: grid;
