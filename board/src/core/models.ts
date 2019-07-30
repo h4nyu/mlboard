@@ -18,6 +18,5 @@ export interface ITraceSegment {
 export interface ITransition {
   id: string;
   traceId: string;
-  traceSegmentId: string;
 }
 
