@@ -51,7 +51,7 @@ export class TransitionPlot extends React.Component<IProps> {
       traceSegmentMap,
       transition,
     } = this.props;
-    const segment = traceSegmentMap.get(transition.traceSegmentId);
+    const segment = traceSegmentMap.get(transition.traceId);
     if(segment){
       return [
         {

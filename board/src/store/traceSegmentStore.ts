@@ -8,6 +8,9 @@ import {Map} from 'immutable';
 
 export class TraceSegmentStore{
   @observable traceSegmentMap: Map<string,ITraceSegment> = Map({});
+  fetch = async(traceId: string) => {
+    return traceId;
+  }
 }
 
 const store = new TraceSegmentStore();

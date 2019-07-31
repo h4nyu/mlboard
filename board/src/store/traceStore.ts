@@ -18,15 +18,15 @@ export class TraceStore{
 
   @action select = (traceId: string) => {
     if(this.selectedIds.includes(traceId)){
-      this.selectedIds = this.selectedIds.filter(x => x !== traceId)
+      this.selectedIds = this.selectedIds.filter(x => x !== traceId);
     }else{
-      this.selectedIds = [...this.selectedIds, traceId]
+      this.selectedIds = [...this.selectedIds, traceId];
     }
   }
 
   fetch = async () => {
     const rows = await traceApi.all();
-    setMap(rows)
+    this.setMap(rows);
   }
 }
 
