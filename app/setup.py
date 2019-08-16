@@ -5,7 +5,6 @@ from setuptools import setup, find_packages
 
 requires = [
     "cytoolz",
-    "pandas",
     "uvicorn",
     "fastapi",
     "pyyaml",

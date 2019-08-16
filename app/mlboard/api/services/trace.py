@@ -20,9 +20,9 @@ async def search_range(
     from_date: datetime.datetime,
     to_date: datetime.datetime,
     limit: int = 10000,
-) -> t.List[ms.Trace]:
+) -> t.List[ms.TracePoint]:
     async with db.get_conn() as conn:
-        rows = await qs.Trace(conn).range_by(
+        rows = await qs.TracePoint(conn).range_by(
             config_id=id,
             from_date=from_date,
             to_date=to_date,

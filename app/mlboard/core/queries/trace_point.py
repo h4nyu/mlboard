@@ -15,23 +15,23 @@ from ..database import IConnection, IRecord
 logger = getLogger("api.query.trace")
 
 
-TABLE_NAME = "traces"
+TABLE_NAME = "trace_points"
 
 
-class Trace:
+class TracePoint:
     def __init__(self, conn: IConnection) -> None:
         self.conn = conn
         self.crud = Crud(
             conn,
             TABLE_NAME,
-            ms.Trace,
+            ms.TracePoint,
             uuid.UUID,
         )
 
     async def delete(self) -> None:
         return await self.crud.delete()
 
-    async def range_by(self, config_id, from_date, to_date, limit=10000) -> t.List[ms.Trace]:
+    async def range_by(self, config_id, from_date, to_date, limit=10000) -> t.List[ms.TracePoint]:
         rows = await self.conn.fetch(
             f"""
                 SELECT value, ts, config_id
