@@ -7,7 +7,6 @@ from logging import getLogger
 import typing as t
 from profilehooks import profile
 from datetime import datetime
-import pandas as pd
 import numpy as np
 from .crud import Crud
 from ..database import IConnection, IRecord
