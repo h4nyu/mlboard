@@ -1,8 +1,7 @@
 import React from 'react';
-import moment from 'moment'
+import moment from 'moment';
 import { storiesOf } from '@storybook/react';
 import RangeDatetimeInput from '~/components/RangeDatetimeInput';
-import {Map} from 'immutable';
 
 
 storiesOf('RangeDatetimeInput', module)

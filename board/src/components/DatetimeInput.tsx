@@ -1,22 +1,21 @@
-import React, { FormEvent }  from 'react'
-import styled from 'styled-components'
-import moment from 'moment'
+import React, { FormEvent }  from 'react';
+import moment from 'moment';
 
 
 const FORMAT = 'YYYY-MM-DDTHH:mm';
 interface IState {
-  value: string
+  value: string;
 }
 export interface IProps {
-  onChange: (value: string) => void
-  value: string
+  onChange: (value: string) => void;
+  value: string;
 }
 export default class DatetimeInput extends React.Component<IProps, IState> {
   state = {
     value: moment().format(FORMAT)
   }
 
-  toLocalDate = (val:string) => {
+  toLocalDate = (val: string) => {
     return moment(val).format(FORMAT);
   }
 
@@ -25,7 +24,7 @@ export default class DatetimeInput extends React.Component<IProps, IState> {
       value:this.toLocalDate(this.props.value)
     });
   }
-  componentWillReceiveProps = (props:IProps) => {
+  componentWillReceiveProps = (props: IProps) => {
     this.setState({
       value:this.toLocalDate(props.value)
     });
@@ -33,7 +32,7 @@ export default class DatetimeInput extends React.Component<IProps, IState> {
 
   handleChange = (e: FormEvent<HTMLInputElement>) => {
     e.preventDefault();
-    const {onChange} = this.props
+    const {onChange} = this.props;
     if(moment(e.currentTarget.value).isValid()){
       this.setState({
         value:e.currentTarget.value
@@ -51,6 +50,6 @@ export default class DatetimeInput extends React.Component<IProps, IState> {
         value={this.state.value}
         onChange={this.handleChange}
       />
-    )
+    );
   }
 }

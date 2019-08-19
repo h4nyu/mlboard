@@ -1,27 +1,26 @@
-import React, {FormEvent} from 'react'
-import styled from 'styled-components'
+import React from 'react';
+import styled from 'styled-components';
 import DatetimeInput from '~/components/DatetimeInput';
-import moment from 'moment'
 
 const Layout = styled.div`
   display: grid;
   grid-template-areas:
     "fromDate icon toDate";
   grid-template-columns: 1fr auto  1fr;
-`
+`;
 
 const FromDateArea = styled.div`
  grid-area: fromDate;
  display: flex;
  align-items: center;
  justify-content: center;
-`
+`;
 const ToDateArea = styled.div`
  grid-area: toDate;
  display: flex;
  align-items: center;
  justify-content: center;
-`
+`;
 const IconArea = styled.div`
  grid-area: icon;
  display: flex;
@@ -29,7 +28,7 @@ const IconArea = styled.div`
  justify-content: center;
  padding-left: 0.5em;
  padding-right: 0.5em;
-`
+`;
 export interface IProps {
   fromDate: string;
   toDate: string;
