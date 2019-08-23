@@ -6,7 +6,6 @@ import {
   ITrace,
 } from '~/core/models';
 import Plot from 'react-plotly.js';
-import {Map} from 'immutable';
 
 const Layout = styled.div`
   display: flex;
@@ -75,7 +74,7 @@ export class TransitionPlot extends React.Component<IProps> {
   }
 
   render = (): React.ReactElement => {
-    const {trace} = this.props
+    const {trace} = this.props;
     const plotData = this.getPlotData();
     const plotLayout = this.getPlotLayout();
     const plotConfig = this.getPlotConfig();

@@ -6,7 +6,7 @@ export interface IPoint {
 export interface ITrace {
   id: string;
   configId: string;
-  fromDate:string;
-  toDate:string;
+  fromDate: string;
+  toDate: string;
   points: IPoint[];
 }

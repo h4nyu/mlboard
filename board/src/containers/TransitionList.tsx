@@ -32,7 +32,7 @@ export default class TransitionList extends React.Component<IProps> {
           traceMap.toList().map(x => (
             <Child
               key={x.id}
-              transition={x}
+              trace={x}
             />
           ))
         }

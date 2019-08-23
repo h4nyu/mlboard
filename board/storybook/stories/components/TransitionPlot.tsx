@@ -2,7 +2,6 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { TransitionPlot } from '~/components/TransitionPlot';
 import {simple as traceMock} from 'tests/mocks/trace';
-import {Map} from 'immutable';
 
 
 storiesOf('TransitionPlot', module)
