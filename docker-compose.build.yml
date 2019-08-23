@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  db:
+    build: &default-build
+      context: ./db
+      args:
+        - http_proxy
+        - https_proxy
+    image: mlboard_db
+
+  app: &default-app
+    build : 
+      <<: *default-build
+      context: ./app
+    image:  mlboard_app
+
+  migration:
+    build:
+      <<: *default-build
+      context: ./migration
+    image:  mlboard_migration
+
+  board: &default-node
+    build:
+      <<: *default-build
+      context: ./board
+    image:  mlboard_board
+
+  web:
+    build:
+      <<: *default-build
+      context: ./web
+    image:  mlboard_web

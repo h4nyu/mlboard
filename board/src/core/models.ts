@@ -5,18 +5,8 @@ export interface IPoint {
 
 export interface ITrace {
   id: string;
-  name: string;
-  value: number;
-}
-
-export interface ITraceSegment {
-  id: string;
-  traceId: string;
+  configId: string;
+  fromDate: string;
+  toDate: string;
   points: IPoint[];
 }
-
-export interface ITransition {
-  id: string;
-  traceId: string;
-}
-

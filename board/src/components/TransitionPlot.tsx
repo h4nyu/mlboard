@@ -3,12 +3,9 @@ import styled from 'styled-components';
 import AutoSizer from "react-virtualized-auto-sizer";
 import * as styles from '~/styles';
 import { 
-  ITransition,
-  ITraceSegment,
   ITrace,
 } from '~/core/models';
 import Plot from 'react-plotly.js';
-import {Map} from 'immutable';
 
 const Layout = styled.div`
   display: flex;
@@ -29,34 +26,16 @@ const PlotContainer = styled.div`
 `;
 
 export interface IProps {
-  transition: ITransition;
-  traceSegmentMap: Map<string, ITraceSegment>;
-  traceMap: Map<string, ITrace>;
+  trace: ITrace;
 }
 export class TransitionPlot extends React.Component<IProps> {
-  getTraceName = () => {
-    const {
-      traceMap,
-      transition,
-    } = this.props;
-    const trace = traceMap.get(transition.traceId);
-    if(trace){
-      return trace.name;
-    }else{
-      return "";
-    }
-  }
   getPlotData = () => {
-    const {
-      traceSegmentMap,
-      transition,
-    } = this.props;
-    const segment = traceSegmentMap.get(transition.traceId);
-    if(segment){
+    const {trace} = this.props;
+    if(trace){
       return [
         {
-          x: segment.points.map(x => x.ts),
-          y: segment.points.map(x => x.value),
+          x: trace.points.map(x => x.ts),
+          y: trace.points.map(x => x.value),
           type: 'scatter',
           mode: 'lines+points',
           marker: {color: 'red'},
@@ -95,14 +74,14 @@ export class TransitionPlot extends React.Component<IProps> {
   }
 
   render = (): React.ReactElement => {
+    const {trace} = this.props;
     const plotData = this.getPlotData();
     const plotLayout = this.getPlotLayout();
     const plotConfig = this.getPlotConfig();
-    const traceName = this.getTraceName();
     return (
       <Layout>
         <Header>
-          {traceName}
+          {trace.configId}
         </Header>
         <PlotContainer >
           <AutoSizer>

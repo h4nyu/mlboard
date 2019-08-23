@@ -5,7 +5,7 @@ from typing_extensions import Protocol
 from datetime import datetime
 
 
-class Trace:
+class TracePoint:
     value: float
     ts: datetime
     config_id: uuid.UUID

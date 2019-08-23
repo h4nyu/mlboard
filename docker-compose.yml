@@ -10,7 +10,6 @@ services:
     volumes:
       - ./db/postgresql.conf:/etc/postgresql.conf
     environment:
-      - TZ=Asia/Tokyo
       - PGTZ=Asia/Tokyo
     ports:
       - "${DB_PORT}:5432"

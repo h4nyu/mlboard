@@ -11,7 +11,6 @@ const Layout = styled.div`
   grid-area: content;
   grid-template-areas: 
   "header"
-  "value";
   padding: 0.5em;
   &:hover {
     background-color: #EEEEEE;
@@ -24,10 +23,6 @@ const Header = styled.div`
   ${styles.text}
 `;
 
-const Value = styled.div`
-  grid-area: value;
-  ${styles.text}
-`;
 
 interface IProps {
   trace: ITrace;
@@ -39,11 +34,8 @@ export default class TraceListItem extends React.Component<IProps> {
     return (
       <Layout onClick={() => this.props.onSelect(trace.id)}>
         <Header>
-          {trace.name}
+          {trace.id}
         </Header>
-        <Value>
-          {trace.value}
-        </Value>
       </Layout>
     );
   }

@@ -16,8 +16,7 @@ fake = Faker()
 @pytest.fixture(scope='function', autouse=True)
 async def prepare():
     async with db.get_conn() as conn:
-        await qs.Trace(conn).delete()
-        await qs.Sensor(conn).delete()
+        await qs.TracePoint(conn).delete()
 
 
 @pytest.mark.asyncio
@@ -26,7 +25,7 @@ async def test_performance_of_insert():
     config_id = uuid.uuid4()
     traces = pipe(
         range(10000),
-        map(lambda x: ms.Trace(
+        map(lambda x: ms.TracePoint(
             value=0,
             ts=ts,
             config_id=config_id,
@@ -36,7 +35,7 @@ async def test_performance_of_insert():
 
     async def load_chunk(chunk):
         async with db.get_conn() as conn:
-            return await qs.Trace(conn).bulk_insert(chunk)
+            return await qs.TracePoint(conn).bulk_insert(chunk)
 
     cors = pipe(
         traces,
