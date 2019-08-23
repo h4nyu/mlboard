@@ -1,9 +1,9 @@
 import React from 'react';
-import { ITransition } from '~/core/models'; 
+import { ITrace } from '~/core/models'; 
 import styled from 'styled-components';
 import * as styles from '~/styles';
 import {Map} from 'immutable';
-import {IProps as IChildProps} from '~/connectors/TransitionPlot';
+import {IProps as IChildProps} from '~/components/TransitionPlot';
 
 const Layout = styled.div`
   display: flex;
@@ -17,19 +17,19 @@ const Header = styled.div`
 `;
 
 interface IProps {
-  transitionMap: Map<string, ITransition>;
+  traceMap: Map<string, ITrace>;
   Child: React.FC<IChildProps>;
 }
 export default class TransitionList extends React.Component<IProps> {
   render = () => {
-    const {transitionMap, Child} = this.props;
+    const {traceMap, Child} = this.props;
     return (
       <Layout className='card'>
         <Header>
           Transition
         </Header>
         {
-          transitionMap.toList().map(x => (
+          traceMap.toList().map(x => (
             <Child
               key={x.id}
               transition={x}
@@ -40,5 +40,3 @@ export default class TransitionList extends React.Component<IProps> {
     );
   }
 }
-
-

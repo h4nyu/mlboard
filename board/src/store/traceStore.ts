@@ -13,12 +13,12 @@ import * as traceApi from '~/core/api/trace';
 export class TraceStore{
   @observable traceIds: string[] = []
   @observable fromDate: string = moment().add(-1, 'hours').format()
-  @observable toData: string = moment().format()
+  @observable toDate: string = moment().format()
   @observable traceMap: Map<string, ITrace> = Map({})
 
 
-  @action setTrace = (ITrace) => {
-    this.traceMap.set(x.id, x);
+  @action setTrace = (trace:ITrace) => {
+    this.traceMap.set(trace.id, trace);
   }
 
   @action deleteTrace =  (traceId: string) => {
@@ -30,13 +30,13 @@ export class TraceStore{
   }
 
   select =  async (traceId: string) => {
-    const points = await traceApi.getPoints(traceId, this.fromDate, this.toData);
+    const points = await traceApi.rangeBy(traceId, this.fromDate, this.toDate);
     if(points){
       const trace:ITrace = {
         id: uuid(),
         configId: traceId,
         fromDate: this.fromDate,
-        toData: this.toData,
+        toDate: this.toDate,
         points: points
       }
       this.setTrace(trace)
@@ -44,7 +44,7 @@ export class TraceStore{
   }
 
   fetchTraceIds = async () => {
-    const rows = await traceApi.getTraceIds();
+    const rows = await traceApi.all();
     this.setTraceIds(rows);
   }
 
