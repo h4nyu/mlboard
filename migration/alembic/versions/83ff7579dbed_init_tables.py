@@ -27,9 +27,9 @@ def upgrade():
             (
                 ts timestamp with time zone NOT NULL DEFAULT clock_timestamp(),
                 value double precision,
-                config_id uuid NOT NULL
+                tag text NOT NULL
             );
-        CREATE INDEX on trace_points (config_id);
+        CREATE INDEX on trace_points (tag);
         SELECT create_hypertable('trace_points', 'ts', chunk_time_interval => interval '1 hour');
         """
     ))

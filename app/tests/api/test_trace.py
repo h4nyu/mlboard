@@ -8,7 +8,7 @@ def test_all(client):
         res = client.get(
             '/trace/range-by',
             params={
-                'id': uuid.uuid4(),
+                'tag': 'aaa',
                 'from_date': datetime.datetime.now().isoformat(),
                 'to_date': datetime.datetime.now().isoformat(),
             }
