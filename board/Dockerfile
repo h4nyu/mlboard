@@ -1,10 +1,11 @@
-FROM node:9-slim AS dev
+FROM node:12-slim AS dev
 
 MAINTAINER Xinyaun Yao <yao.ntno@gmail.com>
 
 WORKDIR /srv
 COPY ./package.json /srv/package.json
-RUN npm install  --proxy=$http_proxy
+COPY ./yarn.lock /srv/yarn.lock
+RUN yarn install  --proxy=$http_proxy
 COPY ./  /srv
 RUN mkdir -p /public
 RUN mkdir -p /srv/dist

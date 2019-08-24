@@ -49,7 +49,7 @@ jobs:
       - run:
           name: Lint Board 
           command: |
-            docker-compose run --rm board npm run lint
+            docker-compose run --rm board yarn run lint
 
 
   deploy:

@@ -36,8 +36,6 @@ export class TransitionPlot extends React.Component<IProps> {
         {
           x: trace.points.map(x => x.ts),
           y: trace.points.map(x => x.value),
-          type: 'scatter',
-          mode: 'lines+points',
           marker: {color: 'red'},
         },
       ];
@@ -58,11 +56,6 @@ export class TransitionPlot extends React.Component<IProps> {
         type: 'date'
       },
       yaxis: {
-        title: {
-          font: {
-            size: 12,
-          },
-        },
         fixedrange: true,
       },
     };
