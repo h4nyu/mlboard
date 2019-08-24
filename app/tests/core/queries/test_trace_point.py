@@ -14,21 +14,21 @@ fake = Faker()
 
 
 @pytest.fixture(scope='function', autouse=True)
-async def prepare():
-    async with db.get_conn() as conn:
+async def prepare() -> None:
+    async with qs.get_conn() as conn:
         await qs.TracePoint(conn).delete()
 
 
 @pytest.mark.asyncio
-async def test_performance_of_insert():
+async def test_performance_of_insert() -> None:
     ts = datetime.now()
-    config_id = uuid.uuid4()
+    tag = 'test'
     traces = pipe(
         range(10000),
         map(lambda x: ms.TracePoint(
             value=0,
             ts=ts,
-            config_id=config_id,
+            tag=tag,
         )),
         list
     )

@@ -8,14 +8,14 @@ from datetime import datetime
 class TracePoint:
     value: float
     ts: datetime
-    config_id: uuid.UUID
+    tag: str
 
     def __init__(
         self,
         value: float,
-        config_id: uuid.UUID,
+        tag: str,
         ts: datetime,
     ):
         self.value = value
         self.ts = ts
-        self.config_id = config_id
+        self.tag = tag

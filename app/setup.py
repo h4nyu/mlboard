@@ -15,6 +15,7 @@ dev_requires = [
     "requests",
     "pytest",
     "pytest-mock",
+    "pytest-cov",
     "faker",
     "flake8",
     "autopep8",

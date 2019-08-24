@@ -1,6 +1,5 @@
 from mlboard.core import models as ms
 from mlboard.core import queries as qs
-from mlboard.core import db
 from fastapi import APIRouter, Query
 import typing as t
 from logging import getLogger
@@ -16,14 +15,14 @@ router = APIRouter()
 
 @router.get('/trace/range-by')
 async def search_range(
-    id: uuid.UUID,
+    tag: str,
     from_date: datetime.datetime,
     to_date: datetime.datetime,
     limit: int = 10000,
 ) -> t.List[ms.TracePoint]:
-    async with db.get_conn() as conn:
+    async with qs.get_conn() as conn:
         rows = await qs.TracePoint(conn).range_by(
-            config_id=id,
+            tag=tag,
             from_date=from_date,
             to_date=to_date,
             limit=limit
