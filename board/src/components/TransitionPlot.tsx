@@ -28,7 +28,7 @@ const PlotContainer = styled.div`
 export interface IProps {
   trace: ITrace;
 }
-export class TransitionPlot extends React.Component<IProps> {
+export default class TransitionPlot extends React.Component<IProps> {
   getPlotData = () => {
     const {trace} = this.props;
     if(trace){
