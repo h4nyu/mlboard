@@ -1,11 +1,10 @@
 import uuid
 import typing
 from dataclasses import dataclass
-from typing_extensions import Protocol
 from datetime import datetime
 
 
-class TracePoint:
+class Point:
     value: float
     ts: datetime
     tag: str

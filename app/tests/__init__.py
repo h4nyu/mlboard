@@ -1,6 +1,4 @@
-from mlboard.core import db
 import pytest
-from .fixtures import db_scope
 from logging import getLogger, Formatter, StreamHandler, DEBUG
 logger = getLogger("test")
 formatter = Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')

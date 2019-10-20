@@ -14,6 +14,5 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
 
 WORKDIR /srv
 COPY ./ /srv
-RUN pip install pipenv
-RUN pipenv install
+RUN pip install -r requirements.txt
 ENTRYPOINT ["dockerize", "-wait", "tcp://db:5432", "-timeout", "30s"]
