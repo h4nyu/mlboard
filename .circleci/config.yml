@@ -34,12 +34,12 @@ jobs:
       - run:
           name: Lint App
           command: |
-            docker-compose run --rm  app pipenv run lint
+            docker-compose run --rm  app sh fix_lint.sh
 
       - run:
           name: Test App
           command: |
-            docker-compose run --rm  app pipenv run test
+            docker-compose run --rm app pytest
 
       - run:
           name: Install Dependencies
