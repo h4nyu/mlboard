@@ -1,12 +1,12 @@
 from cytoolz.curried import map, pipe
-from .. import models as ms
-from .. import db
-import uuid
+from uuid import UUID, uuid4
 import time
 from logging import getLogger
 import typing as t
 from profilehooks import profile
 from datetime import datetime
+from mlboard.models.protocols import IPoint
+from mlboard.models.point import Point
 from mlboard.dao.protocols import IQuery
 from mlboard.dao.postgresql import PostgresqlQuery, IConnection
 
@@ -14,20 +14,20 @@ from mlboard.dao.postgresql import PostgresqlQuery, IConnection
 logger = getLogger("api.query.trace")
 
 
-TABLE_NAME = "trace_points"
+TABLE_NAME = "points"
 
 
-def create_model(row: t.Dict[str, t.Any]) -> ms.TracePoint:
-    return ms.TracePoint(
+def create_model(row: t.Dict[str, t.Any]) -> IPoint:
+    return Point(
         value=row['value'],
-        tag=row['tag'],
+        trace_id=row['trace_id'],
         ts=row['ts'],
     )
 
 
-class TracePoint:
+class PointQuery:
     def __init__(self, conn: IConnection) -> None:
-        self._query: IQuery[ms.TracePoint, str] = PostgresqlQuery[ms.TracePoint, str](
+        self._query: IQuery[IPoint, str] = PostgresqlQuery[IPoint, str](
             conn,
             TABLE_NAME,
             create_model,
@@ -38,28 +38,28 @@ class TracePoint:
 
     async def range_by(
         self,
-        tag: str,
+        trace_id: UUID,
         from_date: datetime,
         to_date: datetime,
         limit: int = 10000,
-    ) -> t.List[ms.TracePoint]:
+    ) -> t.Sequence[IPoint]:
         rows = await self._query.conn.fetch(
             f"""
                 SELECT value, ts
                 FROM {TABLE_NAME}
-                WHERE tag = $1
+                WHERE trace_id = $1
                     AND ts BETWEEN $2 AND $3
                 ORDER BY ts ASC
                 LIMIT $4
             """,
-            tag,
+            trace_id,
             from_date,
             to_date,
             limit,
         )
         return [
-            ms.TracePoint(
-                tag=tag,
+            Point(
+                trace_id=trace_id,
                 value=rows['value'],
                 ts=rows['ts'],
             )
@@ -67,18 +67,17 @@ class TracePoint:
             in rows
         ]
 
-    async def bulk_insert(self, objects) -> int:
+    async def bulk_insert(self, rows: t.Sequence[IPoint]) -> int:
         conn = self._query.conn
-        if len(objects) > 0:
+        if len(rows) > 0:
             records = pipe(
-                objects,
-                map(lambda x: (x.ts, x.value, x.tag)),
+                rows,
+                map(lambda x: (x.ts, x.value, x.trace_id)),
                 list
             )
             await conn.copy_records_to_table(
                 TABLE_NAME,
-                columns=['ts', 'value', 'tag'],
+                columns=['ts', 'value', 'trace_id'],
                 records=records
             )
-        count = len(objects)
-        return count
+        return len(rows)

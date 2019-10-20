@@ -23,14 +23,21 @@ def upgrade():
         """
         CREATE EXTENSION "uuid-ossp";
 
-        CREATE TABLE trace_points
+        CREATE TABLE points
             (
                 ts timestamp with time zone NOT NULL DEFAULT clock_timestamp(),
                 value double precision,
-                tag text NOT NULL
+                trace_id uuid NOT NULL
             );
-        CREATE INDEX on trace_points (tag);
-        SELECT create_hypertable('trace_points', 'ts', chunk_time_interval => interval '1 hour');
+        CREATE INDEX on points (trace_id);
+        SELECT create_hypertable('points', 'ts', chunk_time_interval => interval '1 hour');
+        CREATE TABLE traces
+            (
+                id uuid NOT NULL PRIMARY KEY,
+                tag text NOT NULL UNIQUE,
+                created_at timestamp with time zone NOT NULL,
+                updated_at timestamp with time zone NOT NULL
+            );
         """
     ))
 
@@ -39,7 +46,8 @@ def downgrade():
     conn = op.get_bind()
     conn.execute(text(
         """
-        DROP TABLE trace_points CASCADE;
+        DROP TABLE points CASCADE;
+        DROP TABLE traces CASCADE;
         DROP EXTENSION "uuid-ossp";
         """
     ))

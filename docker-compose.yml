@@ -25,9 +25,20 @@ services:
     volumes: 
       - ./app:/srv
       - ./store:/store
+    depends_on:
+      - migration
+
+  client:
+    build : 
+      <<: *default-build
+      context: ./app
+    volumes: 
+      - ./client:/srv
+    depends_on:
+      - api
 
   api:
-    command:  pipenv run api --reload
+    command:  python api.py
     <<: *default-app
     depends_on:
       - db
