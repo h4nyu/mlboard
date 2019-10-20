@@ -31,6 +31,13 @@ def upgrade():
             );
         CREATE INDEX on points (trace_id);
         SELECT create_hypertable('points', 'ts', chunk_time_interval => interval '1 hour');
+        CREATE TABLE traces
+            (
+                id uuid NOT NULL PRIMARY KEY,
+                tag text NOT NULL UNIQUE,
+                created_at timestamp with time zone NOT NULL,
+                updated_at timestamp with time zone NOT NULL
+            );
         """
     ))
 
@@ -40,6 +47,7 @@ def downgrade():
     conn.execute(text(
         """
         DROP TABLE points CASCADE;
+        DROP TABLE traces CASCADE;
         DROP EXTENSION "uuid-ossp";
         """
     ))

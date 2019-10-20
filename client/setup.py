@@ -5,9 +5,14 @@ from setuptools import setup, find_packages
 
 requires = [
     "cytoolz",
-    "requests",
+    "uvicorn",
+    "fastapi",
+    "pyyaml",
+    "asyncpg",
+    "ujson",
 ]
 dev_requires = [
+    "requests",
     "pytest",
     "pytest-mock",
     "pytest-cov",
@@ -22,8 +27,8 @@ dev_requires = [
 ]
 
 setup(
-    name="mlboard",
-    version="0.5.0",
+    name="mlboard_client",
+    version="0.0.0",
     description="TODO",
     author='Xinyuan Yao',
     author_email='yao.ntno@google.com',

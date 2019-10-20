@@ -67,11 +67,11 @@ class PointQuery:
             in rows
         ]
 
-    async def bulk_insert(self, objects: t.Sequence[IPoint]) -> None:
+    async def bulk_insert(self, rows: t.Sequence[IPoint]) -> int:
         conn = self._query.conn
-        if len(objects) > 0:
+        if len(rows) > 0:
             records = pipe(
-                objects,
+                rows,
                 map(lambda x: (x.ts, x.value, x.trace_id)),
                 list
             )
@@ -80,3 +80,4 @@ class PointQuery:
                 columns=['ts', 'value', 'trace_id'],
                 records=records
             )
+        return len(rows)

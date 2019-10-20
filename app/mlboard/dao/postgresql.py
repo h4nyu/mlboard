@@ -81,7 +81,7 @@ class PostgresqlQuery(t.Generic[T, U]):
         return [self.to_model(row) for row in rows]
 
     def to_model(self, row: IRecord) -> T:
-        return self.model_factory(**row)  # type: ignore
+        return self.model_factory(row)  # type: ignore
 
     async def all(self) -> t.List[T]:
         sql = f"""
@@ -166,7 +166,7 @@ class PostgresqlQuery(t.Generic[T, U]):
         )
         return self.to_models(rows)
 
-    async def bulk_insert(self, objects: t.List[T]) -> int:
+    async def bulk_insert(self, objects: t.Sequence[T]) -> int:
         if len(objects) > 0:
             dicts = [o.__dict__ for o in objects]
             header_dict = dicts[0]
