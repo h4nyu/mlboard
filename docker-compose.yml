@@ -25,6 +25,8 @@ services:
     volumes: 
       - ./app:/srv
       - ./store:/store
+    depends_on:
+      - migration
 
   api:
     command:  pipenv run api --reload

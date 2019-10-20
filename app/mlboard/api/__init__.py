@@ -16,7 +16,6 @@ logger.addHandler(handler)
 logger.propagate = False
 
 
-
 def create_app() -> FastAPI:
     app = FastAPI()
     app.title = 'mlboard'

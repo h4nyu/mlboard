@@ -1,20 +1,18 @@
-import uuid
-import typing
-from dataclasses import dataclass
+from uuid import UUID
 from datetime import datetime
 
 
 class Point:
     value: float
     ts: datetime
-    tag: str
+    trace_id: UUID
 
     def __init__(
         self,
         value: float,
-        tag: str,
+        trace_id: UUID,
         ts: datetime,
     ):
         self.value = value
         self.ts = ts
-        self.tag = tag
+        self.trace_id = trace_id

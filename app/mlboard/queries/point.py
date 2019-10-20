@@ -1,5 +1,5 @@
 from cytoolz.curried import map, pipe
-import uuid
+from uuid import UUID, uuid4
 import time
 from logging import getLogger
 import typing as t
@@ -14,13 +14,13 @@ from mlboard.dao.postgresql import PostgresqlQuery, IConnection
 logger = getLogger("api.query.trace")
 
 
-TABLE_NAME = "trace_points"
+TABLE_NAME = "points"
 
 
 def create_model(row: t.Dict[str, t.Any]) -> IPoint:
     return Point(
         value=row['value'],
-        tag=row['tag'],
+        trace_id=row['trace_id'],
         ts=row['ts'],
     )
 
@@ -38,7 +38,7 @@ class PointQuery:
 
     async def range_by(
         self,
-        tag: str,
+        trace_id: UUID,
         from_date: datetime,
         to_date: datetime,
         limit: int = 10000,
@@ -47,19 +47,19 @@ class PointQuery:
             f"""
                 SELECT value, ts
                 FROM {TABLE_NAME}
-                WHERE tag = $1
+                WHERE trace_id = $1
                     AND ts BETWEEN $2 AND $3
                 ORDER BY ts ASC
                 LIMIT $4
             """,
-            tag,
+            trace_id,
             from_date,
             to_date,
             limit,
         )
         return [
             Point(
-                tag=tag,
+                trace_id=trace_id,
                 value=rows['value'],
                 ts=rows['ts'],
             )
@@ -67,16 +67,16 @@ class PointQuery:
             in rows
         ]
 
-    async def bulk_insert(self, objects) -> None:
+    async def bulk_insert(self, objects: t.Sequence[IPoint]) -> None:
         conn = self._query.conn
         if len(objects) > 0:
             records = pipe(
                 objects,
-                map(lambda x: (x.ts, x.value, x.tag)),
+                map(lambda x: (x.ts, x.value, x.trace_id)),
                 list
             )
             await conn.copy_records_to_table(
                 TABLE_NAME,
-                columns=['ts', 'value', 'tag'],
+                columns=['ts', 'value', 'trace_id'],
                 records=records
             )

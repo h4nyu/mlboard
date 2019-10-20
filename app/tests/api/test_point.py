@@ -1,5 +1,5 @@
 import datetime
-import uuid
+from uuid import uuid4
 from .fixtures import client  # noqa: F401;
 
 
@@ -8,7 +8,7 @@ def test_all(client):
         res = client.get(
             '/trace/range-by',
             params={
-                'tag': 'aaa',
+                'trace_id': str(uuid4()),
                 'from_date': datetime.datetime.now().isoformat(),
                 'to_date': datetime.datetime.now().isoformat(),
             }
