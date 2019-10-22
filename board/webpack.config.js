@@ -9,7 +9,7 @@ module.exports = {
   entry: './src/index.tsx',
   plugins: [
     new HtmlWebPackPlugin({
-      template: "./public/index.html",
+      template: "./templates/index.html",
     }),
   ],
   module: {

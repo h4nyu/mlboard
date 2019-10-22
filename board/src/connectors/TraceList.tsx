@@ -5,9 +5,9 @@ import TraceListItem from "~/connectors/TraceListItem";
 import traceStore from "~/store/traceStore";
 
 
-const Component = (): React.ReactElement => (
+const Component = () => (
   <TraceList
-    traceMap={traceStore.traceMap}
+    traceMap={traceStore.traces}
     Child={TraceListItem}
   />
 );

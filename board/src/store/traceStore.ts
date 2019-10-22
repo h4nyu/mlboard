@@ -11,7 +11,7 @@ import moment from 'moment';
 import * as traceApi from '~/core/api/trace';
 
 export class TraceStore{
-  @observable traceMap: Map<string, ITrace> = Map({})
+  @observable traces: Map<string, ITrace> = Map({})
   @observable traceIds: string[] = []
   @observable keyward: string = ""
   @observable fromDate: string = moment().add(-1, 'hours').format()
@@ -19,11 +19,11 @@ export class TraceStore{
 
 
   @action setTrace = (trace: ITrace) => {
-    this.traceMap.set(trace.id, trace);
+    this.traces.set(trace.id, trace);
   }
 
   @action deleteTrace =  (traceId: string) => {
-    this.traceMap.delete(traceId);
+    this.traces.delete(traceId);
   }
 
   @action setTraceIds = (rows: string[]) => {

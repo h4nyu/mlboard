@@ -18,14 +18,11 @@ module.exports = {
   },
   rules:  {
     "semi": ["error", "always"],
+    "@typescript-eslint/interface-name-prefix": 0,
     "@typescript-eslint/indent": ['error', 2],
-    "@typescript-eslint/interface-name-prefix": "always",
-    "@typescript-eslint/explicit-function-return-type": ["error", {
-      "allowExpressions": true,
-    }],
-    "@typescript-eslint/explicit-member-accessibility": { 
-      "accessibility": "no-public" 
-    },
+    "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/camelcase": "off",
+    "@typescript-eslint/explicit-member-accessibility": "off",
   },
 };
+
