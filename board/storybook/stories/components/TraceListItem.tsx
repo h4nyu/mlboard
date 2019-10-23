@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import TraceListItem from '~/components/TraceListItem';
-import {simple} from '/srv/tests/mocks/trace';
+import {simple} from 'tests/mocks/trace';
 
 
 storiesOf('TraceListItem', module)

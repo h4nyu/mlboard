@@ -12,6 +12,9 @@ class IPointQuery(Protocol):
     async def delete(self) -> None:
         ...
 
+    async def delete_by(self, **kwargs: t.Any) -> None:
+        ...
+
     async def range_by(self, trace_id: UUID, from_date: datetime, to_date: datetime) -> t.Sequence[IPoint]:
         ...
 
@@ -24,6 +27,9 @@ class ITraceQuery(Protocol):
         ...
 
     async def delete(self) -> None:
+        ...
+
+    async def delete_by(self, **kwargs: t.Any) -> None:
         ...
 
     async def upsert(self, tag: str) -> UUID:

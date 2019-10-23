@@ -1,21 +1,20 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import TraceList from '~/containers/TraceList';
-import {Mock} from 'storybook/Mock';
-import {simple} from '/srv/tests/mocks/trace';
-import {Map} from 'immutable';
+import Component from '~/containers/TraceList';
+import Mock from 'storybook/Mock';
+import {simple} from 'tests/mocks/trace';
 
 
 storiesOf('TraceList', module)
   .add('default', () => {
-    const traceMap = Map({
-      "aaa": simple,
-      "bbb": simple,
-    });
+    const traces = new Map([
+      ["aaa", {...simple, id: 'aaa'},],
+      ["bbb", {...simple, id: 'bbb'},],
+    ]);
     return (
-      <TraceList
-        traceMap={traceMap}
-        Child={() => <Mock/>}
+      <Component 
+        traces={traces}
+        Child={Mock}
       />
     );
   });

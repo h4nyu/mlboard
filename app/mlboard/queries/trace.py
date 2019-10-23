@@ -40,6 +40,9 @@ class TraceQuery:
     async def delete(self) -> None:
         await self._query.delete()
 
+    async def delete_by(self, **kwargs: t.Any) -> None:
+        await self._query.delete_by(**kwargs)
+
     async def upsert(self, tag: str) -> UUID:
         conn = self._query.conn
         async with conn.transaction():
@@ -49,7 +52,7 @@ class TraceQuery:
                 await self._query.insert(new_row)
                 return new_row.id
             else:
-                self._query.update(
+                await self._query.update(
                     key="id",
                     value=row.id,
                     payload={

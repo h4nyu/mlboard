@@ -8,14 +8,11 @@ const StyledDiv = styled.div`
   border-width: 1px;
 `;
 
-export class Mock extends React.Component {
-  render = (): React.ReactElement => {
-    return (
-      <StyledDiv>
-        <span>
-          Mock
-        </span>
-      </StyledDiv>
-    );
-  }
-}
+const Component = () => (
+  <StyledDiv>
+    <span>
+      Mock
+    </span>
+  </StyledDiv>
+);
+export default Component;

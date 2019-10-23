@@ -1,42 +1,27 @@
 import React from 'react';
-import { 
-  ITrace 
-} from '~/core/models'; 
+import { ITrace } from '~/models/interfaces'; 
 import styled from 'styled-components';
 import * as styles from '~/styles';
-import {Map} from 'immutable';
 import {IProps as IChildProps} from '~/connectors/TraceListItem';
 
 const Layout = styled.div`
   display: flex;
   flex-direction: column;
   ${styles.card}
-`;
-const Header = styled.div`
-  ${styles.text}
-  font-size: 1.5em;
+  height: 100%;
+  overflow-y: scroll;
 `;
 
 interface IProps {
-  traceMap: Map<string, ITrace>;
+  traces: Map<string, ITrace>;
   Child: React.FC<IChildProps>;
 }
 export default class TraceList extends React.Component<IProps> {
   render = () => {
-    const {traceMap, Child} = this.props;
+    const {traces, Child} = this.props;
     return (
-      <Layout className='card'>
-        <Header>
-          Traces
-        </Header>
-        {
-          traceMap.toList().map(x => (
-            <Child
-              key={x.id}
-              trace={x}
-            />
-          ))
-        }
+      <Layout>
+        {Array.from(traces.values()).map(x => <Child key={x.id} trace={x}/>)}
       </Layout>
     );
   }

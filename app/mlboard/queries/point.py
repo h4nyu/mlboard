@@ -36,6 +36,9 @@ class PointQuery:
     async def delete(self) -> None:
         return await self._query.delete()
 
+    async def delete_by(self, **kwargs: t.Any) -> None:
+        await self._query.delete_by(**kwargs)
+
     async def range_by(
         self,
         trace_id: UUID,

@@ -26,6 +26,9 @@ class IQuery(Protocol[T, U]):
     async def delete(self) -> None:
         ...
 
+    async def delete_by(self, **kwargs: t.Any) -> None:
+        ...
+
     async def all(self) -> t.List[T]:
         ...
 

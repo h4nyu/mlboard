@@ -2,12 +2,12 @@ import { observer } from 'mobx-react';
 import React from "react";
 import TraceList from '~/containers/TraceList';
 import TraceListItem from "~/connectors/TraceListItem";
-import traceStore from "~/store/traceStore";
+import {traceStore} from "~/store";
 
 
-const Component = (): React.ReactElement => (
+const Component = () => (
   <TraceList
-    traceMap={traceStore.traceMap}
+    traces={traceStore.traces}
     Child={TraceListItem}
   />
 );
