@@ -12,5 +12,6 @@ export default class AppStore {
     this.root = root;
   }
   init = () => {
+    this.root.traceStore.fetch();
   }
 }

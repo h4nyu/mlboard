@@ -1,10 +1,12 @@
 #  from flask import Flask
 #  from ..config import config
+from starlette.applications import Starlette
 from fastapi import FastAPI
 import asyncio
 from logging import getLogger, Formatter, StreamHandler, DEBUG
 from starlette.requests import Request
-from .trace import router as point_router
+from .trace import router as trace_router
+from .point import router as point_router
 
 logger = getLogger("api")
 formatter = Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -23,4 +25,5 @@ def create_app() -> FastAPI:
     app.docs_url = None
     app.redoc_url = None
     app.include_router(point_router)
+    app.include_router(trace_router)
     return app

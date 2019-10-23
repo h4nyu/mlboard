@@ -1,5 +1,6 @@
 import React from 'react';
 import TraceList from '~/connectors/TraceList';
+import PageHeader from '~/components/PageHeader';
 import styled from 'styled-components';
 
 const Layout = styled.div`
@@ -12,6 +13,9 @@ const Layout = styled.div`
   height: 100vh;
 `;
 const TraceArea = styled.div`
+  grid-area: col0;
+`;
+const HeaderArea = styled.div`
   grid-area: header;
   height: 52px;
 `;
@@ -20,6 +24,9 @@ export default class TracePage extends React.Component<{}> {
   render = () => {
     return (
       <Layout>
+        <HeaderArea>
+          <PageHeader/>
+        </HeaderArea>
         <TraceArea>
           <TraceList />
         </TraceArea>

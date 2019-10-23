@@ -114,7 +114,7 @@ class PostgresqlQuery(t.Generic[T, U]):
                 WHERE {key} = $1
             """,
             value,
-            payload.values(),
+            *payload.values(),
         )
 
     async def get_by(self, **kwargs: t.Any) -> t.Optional[T]:

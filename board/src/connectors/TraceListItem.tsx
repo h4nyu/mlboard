@@ -1,17 +1,16 @@
 import { observer } from 'mobx-react';
 import React from "react";
-import { 
-  ITrace 
-} from '~/core/models'; 
+import { ITrace } from '~/models/interfaces'; 
 import TraceListItem from '~/components/TraceListItem';
+import {traceStore} from '~/store';
 
 export interface IProps{
   trace: ITrace;
 }
-const Component = (props: IProps): React.ReactElement => (
+const Component = (props: IProps) => (
   <TraceListItem
     trace={props.trace}
-    onSelect={console.debug}
+    onSelect={traceStore.select}
   />
 );
 export default observer(Component);
