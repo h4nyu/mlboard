@@ -5,7 +5,7 @@ import { ITraceApi } from '~/api/interfaces';
 import { IRoot } from './interfaces';
 import { ITrace } from '~/models/interfaces'; 
 
-export default class TraceStore{
+export default class TransitionStore{
   @observable traces: Map<string, ITrace> = new Map();
   @observable traceIds: string[] = [];
   @observable keyward: string = ""
@@ -36,10 +36,6 @@ export default class TraceStore{
 
   @action setTraceIds = (rows: string[]) => {
     this.traceIds = rows;
-  }
-
-  @action select =  (traceId: string) => {
-    this.root.pointStore.fetch(traceId);
   }
 
   fetch = async () => {

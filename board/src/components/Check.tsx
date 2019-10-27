@@ -8,18 +8,19 @@ const Layout = styled.span`
   display: flex;
   align-items: center;
 `;
-export interface ICheckProps {
+export interface IProps {
   value: boolean;
   onClick: () => void;
+  children?: React.ReactElement;
 }
-export default class Check extends React.Component<ICheckProps> {
-  render = (): React.ReactElement => {
-    const {value, children} = this.props;
-    return (
-      <Layout onClick={this.props.onClick}>
-        {value ? <ToggleOn/> : <ToggleOff/>}
-        {children}
-      </Layout>
-    );
-  }
-}
+const Check = (props: IProps) => {
+  const {value, children} = props;
+  return (
+    <Layout onClick={props.onClick}>
+      {value ? <ToggleOn/> : <ToggleOff/>}
+      {children}
+    </Layout>
+  );
+};
+
+export default Check;

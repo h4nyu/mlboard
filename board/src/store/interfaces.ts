@@ -1,4 +1,4 @@
-import { ITrace, IPoint } from '~/models/interfaces';
+import { ITrace, IPoint, ITransition } from '~/models/interfaces';
 import {Moment} from 'moment';
 
 export interface IAppStore {
@@ -18,11 +18,15 @@ export interface ILoadingStore {
   dispatch: <T>(collback: () => T) => Promise<T| undefined>;
 }
 
+export interface ITransitionStore {
+  rows: Map<string, ITransition>; 
+  add: (traceId: string) => void;
+}
+
 export interface ITraceStore {
   traces: Map<string, ITrace>; 
   traceIds: string[]; 
   keyward: string;
-  select: (traceId: string) => void;
   fromDate: Moment; 
   toDate: Moment;
   fetch: () => void;
@@ -32,5 +36,6 @@ export interface IRoot {
   loadingStore: ILoadingStore;
   traceStore: ITraceStore;
   pointStore: IPointStore;
+  transitionStore: ITransitionStore;
   appStore: IAppStore;
 }
