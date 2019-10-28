@@ -1,15 +1,21 @@
 import asyncio
 from mlboard.models.trace import Trace
 from mlboard.queries.trace import TraceQuery
-from mlboard.queries import get_conn
-from mlboard.usecases.trace import create_usecase
+from mlboard.usecases.trace import create_usecase as TraceUsecase
+from mlboard.usecases.point import create_usecase as PointUsecase
 
 
 async def main():
-    async with get_conn() as conn:
-        uc = create_usecase(conn)
-        for i in range(5):
-            await uc.register_trace(f"#{i}")
+    trace_uc = TraceUsecase()
+    point_uc = PointUsecase()
+    for i in range(5):
+        await trace_uc.register(f"#{i}")
+    traces = await trace_uc.all()
+    for t in traces:
+        await point_uc.add_scalar(t.id, 0.5)
+        await point_uc.add_scalar(t.id, 0.1)
+        await point_uc.add_scalar(t.id, 0.8)
+        await point_uc.add_scalar(t.id, -1.0)
 
 
 if __name__ == '__main__':

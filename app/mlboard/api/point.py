@@ -23,3 +23,10 @@ async def range_by(trace_id: UUID, from_date: datetime, to_date: datetime) -> t.
         from_date=from_date,
         to_date=to_date,
     )
+
+@router.get('/point/range-by-limit')
+async def filter_by_limit(trace_id: UUID, limit: int) -> t.Sequence[IPoint]:
+    return await usecase.filter_by_limit(
+        trace_id=trace_id,
+        limit=limit,
+    )

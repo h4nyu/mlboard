@@ -58,3 +58,14 @@ class PointUsecase:
                 from_date,
                 to_date
             )
+
+    async def filter_by_limit(
+        self,
+        trace_id: UUID,
+        limit: int=10000,
+    ) -> t.Sequence[IPoint]:
+        async with self.get_conn() as conn:
+            return await self.point_query(conn).range_by_limit(
+                trace_id,
+                limit
+            )

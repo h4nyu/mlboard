@@ -13,7 +13,9 @@ const Component = (props: IProps) => (
     segments={segmentStore.segments}
     traces={traceStore.traces}
     onClose={transitionStore.deleteById}
+    onIsLogChange={transitionStore.toggleIsLog}
+    onIsDatetimeChange={transitionStore.toggleIsDatetime}
+    onIsScatterChange={transitionStore.toggleIsScatter}
   />
 );
 export default observer(Component);
-

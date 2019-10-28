@@ -1,9 +1,8 @@
 import React from 'react';
 import { render } from 'react-dom';
-import '~/config';
+import '~/styles';
 import App from '~/connectors/App';
 import { spy } from 'mobx';
-import '~/styles/app.scss';
 
 spy((event) => {
   if (event.type === 'action') {
