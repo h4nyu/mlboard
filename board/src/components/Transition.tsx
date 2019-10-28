@@ -2,22 +2,45 @@ import React from 'react';
 import styled from 'styled-components';
 import { AutoSizer } from 'react-virtualized';
 import Plot from 'react-plotly.js';
-import {ITransition, IPoint } from '~/models/interfaces';
+import {ITransition, IPoint, ITrace } from '~/models/interfaces';
 
 
-const Layout = styled.span`
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  width:100%;
+const Layout = styled.div`
+  display: grid;
+  grid-template-areas:
+    "title close"
+    "plot plot";
+    padding: 0.5em;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto 1fr;
 `;
+const PlotArea = styled.div`
+  grid-area: plot;
+  height: 200px;
+  padding: 0.5em;
+`
+
+const Close = styled.a`
+  grid-area: close;
+`
+
+const Title = styled.span`
+  grid-area: title;
+  font-weight: bold;
+`
 export interface IProps {
   transition: ITransition;
-  points: IPoint[];
+  traces: Map<string, ITrace>;
+  segments: Map<string,IPoint[]>;
 }
 export default class Transition extends React.Component<IProps>{
   getPlotData = () => {
-    const { transition, points } = this.props;
+    const { transition, segments } = this.props;
+    let points = segments.get(transition.id)
+    if(points === undefined){
+      return [] as any
+    }
+
     return [
       {
         x: points.map(t => t.ts.local().format()),
@@ -33,27 +56,45 @@ export default class Transition extends React.Component<IProps>{
 
   getPlotLayout = () => {
     return {
+      margin: {
+        r: 5,
+        t: 5,
+        b: 30,
+        l: 50,
+      },
 
     } as any;
+  }
+  getTitle = () => {
+    const {transition, traces} = this.props;
+    const trace = traces.get(transition.traceId);
+    if(trace === undefined){
+      return ""
+    }
+    return trace.tag
   }
 
   render = () => {
     const plotData = this.getPlotData();
     const plotLayout = this.getPlotLayout();
+    const title = this.getTitle();
     return (
-      <Layout>
-        <AutoSizer>
-          {({ height, width }) => {
-            return (
-              <Plot
-                data={plotData}
-                layout={{...plotLayout, height: height, width: width}}
-              />
-            );
-          }}
-        </AutoSizer>
+      <Layout className="card">
+        <Title> {title} </Title>
+        <Close className="delete"/>
+        <PlotArea>
+          <AutoSizer>
+            {({ height, width }) => {
+              return (
+                <Plot
+                  data={plotData}
+                  layout={{...plotLayout, height: height, width: width}}
+                />
+              );
+            }}
+          </AutoSizer>
+        </PlotArea>
       </Layout>
     );
   }
 }
-

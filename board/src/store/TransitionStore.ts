@@ -22,6 +22,6 @@ export default class TransitionStore{
       toDate: moment(),
     };
     this.rows.set(row.id, row);
-    this.root.pointStore.fetch(traceId);
+    this.root.segmentStore.fetch(traceId);
   }
 }

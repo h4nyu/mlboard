@@ -1,12 +1,12 @@
 import LoadingStore from './LoadingStore';
 import AppStore from './AppStore';
 import TraceStore from './TraceStore';
-import PointStore from './PointStore';
+import SegmentStore from './SegmentStore';
 import TransitionStore from './TransitionStore';
 import {
   ILoadingStore,
   ITraceStore,
-  IPointStore,
+  ISegmentStore,
   ITransitionStore,
   IRoot,
   IAppStore,
@@ -19,13 +19,13 @@ export class RootStore {
   loadingStore: ILoadingStore;
   appStore: IAppStore;
   traceStore: ITraceStore;
-  pointStore: IPointStore;
+  segmentStore: ISegmentStore;
   transitionStore: ITransitionStore;
 
   constructor() {
     const traceApi = new TraceApi();
     const pointApi = new PointApi();
-    this.pointStore = new PointStore(
+    this.segmentStore = new SegmentStore(
       this,
       pointApi,
     );

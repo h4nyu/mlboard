@@ -3,7 +3,7 @@ import { IPointApi } from '~/api/interfaces';
 import { IRoot } from './interfaces';
 import { IPoint } from '~/models/interfaces'; 
 
-export default class PointStore{
+export default class SegmentStore{
   @observable points: Map<string, IPoint[]> = new Map();
 
   private pointApi: IPointApi

@@ -5,7 +5,7 @@ export interface IAppStore {
   init: () => void;
 }
 
-export interface IPointStore {
+export interface ISegmentStore {
   points: Map<string, IPoint[]>; 
   fetch: (traceId: string) => void;
 }
@@ -35,7 +35,7 @@ export interface ITraceStore {
 export interface IRoot {
   loadingStore: ILoadingStore;
   traceStore: ITraceStore;
-  pointStore: IPointStore;
+  segmentStore: ISegmentStore;
   transitionStore: ITransitionStore;
   appStore: IAppStore;
 }
