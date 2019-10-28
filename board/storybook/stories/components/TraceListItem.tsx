@@ -1,13 +1,13 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import TraceListItem from '~/components/TraceListItem';
-import {simple} from 'tests/mocks/trace';
+import {trace} from 'tests/mocks/models';
 
 
 storiesOf('TraceListItem', module)
   .add('default', () => (
     <TraceListItem
-      trace={simple}
+      trace={trace}
       onSelect={console.debug}>
     </TraceListItem>
   ));

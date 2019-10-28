@@ -12,9 +12,11 @@ export interface ITrace {
   updatedAt: Moment;
 }
 
-export interface ISegment {
+export interface ITransition {
   id: string;
   traceId: string;
+  isScatter: boolean;
+  isLog: boolean;
   fromDate: Moment;
   toDate: Moment;
 }

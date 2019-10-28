@@ -1,11 +1,13 @@
 import LoadingStore from './LoadingStore';
 import AppStore from './AppStore';
 import TraceStore from './TraceStore';
-import PointStore from './PointStore';
+import SegmentStore from './SegmentStore';
+import TransitionStore from './TransitionStore';
 import {
   ILoadingStore,
   ITraceStore,
-  IPointStore,
+  ISegmentStore,
+  ITransitionStore,
   IRoot,
   IAppStore,
 } from './interfaces';
@@ -17,12 +19,13 @@ export class RootStore {
   loadingStore: ILoadingStore;
   appStore: IAppStore;
   traceStore: ITraceStore;
-  pointStore: IPointStore;
+  segmentStore: ISegmentStore;
+  transitionStore: ITransitionStore;
 
   constructor() {
     const traceApi = new TraceApi();
     const pointApi = new PointApi();
-    this.pointStore = new PointStore(
+    this.segmentStore = new SegmentStore(
       this,
       pointApi,
     );
@@ -32,6 +35,7 @@ export class RootStore {
       traceApi
     );
     this.appStore = new AppStore(this);
+    this.transitionStore = new TransitionStore(this);
   }
 }
 
@@ -40,4 +44,6 @@ const store: IRoot = new RootStore();
 export const loadingStore = store.loadingStore;
 export const appStore = store.appStore;
 export const traceStore = store.traceStore;
+export const transitionStore = store.transitionStore;
+export const segmentStore = store.segmentStore;
 export default store;
