@@ -11,7 +11,6 @@ import {
   IRoot,
   IAppStore,
 } from './interfaces';
-import { Map } from 'immutable';
 import TraceApi from '~/api/TraceApi';
 import PointApi from '~/api/PointApi';
 

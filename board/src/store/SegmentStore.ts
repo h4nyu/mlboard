@@ -21,7 +21,7 @@ export default class SegmentStore{
   @action setPoints = (traceId: string, rows: IPoint[]) => {
     this.segments.set(traceId, rows);
   }
-  @action deleteById = (id:string) => {
+  @action deleteById = (id: string) => {
     this.segments = this.segments.delete(id);
   }
 

@@ -20,16 +20,16 @@ const PlotArea = styled.div`
   grid-area: plot;
   height: 150px;
   padding: 0.5em;
-`
+`;
 
 const Close = styled.a`
   grid-area: close;
-`
+`;
 
 const Title = styled.span`
   grid-area: title;
   font-weight: bold;
-`
+`;
 export interface IProps {
   transition: ITransition;
   traces: Map<string, ITrace>;
@@ -39,9 +39,9 @@ export interface IProps {
 export default class Transition extends React.Component<IProps>{
   getPlotData = () => {
     const { transition, segments } = this.props;
-    let points = segments.get(transition.id)
+    let points = segments.get(transition.id);
     if(points === undefined){
-      return [] as any
+      return [] as any;
     }
 
     return [
@@ -72,9 +72,9 @@ export default class Transition extends React.Component<IProps>{
     const {transition, traces} = this.props;
     const trace = traces.get(transition.traceId);
     if(trace === undefined){
-      return ""
+      return "";
     }
-    return trace.tag
+    return trace.tag;
   }
 
   render = () => {

@@ -16,13 +16,13 @@ storiesOf('Transition', module)
         value: 19.0,
         ts: moment('2015-01-02'),
       },
-    ]
+    ];
     const segments = Map([
       [transition.id, points],
     ]);
     const traces = Map([
       [transition.traceId, trace],
-    ])
+    ]);
     return (
       <Component 
         transition={transition}

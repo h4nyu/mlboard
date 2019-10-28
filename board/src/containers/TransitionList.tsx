@@ -17,7 +17,7 @@ interface IProps {
   transitions: Map<string, ITransition>;
   Child: React.ComponentType<IChildProps>;
 }
-export default (props: IProps) => {
+const Component = (props: IProps) => {
   const {transitions, Child} = props;
   return (
     <Layout>
@@ -29,4 +29,5 @@ export default (props: IProps) => {
       ))}
     </Layout>
   );
-}
+};
+export default Component;
