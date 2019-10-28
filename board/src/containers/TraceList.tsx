@@ -1,3 +1,4 @@
+import { Map } from 'immutable';
 import React from 'react';
 import { ITrace } from '~/models/interfaces'; 
 import styled from 'styled-components';
@@ -7,7 +8,6 @@ import {IProps as IChildProps} from '~/connectors/TraceListItem';
 const Layout = styled.div`
   display: flex;
   flex-direction: column;
-  ${styles.card}
   height: 100%;
   overflow-y: scroll;
 `;
@@ -20,7 +20,7 @@ export default class TraceList extends React.Component<IProps> {
   render = () => {
     const {traces, Child} = this.props;
     return (
-      <Layout>
+      <Layout className="card">
         {Array.from(traces.values()).map(x => <Child key={x.id} trace={x}/>)}
       </Layout>
     );

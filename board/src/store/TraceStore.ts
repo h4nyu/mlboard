@@ -3,10 +3,11 @@ import { Moment } from 'moment';
 import moment from 'moment';
 import { ITraceApi } from '~/api/interfaces';
 import { IRoot } from './interfaces';
+import { Map } from 'immutable';
 import { ITrace } from '~/models/interfaces'; 
 
 export default class TransitionStore{
-  @observable traces: Map<string, ITrace> = new Map();
+  @observable traces: Map<string, ITrace> = Map();
   @observable traceIds: string[] = [];
   @observable keyward: string = ""
   @observable fromDate: Moment = moment().add(-1, 'hours')
@@ -25,7 +26,7 @@ export default class TransitionStore{
 
 
   @action setTraces = (traces: ITrace[]) => {
-    this.traces = new Map(
+    this.traces = Map(
       traces.map(x => [x.id, x])
     );
   }

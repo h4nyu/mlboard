@@ -1,10 +1,12 @@
+import {Moment} from 'moment';
 import { observable, action, } from 'mobx';
 import { IPointApi } from '~/api/interfaces';
 import { IRoot } from './interfaces';
 import { IPoint } from '~/models/interfaces'; 
+import { Map } from 'immutable';
 
 export default class SegmentStore{
-  @observable points: Map<string, IPoint[]> = new Map();
+  @observable segments: Map<string, IPoint[]> = Map();
 
   private pointApi: IPointApi
   private root: IRoot
@@ -17,16 +19,22 @@ export default class SegmentStore{
     this.pointApi = pointApi;
   }
   @action setPoints = (traceId: string, rows: IPoint[]) => {
-    this.points.set(traceId, rows);
+    this.segments.set(traceId, rows);
+  }
+  @action deleteById = (id:string) => {
+    this.segments = this.segments.delete(id);
   }
 
-  @action fetch = async (traceId: string) => {
+  @action fetch = async (
+    traceId: string,
+    fromDate: Moment,
+    toDate: Moment,
+  ) => {
     const rows = await this.pointApi.rangeBy(
       traceId, 
-      this.root.traceStore.fromDate,
-      this.root.traceStore.toDate,
+      fromDate,
+      toDate,
     );
     this.setPoints(traceId, rows);
   }
 }
-

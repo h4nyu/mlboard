@@ -11,6 +11,7 @@ import {
   IRoot,
   IAppStore,
 } from './interfaces';
+import { Map } from 'immutable';
 import TraceApi from '~/api/TraceApi';
 import PointApi from '~/api/PointApi';
 
@@ -45,4 +46,5 @@ export const loadingStore = store.loadingStore;
 export const appStore = store.appStore;
 export const traceStore = store.traceStore;
 export const transitionStore = store.transitionStore;
+export const segmentStore = store.segmentStore;
 export default store;

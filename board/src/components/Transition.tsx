@@ -1,3 +1,4 @@
+import { Map } from 'immutable';
 import React from 'react';
 import styled from 'styled-components';
 import { AutoSizer } from 'react-virtualized';
@@ -10,13 +11,14 @@ const Layout = styled.div`
   grid-template-areas:
     "title close"
     "plot plot";
-    padding: 0.5em;
+  padding: 0.5em;
+  margin: 0.25em;
   grid-template-columns: 1fr auto;
   grid-template-rows: auto 1fr;
 `;
 const PlotArea = styled.div`
   grid-area: plot;
-  height: 200px;
+  height: 150px;
   padding: 0.5em;
 `
 
@@ -32,6 +34,7 @@ export interface IProps {
   transition: ITransition;
   traces: Map<string, ITrace>;
   segments: Map<string,IPoint[]>;
+  onClose: (id: string) => void;
 }
 export default class Transition extends React.Component<IProps>{
   getPlotData = () => {
@@ -78,10 +81,11 @@ export default class Transition extends React.Component<IProps>{
     const plotData = this.getPlotData();
     const plotLayout = this.getPlotLayout();
     const title = this.getTitle();
+    const {transition, onClose} = this.props;
     return (
       <Layout className="card">
         <Title> {title} </Title>
-        <Close className="delete"/>
+        <Close className="delete" onClick={() => onClose(transition.id)}/>
         <PlotArea>
           <AutoSizer>
             {({ height, width }) => {

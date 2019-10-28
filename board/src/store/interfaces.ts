@@ -1,13 +1,15 @@
 import { ITrace, IPoint, ITransition } from '~/models/interfaces';
 import {Moment} from 'moment';
+import { Map } from 'immutable';
 
 export interface IAppStore {
   init: () => void;
 }
 
 export interface ISegmentStore {
-  points: Map<string, IPoint[]>; 
-  fetch: (traceId: string) => void;
+  segments: Map<string, IPoint[]>; 
+  deleteById: (id: string) => void;
+  fetch: (traceId: string, fromDate: Moment, toDate: Moment) => void;
 }
 
 
@@ -21,6 +23,7 @@ export interface ILoadingStore {
 export interface ITransitionStore {
   rows: Map<string, ITransition>; 
   add: (traceId: string) => void;
+  deleteById: (id: string) => void;
 }
 
 export interface ITraceStore {
