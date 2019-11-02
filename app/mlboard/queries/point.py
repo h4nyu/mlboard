@@ -1,9 +1,6 @@
-from cytoolz.curried import map, pipe
-from uuid import UUID, uuid4
-import time
+from uuid import UUID
 from logging import getLogger
 import typing as t
-from profilehooks import profile
 from datetime import datetime
 from mlboard.models.protocols import IPoint
 from mlboard.models.point import Point
@@ -56,6 +53,7 @@ class PointQuery:
             limit,
         )
         return self._query.to_models(rows)
+
     async def range_by(
         self,
         trace_id: UUID,
@@ -82,11 +80,12 @@ class PointQuery:
     async def bulk_insert(self, rows: t.Sequence[IPoint]) -> int:
         conn = self._query.conn
         if len(rows) > 0:
-            records = pipe(
-                rows,
-                map(lambda x: (x.ts, x.value, x.trace_id)),
-                list
-            )
+            []
+            records = [
+                (x.ts, x.value, x.trace_id)
+                for x
+                in rows
+            ]
             await conn.copy_records_to_table(
                 TABLE_NAME,
                 columns=['ts', 'value', 'trace_id'],

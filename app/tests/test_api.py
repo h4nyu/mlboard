@@ -1,8 +1,7 @@
-import pytest
 from datetime import datetime
 from uuid import uuid4
 from starlette.testclient import TestClient
-from .fixtures import client
+from .fixtures import client  # noqa: F401
 
 
 def test_trace_all(client: TestClient) -> None:

@@ -1,6 +1,4 @@
 import asyncio
-from mlboard.models.trace import Trace
-from mlboard.queries.trace import TraceQuery
 from mlboard.usecases.trace import create_usecase as TraceUsecase
 from mlboard.usecases.point import create_usecase as PointUsecase
 

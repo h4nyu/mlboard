@@ -1,4 +1,3 @@
-from fastapi import FastAPI
 from mlboard.api import create_app
 from starlette.testclient import TestClient
 import pytest

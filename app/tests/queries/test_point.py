@@ -1,16 +1,13 @@
-from cytoolz.curried import pipe, map, partition_all
-from uuid import UUID, uuid4
+from toolz.curried import pipe, map, partition_all
 import pytest
 import asyncio
-from faker import Faker
 from datetime import datetime
 from mlboard.dao.postgresql import Connection
 from mlboard.queries.point import PointQuery
 from mlboard.models.point import Point
 from mlboard.config import DB_CONN
-import uuid
+from uuid import uuid4
 import time
-fake = Faker()
 
 
 @pytest.fixture(scope='function', autouse=True)

@@ -1,4 +1,4 @@
-FROM python:3.7-slim AS prod
+FROM python:3.8-slim AS prod
 
 RUN apt-get update \
     && apt-get install -y \
@@ -14,5 +14,5 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
 
 WORKDIR /srv
 COPY ./ /srv
-RUN pip install -r requirements.txt
+RUN pip install -e .[dev]
 ENTRYPOINT ["dockerize", "-wait", "tcp://db:5432", "-timeout", "30s"]

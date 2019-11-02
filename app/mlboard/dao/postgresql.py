@@ -1,11 +1,8 @@
-from cytoolz.curried import pipe, map, first, itemfilter, reduce, curry
 import typing as t
 import asyncpg
 import ujson
 from typing_extensions import Protocol
-from collections import namedtuple
 from types import TracebackType
-import uuid
 
 
 IRecord = t.Dict[str, t.Any]

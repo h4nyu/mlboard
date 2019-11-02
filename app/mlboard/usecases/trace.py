@@ -1,19 +1,14 @@
 import typing as t
 from uuid import UUID
-from mlboard.models.protocols import IPoint
 from mlboard.queries.protocols import (
-    ITransaction,
     IPointQuery,
     ITraceQuery,
 )
 from mlboard.dao.postgresql import Connection, IConnection
 from mlboard.queries.point import PointQuery
 from mlboard.queries.trace import TraceQuery
-from mlboard.models.point import Point
-from mlboard.models.trace import Trace
 from mlboard.models.protocols import ITrace
 from mlboard.config import DB_CONN
-from datetime import datetime
 from .protocols import ITraceUsecase
 
 

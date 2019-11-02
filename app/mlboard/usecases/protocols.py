@@ -3,7 +3,6 @@ from uuid import UUID
 from typing_extensions import Protocol
 from datetime import datetime
 from mlboard.models.protocols import IPoint, ITrace
-from mlboard.queries.protocols import IPointQuery
 
 
 class ITraceUsecase(Protocol):
