@@ -5,9 +5,11 @@ from ..queries.point import PointQuery
 from .point import PointUsecase
 from .protocols import IPointUsecase
 
-get_conn=lambda: Connection(DB_CONN)
 
-get_point_usecase: t.Callable[[], IPointUsecase] = lambda : PointUsecase(
+def get_conn(): return Connection(DB_CONN)
+
+
+get_point_usecase: t.Callable[[], IPointUsecase] = lambda: PointUsecase(
     get_conn=get_conn,
     point_query=PointQuery,
 )

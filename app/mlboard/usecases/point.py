@@ -5,11 +5,9 @@ from mlboard.queries.protocols import (
     IPointQuery,
 )
 from mlboard.dao.postgresql import Connection, IConnection
-from mlboard.queries.point import PointQuery
 from mlboard.models.point import Point
 from mlboard.config import TZ
 from datetime import datetime
-from .protocols import IPointUsecase
 
 
 class PointUsecase:
