@@ -19,13 +19,14 @@ export default class SegmentStore{
     this.pointApi = pointApi;
   }
   @action setPoints = (traceId: string, rows: IPoint[]) => {
-    this.segments.set(traceId, rows);
+    this.segments = this.segments.set(traceId, rows);
   }
   @action deleteById = (id: string) => {
     this.segments = this.segments.delete(id);
   }
 
-  @action fetch = async (
+  fetch = async (
+    segmentId: string,
     traceId: string,
     fromDate: Moment,
     toDate: Moment,
@@ -35,6 +36,6 @@ export default class SegmentStore{
       fromDate,
       toDate,
     );
-    this.setPoints(traceId, rows);
+    this.setPoints(segmentId, rows);
   }
 }

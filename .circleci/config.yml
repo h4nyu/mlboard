@@ -30,6 +30,12 @@ jobs:
           name: Test Migration
           command: |
             docker-compose run --rm migration alembic upgrade head
+            docker-compose run --rm migration alembic downgrade base
+
+      - run:
+          name: Tpye check App
+          command: |
+            docker-compose run --rm app mypy .
 
       - run:
           name: Lint App
@@ -42,14 +48,14 @@ jobs:
             docker-compose run --rm app pytest
 
       - run:
-          name: Install Dependencies
+          name: Type Check Board 
           command: |
-            docker-compose run --rm board yarn install
+            docker-compose run --rm board yarn tsc
 
       - run:
           name: Lint Board 
           command: |
-            docker-compose run --rm board yarn run lint
+            docker-compose run --rm board yarn lint
 
 
   deploy:

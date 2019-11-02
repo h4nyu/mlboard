@@ -26,5 +26,20 @@ export default class PointApi {
     }));
     return rows;
   };
+
+  rangeByLimit = async (traceId: string, limit: number): Promise<IPoint[]> => {
+    const res = await axios.get(`api/point/range-by-limit`, {
+      params: {
+        trace_id: traceId,
+        limit: limit,
+      },
+    });
+    const resData = res.data as IPointRes[];
+    const rows: IPoint[] = resData.map(x => ({
+      value: x.value,
+      ts: moment(x.ts),
+    }));
+    return rows;
+  };
 }
 

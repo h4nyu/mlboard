@@ -1,4 +1,4 @@
-import '~/styles/app.scss';
+import '~/styles';
 import { configure } from '@storybook/react';
 
 const req = require.context('./stories', true, /.tsx$/);

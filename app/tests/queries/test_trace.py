@@ -1,15 +1,7 @@
-from uuid import UUID, uuid4
 import pytest
-import asyncio
-from faker import Faker
-from datetime import datetime
 from mlboard.dao.postgresql import Connection
 from mlboard.queries.trace import TraceQuery
-from mlboard.models.trace import Trace
 from mlboard.config import DB_CONN
-import uuid
-import time
-fake = Faker()
 
 
 @pytest.fixture(scope='function', autouse=True)

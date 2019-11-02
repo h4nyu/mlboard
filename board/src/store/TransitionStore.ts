@@ -18,18 +18,32 @@ export default class TransitionStore{
     this.rows = this.rows.delete(id);
   }
 
+  @action toggleIsScatter = (id: string) => {
+    this.rows = this.rows.update(id, x => ({...x, isScatter: !x.isScatter}));
+  }
+
+  @action toggleIsLog = (id: string) => {
+    this.rows = this.rows.update(id, x => ({...x, isLog: !x.isLog}));
+  }
+
+  @action toggleIsDatetime = (id: string) => {
+    this.rows = this.rows.update(id, x => ({ ...x, isDatetime: !x.isDatetime }));
+  }
+
   @action add = (traceId: string) => {
     const row = {
       id: uuid(),
       traceId: traceId,
       isLog: false,
       isScatter:false,
-      fromDate: moment().add(-1, 'hours'),
+      isDatetime:false,
+      fromDate: moment().add(-1, 'days'),
       toDate: moment(),
     };
     this.rows = this.rows.set(row.id, row);
     this.root.segmentStore.fetch(
-      traceId,
+      row.id,
+      row.traceId,
       row.fromDate,
       row.toDate,
     );

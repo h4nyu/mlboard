@@ -4,14 +4,19 @@
 from setuptools import setup, find_packages
 
 requires = [
-    "cytoolz",
+    "toolz",
+    "asyncpg",
+    "fastapi",
+    "starlette",
+    "PyYAML",
+    "ujson",
     "requests",
+    "python-dateutil",
 ]
 dev_requires = [
     "pytest",
     "pytest-mock",
     "pytest-cov",
-    "faker",
     "flake8",
     "autopep8",
     "pytest-asyncio",

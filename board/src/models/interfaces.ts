@@ -17,6 +17,7 @@ export interface ITransition {
   traceId: string;
   isScatter: boolean;
   isLog: boolean;
+  isDatetime: boolean;
   fromDate: Moment;
   toDate: Moment;
 }

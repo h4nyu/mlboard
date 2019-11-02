@@ -9,7 +9,7 @@ export interface IAppStore {
 export interface ISegmentStore {
   segments: Map<string, IPoint[]>; 
   deleteById: (id: string) => void;
-  fetch: (traceId: string, fromDate: Moment, toDate: Moment) => void;
+  fetch: (segmentId: string, traceId: string, fromDate: Moment, toDate: Moment) => void;
 }
 
 
@@ -23,6 +23,9 @@ export interface ILoadingStore {
 export interface ITransitionStore {
   rows: Map<string, ITransition>; 
   add: (traceId: string) => void;
+  toggleIsLog: (id: string) => void;
+  toggleIsScatter: (id: string) => void;
+  toggleIsDatetime: (id: string) => void;
   deleteById: (id: string) => void;
 }
 

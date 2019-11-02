@@ -1,14 +1,8 @@
-from fastapi import APIRouter, Query
+from fastapi import APIRouter
 from uuid import UUID
-import typing as t
 from logging import getLogger
-from cytoolz.curried import pipe, map
 from pydantic import BaseModel
 from mlboard.usecases.trace import create_usecase
-from mlboard.models.protocols import IPoint
-from mlboard.dao.postgresql import Connection
-from mlboard.config import DB_CONN
-from datetime import datetime
 from logging import getLogger
 
 logger = getLogger("api.trace")

@@ -2,26 +2,12 @@ import typing as t
 from uuid import UUID
 from mlboard.models.protocols import IPoint
 from mlboard.queries.protocols import (
-    ITransaction,
     IPointQuery,
-    ITraceQuery,
 )
 from mlboard.dao.postgresql import Connection, IConnection
-from mlboard.queries.point import PointQuery
-from mlboard.queries.trace import TraceQuery
 from mlboard.models.point import Point
-from mlboard.models.trace import Trace
-from mlboard.models.protocols import ITrace
-from mlboard.config import DB_CONN, TZ
+from mlboard.config import TZ
 from datetime import datetime
-from .protocols import IPointUsecase
-
-
-def create_usecase() -> IPointUsecase:
-    return PointUsecase(
-        get_conn=lambda: Connection(DB_CONN),
-        point_query=lambda x: PointQuery(x),
-    )
 
 
 class PointUsecase:
@@ -57,4 +43,15 @@ class PointUsecase:
                 trace_id,
                 from_date,
                 to_date
+            )
+
+    async def filter_by_limit(
+        self,
+        trace_id: UUID,
+        limit: int = 10000,
+    ) -> t.Sequence[IPoint]:
+        async with self.get_conn() as conn:
+            return await self.point_query(conn).range_by_limit(
+                trace_id,
+                limit
             )

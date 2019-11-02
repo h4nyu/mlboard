@@ -1,9 +1,6 @@
-from cytoolz.curried import map, pipe
-from uuid import UUID, uuid4
-import time
+from uuid import UUID
 from logging import getLogger
 import typing as t
-from profilehooks import profile
 from datetime import datetime
 from mlboard.models.protocols import IPoint
 from mlboard.models.point import Point
@@ -39,6 +36,24 @@ class PointQuery:
     async def delete_by(self, **kwargs: t.Any) -> None:
         await self._query.delete_by(**kwargs)
 
+    async def range_by_limit(
+        self,
+        trace_id: UUID,
+        limit: int = 10000,
+    ) -> t.Sequence[IPoint]:
+        rows = await self._query.conn.fetch(
+            f"""
+                SELECT *
+                FROM {TABLE_NAME}
+                WHERE trace_id = $1
+                ORDER BY ts DESC
+                LIMIT $2
+            """,
+            trace_id,
+            limit,
+        )
+        return self._query.to_models(rows)
+
     async def range_by(
         self,
         trace_id: UUID,
@@ -48,7 +63,7 @@ class PointQuery:
     ) -> t.Sequence[IPoint]:
         rows = await self._query.conn.fetch(
             f"""
-                SELECT value, ts
+                SELECT *
                 FROM {TABLE_NAME}
                 WHERE trace_id = $1
                     AND ts BETWEEN $2 AND $3
@@ -60,24 +75,17 @@ class PointQuery:
             to_date,
             limit,
         )
-        return [
-            Point(
-                trace_id=trace_id,
-                value=rows['value'],
-                ts=rows['ts'],
-            )
-            for r
-            in rows
-        ]
+        return self._query.to_models(rows)
 
     async def bulk_insert(self, rows: t.Sequence[IPoint]) -> int:
         conn = self._query.conn
         if len(rows) > 0:
-            records = pipe(
-                rows,
-                map(lambda x: (x.ts, x.value, x.trace_id)),
-                list
-            )
+            []
+            records = [
+                (x.ts, x.value, x.trace_id)
+                for x
+                in rows
+            ]
             await conn.copy_records_to_table(
                 TABLE_NAME,
                 columns=['ts', 'value', 'trace_id'],

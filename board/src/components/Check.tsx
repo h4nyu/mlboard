@@ -11,7 +11,7 @@ const Layout = styled.span`
 export interface IProps {
   value: boolean;
   onClick: () => void;
-  children?: React.ReactElement;
+  children?: React.ReactElement | string;
 }
 const Check = (props: IProps) => {
   const {value, children} = props;
