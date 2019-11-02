@@ -7,16 +7,9 @@ from mlboard.queries.protocols import (
 from mlboard.dao.postgresql import Connection, IConnection
 from mlboard.queries.point import PointQuery
 from mlboard.models.point import Point
-from mlboard.config import DB_CONN, TZ
+from mlboard.config import TZ
 from datetime import datetime
 from .protocols import IPointUsecase
-
-
-def create_usecase() -> IPointUsecase:
-    return PointUsecase(
-        get_conn=lambda: Connection(DB_CONN),
-        point_query=lambda x: PointQuery(x),
-    )
 
 
 class PointUsecase:

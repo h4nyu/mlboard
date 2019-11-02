@@ -2,14 +2,14 @@ from fastapi import APIRouter
 from uuid import UUID
 import typing as t
 from logging import getLogger
-from mlboard.usecases.point import create_usecase
+from mlboard.usecases.connectors import get_point_usecase
 from mlboard.models.protocols import IPoint
 from datetime import datetime
 from logging import getLogger
 
 logger = getLogger("api.trace")
 router = APIRouter()
-usecase = create_usecase()
+usecase = get_point_usecase()
 
 
 @router.get('/point/range-by')
