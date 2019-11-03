@@ -12,6 +12,7 @@ requires = [
     "ujson",
     "requests",
     "python-dateutil",
+    "uvicorn",
 ]
 dev_requires = [
     "pytest",

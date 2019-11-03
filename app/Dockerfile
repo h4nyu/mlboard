@@ -1,6 +1,6 @@
 FROM python:3.8-alpine AS prod
 
-RUN apk add --no-cache gcc libc-dev
+RUN apk add --no-cache gcc libc-dev make
 
 ENV DOCKERIZE_VERSION v0.6.1
 ENV PYTHONPYCACHEPREFIX /tmp/pycache

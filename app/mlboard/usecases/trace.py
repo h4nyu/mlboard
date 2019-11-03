@@ -5,19 +5,7 @@ from mlboard.queries.protocols import (
     ITraceQuery,
 )
 from mlboard.dao.postgresql import Connection, IConnection
-from mlboard.queries.point import PointQuery
-from mlboard.queries.trace import TraceQuery
 from mlboard.models.protocols import ITrace
-from mlboard.config import DB_CONN
-from .protocols import ITraceUsecase
-
-
-def create_usecase() -> ITraceUsecase:
-    return TraceUsecase(
-        get_conn=lambda: Connection(DB_CONN),
-        trace_query=lambda x: TraceQuery(x),
-        point_query=lambda x: PointQuery(x),
-    )
 
 
 class TraceUsecase:

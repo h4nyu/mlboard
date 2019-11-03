@@ -32,6 +32,7 @@ const TargetComponent = (props: {transition: ITransition}) => (
     transition={props.transition}
     segments={segments}
     traces={traces}
+    onRangeChange={x => console.debug(x)}
     onClose={(x) => console.debug(x)}
     onIsLogChange={(x) => console.debug(x)}
     onIsDatetimeChange={(x) => console.debug(x)}

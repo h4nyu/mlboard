@@ -14,7 +14,7 @@ class PointUsecase:
     def __init__(
         self,
         get_conn: t.Callable[[], Connection],
-        point_query=t.Callable[[IConnection], IPointQuery],
+        point_query: t.Callable[[IConnection], IPointQuery],
     ) -> None:
         self.get_conn = get_conn
         self.point_query = point_query

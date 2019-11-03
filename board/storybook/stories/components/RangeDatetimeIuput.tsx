@@ -8,8 +8,8 @@ storiesOf('RangeDatetimeInput', module)
   .add('default', () => {
     return (
       <RangeDatetimeInput
-        fromDate={moment().format()}
-        toDate={moment().add(1,'hours').format()}
+        fromDate={moment()}
+        toDate={moment().add(1,'hours')}
         onFromDateChange={console.debug}
         onToDateChange={console.debug}
       />

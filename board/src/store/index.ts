@@ -1,49 +1,43 @@
+import { ITrace, IPoint, ITransition } from '~/models/interfaces';
 import LoadingStore from './LoadingStore';
 import AppStore from './AppStore';
-import TraceStore from './TraceStore';
-import SegmentStore from './SegmentStore';
-import TransitionStore from './TransitionStore';
+import ModelStore from './ModelStore';
+import TransitionUsecase from './TransitionUsecase';
 import {
-  ILoadingStore,
-  ITraceStore,
-  ISegmentStore,
-  ITransitionStore,
   IRoot,
   IAppStore,
+  ILoadingStore,
+  IModelStore,
+  ITransitionUsecase,
 } from './interfaces';
+
 import TraceApi from '~/api/TraceApi';
 import PointApi from '~/api/PointApi';
-
 
 export class RootStore {
   loadingStore: ILoadingStore;
   appStore: IAppStore;
-  traceStore: ITraceStore;
-  segmentStore: ISegmentStore;
-  transitionStore: ITransitionStore;
+  traceStore: IModelStore<ITrace>;
+  segmentStore: IModelStore<IPoint[]>;
+  transitionStore: IModelStore<ITransition>;
+  transitionUsecase: ITransitionUsecase;
 
   constructor() {
     const traceApi = new TraceApi();
     const pointApi = new PointApi();
-    this.segmentStore = new SegmentStore(
+
+    this.segmentStore = new ModelStore<IPoint[]>();
+    this.traceStore = new ModelStore<ITrace>();
+    this.transitionStore = new ModelStore<ITransition>();
+    this.loadingStore = new LoadingStore();
+    this.appStore = new AppStore(this);
+    this.transitionUsecase = new TransitionUsecase(
       this,
       pointApi,
+      traceApi,
     );
-    this.loadingStore = new LoadingStore();
-    this.traceStore = new TraceStore(
-      this, 
-      traceApi
-    );
-    this.appStore = new AppStore(this);
-    this.transitionStore = new TransitionStore(this);
   }
 }
 
 const store: IRoot = new RootStore();
-
-export const loadingStore = store.loadingStore;
-export const appStore = store.appStore;
-export const traceStore = store.traceStore;
-export const transitionStore = store.transitionStore;
-export const segmentStore = store.segmentStore;
 export default store;

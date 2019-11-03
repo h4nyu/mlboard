@@ -1,18 +1,20 @@
 import asyncio
-from mlboard.usecases.trace import create_usecase as TraceUsecase
-from mlboard.usecases.point import create_usecase as PointUsecase
+from mlboard.usecases.connectors import get_point_usecase, get_trace_usecase
 
 
-async def main():
-    trace_uc = TraceUsecase()
-    point_uc = PointUsecase()
+async def main() -> None:
+    trace_uc = get_trace_usecase()
+    point_uc = get_point_usecase()
     for i in range(5):
         await trace_uc.register(f"#{i}")
     traces = await trace_uc.all()
     for t in traces:
         await point_uc.add_scalar(t.id, 0.5)
+        await asyncio.sleep(1)
         await point_uc.add_scalar(t.id, 0.1)
+        await asyncio.sleep(1)
         await point_uc.add_scalar(t.id, 0.8)
+        await asyncio.sleep(1)
         await point_uc.add_scalar(t.id, -1.0)
 
 
