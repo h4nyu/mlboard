@@ -21,6 +21,8 @@ class IPointQuery(Protocol):
     async def bulk_insert(self, rows: t.Sequence[IPoint]) -> int:
         ...
 
+    async def range_by_limit(self, trace_id: UUID, limit: int,) -> t.Sequence[IPoint]: ...
+
 
 class ITraceQuery(Protocol):
     async def all(self) -> t.Sequence[ITrace]:

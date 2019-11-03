@@ -1,15 +1,25 @@
-import typing as t
 from mlboard.dao.postgresql import Connection
 from mlboard.config import DB_CONN
 from ..queries.point import PointQuery
+from ..queries.trace import TraceQuery
 from .point import PointUsecase
-from .protocols import IPointUsecase
+from .trace import TraceUsecase
+from .protocols import IPointUsecase, ITraceUsecase
 
 
-def get_conn(): return Connection(DB_CONN)
+def get_conn() -> Connection: return Connection(DB_CONN)
 
 
-get_point_usecase: t.Callable[[], IPointUsecase] = lambda: PointUsecase(
-    get_conn=get_conn,
-    point_query=PointQuery,
-)
+def get_point_usecase() -> IPointUsecase:
+    return PointUsecase(
+        get_conn=get_conn,
+        point_query=PointQuery,
+    )
+
+
+def get_trace_usecase() -> ITraceUsecase:
+    return TraceUsecase(
+        get_conn=get_conn,
+        trace_query=TraceQuery,
+        point_query=PointQuery,
+    )

@@ -2,7 +2,9 @@ import { observer } from 'mobx-react';
 import React from "react";
 import TransitionList from '~/containers/TransitionList';
 import Transition from "~/connectors/Transition";
-import {transitionStore} from "~/store";
+import store from "~/store";
+
+const {transitionStore} = store;
 
 
 const Component = () => (

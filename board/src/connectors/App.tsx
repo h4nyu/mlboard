@@ -1,9 +1,10 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import App from '~/containers/App';
-import { appStore } from '~/store';
 import AppRouter from '~/connectors/AppRouter';
 import Loading from '~/connectors/Loading';
+import store from '~/store';
+const {appStore} = store;
 
 
 const Component = () => {

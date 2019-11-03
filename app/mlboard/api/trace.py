@@ -1,17 +1,19 @@
+import typing as t
 from fastapi import APIRouter
 from uuid import UUID
 from logging import getLogger
 from pydantic import BaseModel
-from mlboard.usecases.trace import create_usecase
+from mlboard.usecases.connectors import get_trace_usecase
+from mlboard.models.protocols import ITrace
 from logging import getLogger
 
 logger = getLogger("api.trace")
 router = APIRouter()
-usecase = create_usecase()
+usecase = get_trace_usecase()
 
 
 @router.get('/trace/all')
-async def all():
+async def all() -> t.Sequence[ITrace]:
     return await usecase.all()
 
 
@@ -20,7 +22,7 @@ class RegisterIn(BaseModel):
 
 
 @router.post('/trace')
-async def register(payload: RegisterIn):
+async def register(payload: RegisterIn) -> UUID:
     return await usecase.register(tag=payload.tag)
 
 

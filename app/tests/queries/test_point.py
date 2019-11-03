@@ -1,3 +1,4 @@
+import typing as t
 from toolz.curried import pipe, map, partition_all
 import pytest
 import asyncio
@@ -30,9 +31,9 @@ async def test_performance_of_insert() -> None:
         list
     )
 
-    async def load_chunk(chunk):
+    async def load_chunk(chunk: t.Sequence[Point]) -> None:
         async with Connection(DB_CONN) as conn:
-            return await PointQuery(conn).bulk_insert(chunk)
+            await PointQuery(conn).bulk_insert(chunk)
 
     cors = pipe(
         points,

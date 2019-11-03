@@ -87,7 +87,7 @@ class PostgresqlQuery(t.Generic[T, U]):
         rows = await self.conn.fetch(sql)
         return self.to_models(rows)
 
-    async def insert(self, obj: T, key="id") -> None:
+    async def insert(self, obj: T, key: str = "id") -> None:
         prop_dict = obj.__dict__
         keys = prop_dict.keys()
         keys_str = ",".join(keys)

@@ -1,17 +1,15 @@
 import { ITrace, IPoint, ITransition } from '~/models/interfaces';
-import {Moment} from 'moment';
 import { Map } from 'immutable';
+
+export interface IModelStore<T> {
+  rows: Map<string, T>;
+  upsert: (key: string, value: T) => void;
+  delete: (key: string) => void;
+}
 
 export interface IAppStore {
   init: () => void;
 }
-
-export interface ISegmentStore {
-  segments: Map<string, IPoint[]>; 
-  deleteById: (id: string) => void;
-  fetch: (segmentId: string, traceId: string, fromDate: Moment, toDate: Moment) => void;
-}
-
 
 export interface ILoadingStore {
   pendingNum: number;
@@ -20,28 +18,25 @@ export interface ILoadingStore {
   dispatch: <T>(collback: () => T) => Promise<T| undefined>;
 }
 
-export interface ITransitionStore {
-  rows: Map<string, ITransition>; 
+export interface ITransitionUsecase {
+  fetchTraces: () => void;
   add: (traceId: string) => void;
+  delete: (id: string) => void;
   toggleIsLog: (id: string) => void;
-  toggleIsScatter: (id: string) => void;
   toggleIsDatetime: (id: string) => void;
-  deleteById: (id: string) => void;
-}
-
-export interface ITraceStore {
-  traces: Map<string, ITrace>; 
-  traceIds: string[]; 
-  keyward: string;
-  fromDate: Moment; 
-  toDate: Moment;
-  fetch: () => void;
+  toggleIsScatter: (id: string) => void;
 }
 
 export interface IRoot {
+  // application
   loadingStore: ILoadingStore;
-  traceStore: ITraceStore;
-  segmentStore: ISegmentStore;
-  transitionStore: ITransitionStore;
   appStore: IAppStore;
+
+  // domain
+  traceStore: IModelStore<ITrace>;
+  segmentStore: IModelStore<IPoint[]>;
+  transitionStore: IModelStore<ITransition>;
+
+  // usecase
+  transitionUsecase: ITransitionUsecase;
 }
