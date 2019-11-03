@@ -1,3 +1,4 @@
+import moment, {Moment} from 'moment';
 import { Map } from 'immutable';
 import React from 'react';
 import styled from 'styled-components';
@@ -24,6 +25,7 @@ const PlotArea = styled.div`
   padding: 0.5em;
 `;
 
+
 const Close = styled.a`
   grid-area: close;
 `;
@@ -47,6 +49,7 @@ export interface IProps {
   transition: ITransition;
   traces: Map<string, ITrace>;
   segments: Map<string,IPoint[]>;
+  onRangeChange: (id: string, fromDate: Moment, toDate: Moment) => void;
   onClose: (id: string) => void;
   onIsLogChange: (id: string) => void;
   onIsDatetimeChange: (id: string) => void;
@@ -87,11 +90,16 @@ export default class Transition extends React.Component<IProps>{
         b: 30,
         l: 50,
       },
+      xaxis: {
+        range:[transition.fromDate.local().format(), transition.toDate.local().format()],
+        type: transition.isDatetime ? 'date': undefined,
+      },
       yaxis: {
         type: transition.isLog ? 'log' : undefined,
-        autorange: true
-      }
-    } as any;
+        fixedrange: true,
+      },
+      showTips: false,
+    } as any; 
   }
   getTitle = () => {
     const {transition, traces} = this.props;
@@ -102,11 +110,27 @@ export default class Transition extends React.Component<IProps>{
     return trace.tag;
   }
 
+  handleRelayout = (e: any) => {
+    if (e['xaxis.range[0]'] && e['xaxis.range[1]'] && this.props.transition.isDatetime) {
+      const fromDate = moment(e['xaxis.range[0]']);
+      const toDate = moment(e['xaxis.range[1]']);
+      const {transition} = this.props;
+      if(fromDate < toDate){
+        this.props.onRangeChange(
+          transition.id,
+          fromDate,
+          toDate,
+        );
+      }
+    }
+  }
+
   render = () => {
     const plotData = this.getPlotData();
     const plotLayout = this.getPlotLayout();
     const title = this.getTitle();
-    const {transition, onClose, onIsScatterChange, onIsLogChange, onIsDatetimeChange} = this.props;
+    const {handleRelayout} = this;
+    const {transition, onClose, onIsScatterChange, onIsLogChange, onIsDatetimeChange } = this.props;
     return (
       <Layout className="card">
         <Title> {title} </Title>
@@ -129,6 +153,7 @@ export default class Transition extends React.Component<IProps>{
                 <Plot
                   data={plotData}
                   layout={{...plotLayout, height: height, width: width}}
+                  onRelayout={handleRelayout}
                 />
               );
             }}

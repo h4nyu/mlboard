@@ -1,4 +1,4 @@
-import moment from 'moment';
+import moment, {Moment} from 'moment';
 import { action } from 'mobx';
 import { IPointApi, ITraceApi } from '~/api/interfaces';
 import { IRoot } from './interfaces';
@@ -33,7 +33,7 @@ export default class TransitionUsecase{
       traceId: traceId,
       isLog: false,
       isScatter:false,
-      isDatetime:false,
+      isDatetime:true,
       fromDate: moment().add(-1, 'days'),
       toDate: moment(),
     };
@@ -43,6 +43,21 @@ export default class TransitionUsecase{
     if(points === undefined){return;}
     this.root.transitionStore.upsert(transition.id, transition);
     this.root.segmentStore.upsert(transition.id, points);
+  }
+
+  @action updateRange = async (id: string, fromDate: Moment, toDate: Moment) => {
+    const transition = this.root.transitionStore.rows.get(id);
+    if(transition === undefined){return;}
+    this.root.transitionStore.upsert(id, {
+      ...transition,
+      fromDate,
+      toDate,
+    });
+    const points = await this.root.loadingStore.dispatch<Promise<IPoint[]>>(
+      () => this.pointApi.rangeBy(transition.traceId, fromDate, toDate)
+    );
+    if(points === undefined){return;}
+    this.root.segmentStore.upsert(id, points);
   }
 
   @action toggleIsScatter = (id: string) => {

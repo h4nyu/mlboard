@@ -13,6 +13,7 @@ const Component = (props: IProps) => (
     transition={props.transition}
     segments={segmentStore.rows}
     traces={traceStore.rows}
+    onRangeChange={transitionUsecase.updateRange}
     onClose={transitionUsecase.delete}
     onIsLogChange={transitionUsecase.toggleIsLog}
     onIsDatetimeChange={transitionUsecase.toggleIsDatetime}

@@ -1975,10 +1975,12 @@
   dependencies:
     "@types/d3" "^3"
 
-"@types/plotly.js@0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@types/plotly.js/-/plotly.js-0.0.4.tgz#c6084203e7a3f0e9263217c0003cf48b42998c49"
-  integrity sha1-xghCA+ej8OkmMhfAADz0i0KZjEk=
+"@types/plotly.js@^1.44.15":
+  version "1.44.15"
+  resolved "https://registry.yarnpkg.com/@types/plotly.js/-/plotly.js-1.44.15.tgz#14d5f72fa1f08c57b1c84666ff5732cbf9b1b534"
+  integrity sha512-hsoML6JX6WnArYbol2xfqRxMPf7x9h7ZhgQ4Ni/jQqDXh+r3XhS0jjnWTsrU+DS2AK872xJ8YjU42KaLhYrmRg==
+  dependencies:
+    "@types/d3" "^3"
 
 "@types/prop-types@*":
   version "15.7.1"

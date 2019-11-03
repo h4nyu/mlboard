@@ -6,7 +6,7 @@ import DatetimeInput from '~/components/DatetimeInput';
 
 storiesOf('DatetimeInput', module)
   .add('default', () => {
-    const date = moment().format();
+    const date = moment();
 
     return (
       <DatetimeInput

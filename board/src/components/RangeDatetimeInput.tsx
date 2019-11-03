@@ -1,3 +1,4 @@
+import {Moment} from 'moment';
 import React from 'react';
 import styled from 'styled-components';
 import DatetimeInput from '~/components/DatetimeInput';
@@ -30,10 +31,10 @@ const IconArea = styled.div`
  padding-right: 0.5em;
 `;
 export interface IProps {
-  fromDate: string;
-  toDate: string;
-  onFromDateChange: (datetime: string) => void;
-  onToDateChange: (datetime: string) => void;
+  fromDate: Moment;
+  toDate: Moment;
+  onFromDateChange: (datetime: Moment) => void;
+  onToDateChange: (datetime: Moment) => void;
 }
 export default class RangeDatetimeInput extends React.Component<IProps> {
   render = () => {
@@ -46,7 +47,7 @@ export default class RangeDatetimeInput extends React.Component<IProps> {
     return (
       <Layout>
         <FromDateArea>
-          <DatetimeInput 
+          <DatetimeInput
             value={fromDate}
             onChange={onFromDateChange}
           />
@@ -55,7 +56,7 @@ export default class RangeDatetimeInput extends React.Component<IProps> {
           <i className="fas fa-arrows-alt-h"></i>
         </IconArea>
         <ToDateArea>
-          <DatetimeInput 
+          <DatetimeInput
             value={toDate}
             onChange={onToDateChange}
           />

@@ -1,3 +1,4 @@
+import {Moment} from 'moment';
 import { ITrace, IPoint, ITransition } from '~/models/interfaces';
 import { Map } from 'immutable';
 
@@ -22,6 +23,7 @@ export interface ITransitionUsecase {
   fetchTraces: () => void;
   add: (traceId: string) => void;
   delete: (id: string) => void;
+  updateRange: (id: string,fromDate: Moment, toDate: Moment) => void;
   toggleIsLog: (id: string) => void;
   toggleIsDatetime: (id: string) => void;
   toggleIsScatter: (id: string) => void;

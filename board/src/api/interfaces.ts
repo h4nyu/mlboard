@@ -7,5 +7,4 @@ export interface ITraceApi {
 
 export interface IPointApi {
   rangeBy: (traceId: string, fromDate: Moment, toDate: Moment) => Promise<IPoint[]>;
-  rangeByLimit: (traceId: string, limit: number) => Promise<IPoint[]>;
 }

@@ -10,8 +10,11 @@ async def main() -> None:
     traces = await trace_uc.all()
     for t in traces:
         await point_uc.add_scalar(t.id, 0.5)
+        await asyncio.sleep(1)
         await point_uc.add_scalar(t.id, 0.1)
+        await asyncio.sleep(1)
         await point_uc.add_scalar(t.id, 0.8)
+        await asyncio.sleep(1)
         await point_uc.add_scalar(t.id, -1.0)
 
 
