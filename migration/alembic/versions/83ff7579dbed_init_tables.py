@@ -56,7 +56,7 @@ def downgrade():
         """
         DROP TABLE points CASCADE;
         DROP TABLE traces CASCADE;
-        DROP TABLE work_spaces CASCADE;
+        DROP TABLE workspaces CASCADE;
         DROP EXTENSION "uuid-ossp";
         """
     ))
