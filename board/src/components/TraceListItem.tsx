@@ -42,7 +42,7 @@ export default class TraceListItem extends React.Component<IProps> {
     return (
       <Layout onClick={() => this.props.onSelect(trace.id)}>
         <Tag>
-          {trace.tag}
+          {trace.name}
         </Tag>
         <Space />
         <UpdatedAt>
