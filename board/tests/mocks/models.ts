@@ -16,6 +16,7 @@ export  const transition:ITransition = {
 export  const trace:ITrace = {
   id:uuid(),
   tag: 'tag',
+  workspaceId: uuid(),
   createdAt: moment(),
   updatedAt: moment(),
 }

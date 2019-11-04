@@ -15,6 +15,7 @@ export interface IWorkspace {
 export interface ITrace {
   id: string;
   tag: string;
+  workspaceId: string;
   createdAt: Moment;
   updatedAt: Moment;
 }
