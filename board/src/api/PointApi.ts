@@ -15,8 +15,8 @@ export default class PointApi {
     const res = await axios.get(`api/point/range-by`, {
       params: {
         trace_id: traceId,
-        from_date: fromDate.format(),
-        to_date: toDate.format()
+        from_date: fromDate.toISOString(),
+        to_date: toDate.toISOString()
       },
     });
     const resData = res.data as IPointRes[];

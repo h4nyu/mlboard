@@ -13,6 +13,7 @@ requires = [
     "requests",
     "python-dateutil",
     "uvicorn",
+    "numpy",
 ]
 dev_requires = [
     "pytest",

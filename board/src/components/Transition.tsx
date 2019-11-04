@@ -2,7 +2,9 @@ import moment, {Moment} from 'moment';
 import { Map } from 'immutable';
 import React from 'react';
 import styled from 'styled-components';
+import {smooth} from '~/logics/converters';
 import { AutoSizer } from 'react-virtualized';
+import Slider from '~/components/Slider';
 import Plot from 'react-plotly.js';
 import _ from 'lodash';
 import Check from '~/components/Check';
@@ -12,8 +14,8 @@ import {ITransition, IPoint, ITrace } from '~/models/interfaces';
 const Layout = styled.div`
   display: grid;
   grid-template-areas:
-    "title control close"
-    "plot plot plot";
+    "title slider control close"
+    "plot plot plot plot";
   padding: 0.5em;
   margin: 0.25em;
   grid-template-columns: 1fr auto auto;
@@ -22,6 +24,11 @@ const Layout = styled.div`
 const PlotArea = styled.div`
   grid-area: plot;
   height: 150px;
+  padding: 0.5em;
+`;
+
+const SliderArea = styled.div`
+  grid-area: slider;
   padding: 0.5em;
 `;
 
@@ -45,10 +52,14 @@ const CotrolArea = styled.span`
   display: flex;
   flex-direction: row;
 `;
+const formatDatetime = (value: Moment) => {
+  return value.local().format("YYYY-MM-DD HH:mm:ss.SSS");
+};
 export interface IProps {
   transition: ITransition;
   traces: Map<string, ITrace>;
   segments: Map<string,IPoint[]>;
+  onWeightChange: (id: string, value: number) => void;
   onRangeChange: (id: string, fromDate: Moment, toDate: Moment) => void;
   onClose: (id: string) => void;
   onIsLogChange: (id: string) => void;
@@ -64,16 +75,17 @@ export default class Transition extends React.Component<IProps>{
     }
     let x = [];
     if(transition.isDatetime){
-      x = points.map(t => t.ts.local().format());
+      x = points.map(p => formatDatetime(p.ts));
     }else{
       x = _.range(points.length);
     }
+    const y = points.map(t => t.value);
     return [
       {
         x: x,
-        y: points.map(t => t.value),
+        y: smooth(y, transition.smoothWeight),
         mode: transition.isScatter ? "markers" : "markers+lines",
-        type: "scattergl",
+        type: "scatter",
         marker: {
           size: 5,
         },
@@ -91,7 +103,7 @@ export default class Transition extends React.Component<IProps>{
         l: 50,
       },
       xaxis: {
-        range:[transition.fromDate.local().format(), transition.toDate.local().format()],
+        range:[transition.fromDate, transition.toDate].map(formatDatetime),
         type: transition.isDatetime ? 'date': undefined,
       },
       yaxis: {
@@ -130,10 +142,23 @@ export default class Transition extends React.Component<IProps>{
     const plotLayout = this.getPlotLayout();
     const title = this.getTitle();
     const {handleRelayout} = this;
-    const {transition, onClose, onIsScatterChange, onIsLogChange, onIsDatetimeChange } = this.props;
+    const {
+      transition, onClose, 
+      onIsScatterChange, onIsLogChange, 
+      onIsDatetimeChange, onWeightChange 
+    } = this.props;
     return (
       <Layout className="card">
         <Title> {title} </Title>
+        <SliderArea>
+          <Slider
+            step={0.01} 
+            min={0} 
+            max={1} 
+            value={transition.smoothWeight} 
+            onInput={x => onWeightChange(transition.id, x)}
+          /> {transition.smoothWeight}
+        </SliderArea>
         <CotrolArea>
           <CheckContainer>
             <Check value={transition.isLog} onClick={() => onIsLogChange(transition.id)}> Log </Check>
