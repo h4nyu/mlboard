@@ -2,7 +2,7 @@ import typing as t
 from uuid import UUID
 from typing_extensions import Protocol
 from datetime import datetime
-from mlboard.models.protocols import IPoint, ITrace
+from mlboard.models.protocols import IPoint, ITrace, IWorkspace
 
 
 class ITraceUsecase(Protocol):
@@ -15,3 +15,7 @@ class IPointUsecase(Protocol):
     async def add_scalar(self, trace_id: UUID, value: float) -> None: ...
     async def range_by(self, trace_id: UUID, from_date: datetime, to_date: datetime) -> t.Sequence[IPoint]: ...
     async def filter_by_limit(self, trace_id: UUID, limit: int) -> t.Sequence[IPoint]: ...
+
+
+class IWorkspaceUsecase(Protocol):
+    async def all(self) -> t.Sequence[IWorkspace]: ...

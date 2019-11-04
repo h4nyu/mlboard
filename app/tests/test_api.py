@@ -45,3 +45,11 @@ def test_point_range_by(client: TestClient) -> None:
             }
         )
     assert res.status_code == 200
+
+
+def test_workspace_all(client: TestClient) -> None:
+    with client:
+        res = client.get(
+            '/workspace/all'
+        )
+    assert res.status_code == 200
