@@ -5,6 +5,13 @@ export interface IPoint {
   ts: Moment;
 }
 
+export interface IWorkspace {
+  id: string;
+  name: string;
+  params: object;
+  createdAt: Moment;
+}
+
 export interface ITrace {
   id: string;
   tag: string;
