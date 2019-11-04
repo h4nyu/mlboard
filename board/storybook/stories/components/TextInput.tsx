@@ -8,7 +8,7 @@ storiesOf('TextInput', module)
     const value = '';
     return (
       <TextInput
-        value={value}
+        defaultValue={value}
         onInput={console.debug}
       />
     );
@@ -17,7 +17,7 @@ storiesOf('TextInput', module)
     const value = 'text';
     return (
       <TextInput
-        value={value}
+        defaultValue={value}
         onInput={console.debug}
       />
     );

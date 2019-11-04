@@ -20,9 +20,13 @@ export interface ILoadingStore {
 }
 
 export interface ITransitionUsecase {
+  traceKeyword: string;
+  traces: Map<string, ITrace>;
+
   fetchTraces: () => void;
   add: (traceId: string) => void;
   delete: (id: string) => void;
+  setTraceKeyword: (keyword: string) => void;
   updateRange: (id: string,fromDate: Moment, toDate: Moment) => void;
   updateSmoothWeight: (id: string, value: number) => void;
   toggleIsLog: (id: string) => void;
