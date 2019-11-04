@@ -4,6 +4,9 @@ from mlboard.queries.protocols import (
 )
 from mlboard.dao.postgresql import Connection, IConnection
 from mlboard.models.protocols import IWorkspace
+from mlboard.models.workspace import Workspace
+from datetime import datetime
+from uuid import UUID
 
 
 class WorkspaceUsecase:
@@ -18,3 +21,21 @@ class WorkspaceUsecase:
     async def all(self) -> t.Sequence[IWorkspace]:
         async with self.get_conn() as conn:
             return await self.workspace_query(conn).all()
+
+    async def register(self, name: str, params: t.Dict[str, t.Any]) -> UUID:
+        async with self.get_conn() as conn:
+            async with conn.transaction():
+                row = await self.workspace_query(conn).get_by(name=name)
+                if(row is None):
+                    new_row = Workspace(name=name, params=params)
+                    await self.workspace_query(conn).insert(new_row)
+                    return new_row.id
+                else:
+                    await self.workspace_query(conn).update(
+                        id=row.id,
+                        payload={
+                            'params': params,
+                            'updated_at': datetime.now(),
+                        }
+                    )
+                    return row.id

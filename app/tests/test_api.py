@@ -2,6 +2,7 @@ from datetime import datetime
 from uuid import uuid4
 from starlette.testclient import TestClient
 from .fixtures import client  # noqa: F401
+from uuid import uuid4
 
 
 def test_trace_all(client: TestClient) -> None:
@@ -17,7 +18,8 @@ def test_trace_register(client: TestClient) -> None:
         res = client.post(
             '/trace',
             json={
-                'tag': 'aaa'
+                'name': 'aaa',
+                'workspace_id': str(uuid4())
             }
         )
     assert res.status_code == 200

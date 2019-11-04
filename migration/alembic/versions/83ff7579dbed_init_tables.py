@@ -31,13 +31,15 @@ def upgrade():
             );
         CREATE INDEX on points (trace_id);
         SELECT create_hypertable('points', 'ts', chunk_time_interval => interval '1 hour');
+
         CREATE TABLE traces
             (
                 id uuid NOT NULL PRIMARY KEY,
-                tag text NOT NULL UNIQUE,
+                name text NOT NULL,
                 workspace_id uuid NOT NULL,
                 created_at timestamp with time zone NOT NULL,
-                updated_at timestamp with time zone NOT NULL
+                updated_at timestamp with time zone NOT NULL,
+                UNIQUE (name, workspace_id)
             );
         CREATE TABLE workspaces
             (

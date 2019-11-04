@@ -12,7 +12,7 @@ class Workspace:
     def __init__(
         self,
         name: str,
-        params: dict,
+        params: t.Dict[str, t.Any] = {},
         created_at: t.Union[datetime, None] = None,
         id: t.Union[UUID, None] = None,
     ) -> None:

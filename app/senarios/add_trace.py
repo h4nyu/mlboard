@@ -1,12 +1,17 @@
 import asyncio
-from mlboard.usecases.connectors import get_point_usecase, get_trace_usecase
+from mlboard.usecases.connectors import get_point_usecase, get_trace_usecase, get_workspace_usecase
 
 
 async def main() -> None:
     trace_uc = get_trace_usecase()
     point_uc = get_point_usecase()
+    workspace_uc = get_workspace_usecase()
+    workspace_id = await workspace_uc.register('workspace#0', params={
+        'lr': 0.01
+    })
+
     for i in range(2):
-        await trace_uc.register(f"#{i}")
+        await trace_uc.register(f"#{i}", workspace_id)
     traces = await trace_uc.all()
 
     for t in traces:
