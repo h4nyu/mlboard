@@ -2,7 +2,9 @@ import moment, {Moment} from 'moment';
 import { Map } from 'immutable';
 import React from 'react';
 import styled from 'styled-components';
+import {smooth} from '~/logics/converters';
 import { AutoSizer } from 'react-virtualized';
+import Slider from '~/components/Slider';
 import Plot from 'react-plotly.js';
 import _ from 'lodash';
 import Check from '~/components/Check';
@@ -25,14 +27,19 @@ const PlotArea = styled.div`
   padding: 0.5em;
 `;
 
-
 const Close = styled.a`
   grid-area: close;
 `;
 
-const CheckContainer = styled.div`
+
+const SmoothWeight = styled.span`
+  width: 2em;
+`;
+const ControlItem = styled.div`
   padding-left: 0.25em;
   padding-right: 0.25em;
+  display: flex;
+  align-items: center;
 `;
 
 const Title = styled.span`
@@ -45,10 +52,14 @@ const CotrolArea = styled.span`
   display: flex;
   flex-direction: row;
 `;
+const formatDatetime = (value: Moment) => {
+  return value.local().format("YYYY-MM-DD HH:mm:ss.SSS");
+};
 export interface IProps {
   transition: ITransition;
   traces: Map<string, ITrace>;
   segments: Map<string,IPoint[]>;
+  onWeightChange: (id: string, value: number) => void;
   onRangeChange: (id: string, fromDate: Moment, toDate: Moment) => void;
   onClose: (id: string) => void;
   onIsLogChange: (id: string) => void;
@@ -64,16 +75,17 @@ export default class Transition extends React.Component<IProps>{
     }
     let x = [];
     if(transition.isDatetime){
-      x = points.map(t => t.ts.local().format());
+      x = points.map(p => formatDatetime(p.ts));
     }else{
       x = _.range(points.length);
     }
+    const y = points.map(t => t.value);
     return [
       {
         x: x,
-        y: points.map(t => t.value),
+        y: smooth(y, transition.smoothWeight),
         mode: transition.isScatter ? "markers" : "markers+lines",
-        type: "scattergl",
+        type: "scatter",
         marker: {
           size: 5,
         },
@@ -91,8 +103,9 @@ export default class Transition extends React.Component<IProps>{
         l: 50,
       },
       xaxis: {
-        range:[transition.fromDate.local().format(), transition.toDate.local().format()],
+        range:[transition.fromDate, transition.toDate].map(formatDatetime),
         type: transition.isDatetime ? 'date': undefined,
+        fixedrange: !transition.isDatetime,
       },
       yaxis: {
         type: transition.isLog ? 'log' : undefined,
@@ -105,8 +118,7 @@ export default class Transition extends React.Component<IProps>{
     const {transition, traces} = this.props;
     const trace = traces.get(transition.traceId);
     if(trace === undefined){
-      return "";
-    }
+      return ""; }
     return trace.tag;
   }
 
@@ -130,20 +142,36 @@ export default class Transition extends React.Component<IProps>{
     const plotLayout = this.getPlotLayout();
     const title = this.getTitle();
     const {handleRelayout} = this;
-    const {transition, onClose, onIsScatterChange, onIsLogChange, onIsDatetimeChange } = this.props;
+    const {
+      transition, onClose, 
+      onIsScatterChange, onIsLogChange, 
+      onIsDatetimeChange, onWeightChange 
+    } = this.props;
     return (
       <Layout className="card">
         <Title> {title} </Title>
         <CotrolArea>
-          <CheckContainer>
+          <ControlItem>
+            <Slider
+              step={0.01} 
+              min={0} 
+              max={0.99} 
+              defaultValue={transition.smoothWeight} 
+              onInput={x => onWeightChange(transition.id, x)}
+            /> 
+            <SmoothWeight>
+              {transition.smoothWeight}
+            </SmoothWeight>
+          </ControlItem>
+          <ControlItem>
             <Check value={transition.isLog} onClick={() => onIsLogChange(transition.id)}> Log </Check>
-          </CheckContainer>
-          <CheckContainer>
+          </ControlItem>
+          <ControlItem>
             <Check value={transition.isScatter} onClick={() => onIsScatterChange(transition.id)}> Scatter </Check>
-          </CheckContainer>
-          <CheckContainer>
+          </ControlItem>
+          <ControlItem>
             <Check value={transition.isDatetime} onClick={() => onIsDatetimeChange(transition.id)}> Date </Check>
-          </CheckContainer>
+          </ControlItem>
         </CotrolArea>
         <Close className="delete" onClick={() => onClose(transition.id)}/>
         <PlotArea>

@@ -24,13 +24,13 @@ export default class TransitionUsecase{
     if(rows === undefined) {return;}
     rows.forEach(x => this.root.traceStore.upsert(x.id, x));
   }
-
   @action add = async (
     traceId: string,
   ) => {
     const transition = {
       id: traceId,
       traceId: traceId,
+      smoothWeight: 0.0,
       isLog: false,
       isScatter:false,
       isDatetime:true,
@@ -44,6 +44,16 @@ export default class TransitionUsecase{
     this.root.transitionStore.upsert(transition.id, transition);
     this.root.segmentStore.upsert(transition.id, points);
   }
+
+  @action updateSmoothWeight = (id: string, value: number) => {
+    const transition = this.root.transitionStore.rows.get(id);
+    if(transition === undefined){return;}
+    this.root.transitionStore.upsert(id, {
+      ...transition,
+      smoothWeight:value,
+    });
+  }
+
 
   @action updateRange = async (id: string, fromDate: Moment, toDate: Moment) => {
     const transition = this.root.transitionStore.rows.get(id);
