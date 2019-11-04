@@ -2,7 +2,7 @@ import typing as t
 from uuid import UUID
 from typing_extensions import Protocol
 from datetime import datetime
-from mlboard.models.protocols import IPoint, ITrace
+from mlboard.models.protocols import IPoint, ITrace, IWorkspace
 
 
 ITransaction = t.AsyncContextManager[None]
@@ -35,4 +35,18 @@ class ITraceQuery(Protocol):
         ...
 
     async def upsert(self, tag: str) -> UUID:
+        ...
+
+
+class IWorkspaceQuery(Protocol):
+    async def all(self) -> t.Sequence[IWorkspace]:
+        ...
+
+    async def delete(self) -> None:
+        ...
+
+    async def delete_by(self, **kwargs: t.Any) -> None:
+        ...
+
+    async def insert(self, obj: IWorkspace) -> t.Optional[UUID]:
         ...

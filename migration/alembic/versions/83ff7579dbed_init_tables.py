@@ -35,8 +35,16 @@ def upgrade():
             (
                 id uuid NOT NULL PRIMARY KEY,
                 tag text NOT NULL UNIQUE,
+                workspace_id uuid NOT NULL,
                 created_at timestamp with time zone NOT NULL,
                 updated_at timestamp with time zone NOT NULL
+            );
+        CREATE TABLE workspaces
+            (
+                id uuid NOT NULL PRIMARY KEY,
+                name text NOT NULL UNIQUE,
+                params json NOT NULL,
+                created_at timestamp with time zone NOT NULL
             );
         """
     ))
@@ -48,6 +56,7 @@ def downgrade():
         """
         DROP TABLE points CASCADE;
         DROP TABLE traces CASCADE;
+        DROP TABLE workspaces CASCADE;
         DROP EXTENSION "uuid-ossp";
         """
     ))
