@@ -1,31 +1,33 @@
 import React, {FormEvent} from 'react';
 import fp from 'lodash/fp';
 
+
 export interface IProps {
-  value: number;
+  defaultValue: number;
   step: number;
   min: number;
   max: number;
   onInput: (value: number) => void;
 }
-const Component = (props: IProps) => {
-  const {value, step, min, max, onInput} = props;
-
-  const delayedOnInput = fp.debounce(100)(onInput);
-  const handleInput = (e: FormEvent<HTMLInputElement>) => {
+export default class DatetimeInput extends React.Component<IProps> {
+  delayedOnInput = fp.debounce(200)(this.props.onInput)
+  handleInput = (e: FormEvent<HTMLInputElement>) => {
     e.persist();
-    delayedOnInput(Number(e.currentTarget.value));
+    const inputValue = Number(e.currentTarget.value);
+    this.delayedOnInput(inputValue);
   };
-  return (
-    <input 
-      step={step} 
-      min={min} 
-      max={max} 
-      value={value} 
-      onChange={handleInput}
-      type="range"
-    />
-  );
+  render = () => {
+    const {step, min, max, defaultValue} = this.props;
+    const {handleInput} = this;
+    return (
+      <input 
+        defaultValue={String(defaultValue)}
+        step={step} 
+        min={min} 
+        max={max} 
+        onChange={handleInput}
+        type="range"
+      />
+    );
+  }
 };
-export default Component;
-

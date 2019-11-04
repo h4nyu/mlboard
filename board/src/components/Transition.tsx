@@ -14,8 +14,8 @@ import {ITransition, IPoint, ITrace } from '~/models/interfaces';
 const Layout = styled.div`
   display: grid;
   grid-template-areas:
-    "title slider control close"
-    "plot plot plot plot";
+    "title control close"
+    "plot plot plot";
   padding: 0.5em;
   margin: 0.25em;
   grid-template-columns: 1fr auto auto;
@@ -27,19 +27,19 @@ const PlotArea = styled.div`
   padding: 0.5em;
 `;
 
-const SliderArea = styled.div`
-  grid-area: slider;
-  padding: 0.5em;
-`;
-
-
 const Close = styled.a`
   grid-area: close;
 `;
 
-const CheckContainer = styled.div`
+
+const SmoothWeight = styled.span`
+  width: 2em;
+`;
+const ControlItem = styled.div`
   padding-left: 0.25em;
   padding-right: 0.25em;
+  display: flex;
+  align-items: center;
 `;
 
 const Title = styled.span`
@@ -105,6 +105,7 @@ export default class Transition extends React.Component<IProps>{
       xaxis: {
         range:[transition.fromDate, transition.toDate].map(formatDatetime),
         type: transition.isDatetime ? 'date': undefined,
+        fixedrange: !transition.isDatetime,
       },
       yaxis: {
         type: transition.isLog ? 'log' : undefined,
@@ -117,8 +118,7 @@ export default class Transition extends React.Component<IProps>{
     const {transition, traces} = this.props;
     const trace = traces.get(transition.traceId);
     if(trace === undefined){
-      return "";
-    }
+      return ""; }
     return trace.tag;
   }
 
@@ -150,25 +150,28 @@ export default class Transition extends React.Component<IProps>{
     return (
       <Layout className="card">
         <Title> {title} </Title>
-        <SliderArea>
-          <Slider
-            step={0.01} 
-            min={0} 
-            max={1} 
-            value={transition.smoothWeight} 
-            onInput={x => onWeightChange(transition.id, x)}
-          /> {transition.smoothWeight}
-        </SliderArea>
         <CotrolArea>
-          <CheckContainer>
+          <ControlItem>
+            <Slider
+              step={0.01} 
+              min={0} 
+              max={1} 
+              defaultValue={transition.smoothWeight} 
+              onInput={x => onWeightChange(transition.id, x)}
+            /> 
+            <SmoothWeight>
+              {transition.smoothWeight}
+            </SmoothWeight>
+          </ControlItem>
+          <ControlItem>
             <Check value={transition.isLog} onClick={() => onIsLogChange(transition.id)}> Log </Check>
-          </CheckContainer>
-          <CheckContainer>
+          </ControlItem>
+          <ControlItem>
             <Check value={transition.isScatter} onClick={() => onIsScatterChange(transition.id)}> Scatter </Check>
-          </CheckContainer>
-          <CheckContainer>
+          </ControlItem>
+          <ControlItem>
             <Check value={transition.isDatetime} onClick={() => onIsDatetimeChange(transition.id)}> Date </Check>
-          </CheckContainer>
+          </ControlItem>
         </CotrolArea>
         <Close className="delete" onClick={() => onClose(transition.id)}/>
         <PlotArea>
