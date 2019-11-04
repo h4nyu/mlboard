@@ -1,6 +1,6 @@
 import { Map } from 'immutable';
 import React from 'react';
-import { ITrace } from '~/models/interfaces'; 
+import { ITrace, IWorkspace } from '~/models/interfaces'; 
 import styled from 'styled-components';
 import TextInput from '~/components/TextInput';
 import { IProps as IChildProps } from '~/connectors/TraceListItem';
@@ -13,6 +13,7 @@ const Layout = styled.div`
 `;
 
 interface IProps {
+  workspace: IWorkspace
   traces: Map<string, ITrace>;
   keyword: string;
   onInput: (keyword: string) => void;
@@ -20,16 +21,18 @@ interface IProps {
 }
 const Component = (props: IProps) => {
   const {
-    traces, Child, 
+    traces, workspace,Child, 
     onInput, keyword,
   } = props;
+  const filteredTrace = traces.filter(x => x.workspaceId === workspace.id)
+
   return (
     <Layout className="card">
       <TextInput 
         defaultValue={keyword}
         onInput={onInput}
       />
-      {Array.from(traces.values()).map(x => <Child key={x.id} trace={x}/>)}
+      {Array.from(filteredTrace.values()).map(x => <Child key={x.id} trace={x}/>)}
     </Layout>
   );
 };

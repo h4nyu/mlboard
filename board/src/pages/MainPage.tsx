@@ -13,10 +13,11 @@ const Layout = styled.div`
   grid-template-rows: auto 1fr;
   height: 100vh;
 `;
-const TraceArea = styled(TraceList)`
-  grid-area: col0;
-  height: calc(100vh - 52px);
-`;
+
+// const TraceArea = styled(TraceList)`
+//   grid-area: col0;
+//   height: calc(100vh - 52px);
+// `;
 
 const TransitionArea = styled.div`
   grid-area: col1;
@@ -34,9 +35,6 @@ export default class TracePage extends React.Component<{}> {
         <HeaderArea>
           <PageHeader/>
         </HeaderArea>
-        <TraceArea>
-          <TraceList />
-        </TraceArea>
         <TransitionArea>
           <TransitionList />
         </TransitionArea>
