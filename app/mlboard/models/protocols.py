@@ -15,6 +15,7 @@ class ITrace(Protocol):
     created_at: datetime
     updated_at: datetime
 
+
 class IWorkspace(Protocol):
     id: UUID
     name: str

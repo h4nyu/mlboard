@@ -1,7 +1,6 @@
 from uuid import UUID
 from logging import getLogger
 import typing as t
-from datetime import datetime
 from mlboard.models.protocols import IWorkspace
 from mlboard.models.workspace import Workspace
 from mlboard.dao.protocols import IQuery

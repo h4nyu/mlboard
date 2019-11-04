@@ -37,6 +37,7 @@ class ITraceQuery(Protocol):
     async def upsert(self, tag: str) -> UUID:
         ...
 
+
 class IWorkspaceQuery(Protocol):
     async def all(self) -> t.Sequence[IWorkspace]:
         ...
