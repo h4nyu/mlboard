@@ -23,10 +23,11 @@ export default class TransitionUsecase{
 
   @computed get traces() {
     const keywords = this.traceKeyword.split(',').map(x => x.trim());
+    const traces =  this.root.traceStore.rows.sortBy(x => - x.updatedAt)
     if(this.traceKeyword.length === 0){
-      return this.root.traceStore.rows;
+      return traces;
     }
-    return this.root.traceStore.rows.filter(x => {
+    return traces.filter(x => {
       const target = `
         ${x.tag}
       `;
