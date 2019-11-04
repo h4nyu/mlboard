@@ -3,14 +3,15 @@ import React from "react";
 import TraceList from '~/containers/TraceList';
 import TraceListItem from "~/connectors/TraceListItem";
 import store from "~/store";
-const {traceStore} = store;
+const {transitionUsecase} = store;
 
 
 const Component = () => (
   <TraceList
-    traces={traceStore.rows}
+    traces={transitionUsecase.traces}
+    onInput={transitionUsecase.setTraceKeyword}
+    keyword={transitionUsecase.traceKeyword}
     Child={TraceListItem}
   />
 );
 export default observer(Component);
-

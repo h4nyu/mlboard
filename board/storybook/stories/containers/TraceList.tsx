@@ -15,6 +15,8 @@ storiesOf('TraceList', module)
     return (
       <Component 
         traces={traces}
+        keyword={'aaaa'}
+        onInput={console.debug}
         Child={Mock}
       />
     );

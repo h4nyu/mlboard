@@ -1,13 +1,15 @@
 import moment, {Moment} from 'moment';
-import { action } from 'mobx';
+import { action, observable, computed } from 'mobx';
 import { IPointApi, ITraceApi } from '~/api/interfaces';
 import { IRoot } from './interfaces';
 import { IPoint } from '~/models/interfaces'; 
+import _ from 'lodash';
 
 export default class TransitionUsecase{
   private pointApi: IPointApi
   private traceApi: ITraceApi
   private root: IRoot
+  @observable traceKeyword: string = ""
 
   constructor(
     root: IRoot,
@@ -17,6 +19,20 @@ export default class TransitionUsecase{
     this.root = root;
     this.pointApi = pointApi;
     this.traceApi = traceApi;
+  }
+
+  @computed get traces() {
+    const keywords = this.traceKeyword.split(',').map(x => x.trim());
+    if(this.traceKeyword.length === 0){
+      return this.root.traceStore.rows;
+    }
+    return this.root.traceStore.rows.filter(x => {
+      const target = `
+        ${x.tag}
+      `;
+      const res = _.some(keywords.map(y => target.includes(y.trim())));
+      return res;
+    });
   }
 
   fetchTraces = async () => {
@@ -43,6 +59,10 @@ export default class TransitionUsecase{
     if(points === undefined){return;}
     this.root.transitionStore.upsert(transition.id, transition);
     this.root.segmentStore.upsert(transition.id, points);
+  }
+
+  @action setTraceKeyword = (keyword: string) => {
+    this.traceKeyword = keyword;
   }
 
   @action updateSmoothWeight = (id: string, value: number) => {
