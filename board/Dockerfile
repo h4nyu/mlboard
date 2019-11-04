@@ -12,4 +12,4 @@ RUN yarn run build
 
 FROM busybox AS prod
 COPY --from=dev /srv/dist /srv/dist
-CMD cp -r /srv/dist/* /public
+CMD cp -r /srv/dist/* /public && tail -f /dev/null
