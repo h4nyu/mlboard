@@ -8,8 +8,16 @@ export interface IPoint {
 export interface ITrace {
   id: string;
   tag: string;
+  workspaceId: string;
   createdAt: Moment;
   updatedAt: Moment;
+}
+
+export interface IWorkspace {
+  id: string;
+  name: string;
+  params: object;
+  createdAt: Moment;
 }
 
 export interface ITransition {
