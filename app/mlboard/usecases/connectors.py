@@ -26,6 +26,7 @@ def get_trace_usecase() -> ITraceUsecase:
         point_query=PointQuery,
     )
 
+
 def get_workspace_usecase() -> IWorkspaceUsecase:
     return WorkspaceUsecase(
         get_conn=get_conn,

@@ -1,5 +1,4 @@
 import typing as t
-from uuid import UUID
 from mlboard.queries.protocols import (
     IWorkspaceQuery
 )
