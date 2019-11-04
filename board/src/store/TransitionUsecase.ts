@@ -23,7 +23,7 @@ export default class TransitionUsecase{
 
   @computed get traces() {
     const keywords = this.traceKeyword.split(',').map(x => x.trim());
-    const traces =  this.root.traceStore.rows.sortBy(x => - x.updatedAt)
+    const traces =  this.root.traceStore.rows.sortBy(x => - x.updatedAt);
     if(this.traceKeyword.length === 0){
       return traces;
     }

@@ -8,7 +8,7 @@ export interface IPoint {
 export interface IWorkspace {
   id: string;
   name: string;
-  params: object;
+  params: {[key: string]: any};
   createdAt: Moment;
 }
 
