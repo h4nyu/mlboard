@@ -13,13 +13,6 @@ export interface ITrace {
   updatedAt: Moment;
 }
 
-export interface IWorkspace {
-  id: string;
-  name: string;
-  params: object;
-  createdAt: Moment;
-}
-
 export interface ITransition {
   id: string;
   traceId: string;
