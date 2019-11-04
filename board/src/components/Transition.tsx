@@ -119,7 +119,7 @@ export default class Transition extends React.Component<IProps>{
     const trace = traces.get(transition.traceId);
     if(trace === undefined){
       return ""; }
-    return trace.tag;
+    return trace.name;
   }
 
   handleRelayout = (e: any) => {
