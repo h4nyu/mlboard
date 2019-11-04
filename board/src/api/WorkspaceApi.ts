@@ -1,5 +1,5 @@
 import axios from 'axios';
-import moment, {Moment} from 'moment';
+import moment from 'moment';
 import { IWorkspace } from "~/models/interfaces";
 
 

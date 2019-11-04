@@ -1,6 +1,6 @@
 import moment, {Moment} from 'moment';
 import { action, observable, computed } from 'mobx';
-import { IPointApi, ITraceApi } from '~/api/interfaces';
+import { IPointApi, ITraceApi, IWorkspaceApi } from '~/api/interfaces';
 import { IRoot } from './interfaces';
 import { IPoint } from '~/models/interfaces'; 
 import _ from 'lodash';
@@ -8,6 +8,7 @@ import _ from 'lodash';
 export default class TransitionUsecase{
   private pointApi: IPointApi
   private traceApi: ITraceApi
+  private workspaceApi: IWorkspaceApi;
   private root: IRoot
   @observable traceKeyword: string = ""
 
@@ -15,15 +16,17 @@ export default class TransitionUsecase{
     root: IRoot,
     pointApi: IPointApi,
     traceApi: ITraceApi,
+    workspaceApi: IWorkspaceApi,
   ){
     this.root = root;
     this.pointApi = pointApi;
     this.traceApi = traceApi;
+    this.workspaceApi = workspaceApi;
   }
 
   @computed get traces() {
     const keywords = this.traceKeyword.split(',').map(x => x.trim());
-    const traces =  this.root.traceStore.rows.sortBy(x => - x.updatedAt)
+    const traces =  this.root.traceStore.rows.sortBy(x => - x.updatedAt);
     if(this.traceKeyword.length === 0){
       return traces;
     }
@@ -34,6 +37,16 @@ export default class TransitionUsecase{
       const res = _.some(keywords.map(y => target.includes(y.trim())));
       return res;
     });
+  }
+  fetchAll = () => {
+    this.fetchTraces();
+    this.fetchWorkspaces();
+  }
+
+  fetchWorkspaces = async () => {
+    const rows = await this.workspaceApi.all();
+    if(rows === undefined) {return;}
+    rows.forEach(x => this.root.workspaceStore.upsert(x.id, x));
   }
 
   fetchTraces = async () => {

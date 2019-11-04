@@ -1,4 +1,4 @@
-import { ITransition, ITrace } from '~/models/interfaces'
+import { ITransition, ITrace, IWorkspace } from '~/models/interfaces'
 import uuid from 'uuid';
 import moment from 'moment';
 
@@ -19,4 +19,11 @@ export  const trace:ITrace = {
   workspaceId: uuid(),
   createdAt: moment(),
   updatedAt: moment(),
+}
+
+export const workspace:IWorkspace = {
+  id:uuid(),
+  name: 'name',
+  params: {'lr': 0.001, epoch:200},
+  createdAt: moment(),
 }
