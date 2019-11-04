@@ -1,20 +1,17 @@
 import { observer } from 'mobx-react';
 import React from "react";
 import { IWorkspace } from '~/models/interfaces'; 
-import TraceList from '~/containers/TraceList';
-import TraceListItem from "~/connectors/TraceListItem";
-import store from "~/store";
-const {transitionUsecase} = store;
+import Workspace from '~/containers/Workspace';
+import TraceList from '~/connectors/TraceList';
 
 export interface IProps{
   workspace: IWorkspace;
 }
-
 const Component = (props: IProps) => (
-  <TraceList
+  <Workspace
     workspace={props.workspace}
-    traces={transitionUsecase.traces}
-    Child={TraceListItem}
+    Child={TraceList}
   />
 );
 export default observer(Component);
+

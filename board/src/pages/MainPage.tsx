@@ -1,5 +1,5 @@
 import React from 'react';
-import TraceList from '~/connectors/TraceList';
+import WorkspaceList from '~/connectors/WorkspaceList';
 import TransitionList from '~/connectors/TransitionList';
 import PageHeader from '~/components/PageHeader';
 import styled from 'styled-components';
@@ -13,7 +13,8 @@ const Layout = styled.div`
   grid-template-rows: auto 1fr;
   height: 100vh;
 `;
-const TraceArea = styled(TraceList)`
+
+const WorkspaceArea = styled.div`
   grid-area: col0;
   height: calc(100vh - 52px);
 `;
@@ -34,9 +35,9 @@ export default class TracePage extends React.Component<{}> {
         <HeaderArea>
           <PageHeader/>
         </HeaderArea>
-        <TraceArea>
-          <TraceList />
-        </TraceArea>
+        <WorkspaceArea>
+          <WorkspaceList/>
+        </WorkspaceArea>
         <TransitionArea>
           <TransitionList />
         </TransitionArea>

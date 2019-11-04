@@ -5,7 +5,6 @@ from mlboard.queries.protocols import (
 from mlboard.dao.postgresql import Connection, IConnection
 from mlboard.models.protocols import IWorkspace
 from mlboard.models.workspace import Workspace
-from datetime import datetime
 from uuid import UUID
 
 
@@ -35,7 +34,6 @@ class WorkspaceUsecase:
                         id=row.id,
                         payload={
                             'params': params,
-                            'updated_at': datetime.now(),
                         }
                     )
                     return row.id

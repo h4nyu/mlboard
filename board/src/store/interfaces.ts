@@ -1,5 +1,5 @@
 import {Moment} from 'moment';
-import { ITrace, IPoint, ITransition } from '~/models/interfaces';
+import { ITrace, IPoint, ITransition, IWorkspace } from '~/models/interfaces';
 import { Map } from 'immutable';
 
 export interface IModelStore<T> {
@@ -23,7 +23,7 @@ export interface ITransitionUsecase {
   traceKeyword: string;
   traces: Map<string, ITrace>;
 
-  fetchTraces: () => void;
+  fetchAll: () => void;
   add: (traceId: string) => void;
   delete: (id: string) => void;
   setTraceKeyword: (keyword: string) => void;
@@ -43,6 +43,7 @@ export interface IRoot {
   traceStore: IModelStore<ITrace>;
   segmentStore: IModelStore<IPoint[]>;
   transitionStore: IModelStore<ITransition>;
+  workspaceStore: IModelStore<IWorkspace>;
 
   // usecase
   transitionUsecase: ITransitionUsecase;
