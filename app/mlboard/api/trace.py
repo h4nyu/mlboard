@@ -18,12 +18,16 @@ async def all() -> t.Sequence[ITrace]:
 
 
 class RegisterIn(BaseModel):
-    tag: str
+    name: str
+    workspace_id: UUID
 
 
 @router.post('/trace')
 async def register(payload: RegisterIn) -> UUID:
-    return await usecase.register(tag=payload.tag)
+    return await usecase.register(
+        name=payload.name,
+        workspace_id=payload.workspace_id,
+    )
 
 
 @router.delete('/trace')

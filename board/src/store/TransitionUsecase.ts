@@ -29,7 +29,7 @@ export default class TransitionUsecase{
     }
     return traces.filter(x => {
       const target = `
-        ${x.tag}
+        ${x.name}
       `;
       const res = _.some(keywords.map(y => target.includes(y.trim())));
       return res;

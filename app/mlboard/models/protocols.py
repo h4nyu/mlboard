@@ -11,7 +11,7 @@ class IPoint(Protocol):
 
 class ITrace(Protocol):
     id: UUID
-    tag: str
+    name: str
     created_at: datetime
     updated_at: datetime
 
