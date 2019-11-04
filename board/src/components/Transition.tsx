@@ -155,7 +155,7 @@ export default class Transition extends React.Component<IProps>{
             <Slider
               step={0.01} 
               min={0} 
-              max={1} 
+              max={0.99} 
               defaultValue={transition.smoothWeight} 
               onInput={x => onWeightChange(transition.id, x)}
             /> 
