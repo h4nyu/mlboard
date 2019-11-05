@@ -17,13 +17,13 @@
     "baseUrl": "./",
     "paths": {
       "~/*": ["src/*"],
-      "storybook/*": ["storybook/*"],
+      "stories/*": ["stories/*"],
       "tests/*": ["tests/*"]
     }
   },
   "include": [
     "src",
-    "storybook",
+    "stories",
     "tests"
   ],
   "exclude": ["node_modules"]
