@@ -24,6 +24,7 @@
     "plotly.js-dist": "^1.50.1",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
+    "react-json-view": "^1.19.1",
     "react-loader": "^2.4.5",
     "react-loading-overlay": "^1.0.1",
     "react-md-spinner": "^1.0.0",
@@ -40,6 +41,8 @@
     "@babel/preset-env": "^7.4.2",
     "@fortawesome/fontawesome-common-types": "^0.2.19",
     "@fortawesome/fontawesome-svg-core": "^1.2.19",
+    "@storybook/addon-actions": "^5.2.5",
+    "@storybook/addon-knobs": "^5.2.5",
     "@storybook/react": "^5.1.8",
     "@types/d3": "^5.7.2",
     "@types/file-saver": "^2.0.1",
@@ -90,8 +93,8 @@
     "watch": "webpack --mode development --watch --progress --colors",
     "tsc": "tsc",
     "watch-ts": "tsc --noEmit -w",
-    "storybook": "start-storybook -p 9001 -c storybook --ci",
-    "lint": "eslint --fix --ext .tsx,.ts src storybook"
+    "storybook": "start-storybook -p 9001 -c ./.storybook --ci",
+    "lint": "eslint --fix --ext .tsx,.ts src ./.storybook"
   },
   "author": "Xinyuan Yao",
   "license": "ISC"

@@ -8,7 +8,7 @@ import Slider from '~/components/Slider';
 import Plot from 'react-plotly.js';
 import _ from 'lodash';
 import Check from '~/components/Check';
-import {ITransition, IPoint, ITrace } from '~/models/interfaces';
+import {ITransition, IPoint, ITrace, IWorkspace } from '~/models/interfaces';
 
 
 const Layout = styled.div`
@@ -59,6 +59,7 @@ export interface IProps {
   transition: ITransition;
   traces: Map<string, ITrace>;
   segments: Map<string,IPoint[]>;
+  workspaces: Map<string,IWorkspace>;
   onWeightChange: (id: string, value: number) => void;
   onRangeChange: (id: string, fromDate: Moment, toDate: Moment) => void;
   onClose: (id: string) => void;
@@ -114,12 +115,13 @@ export default class Transition extends React.Component<IProps>{
       showTips: false,
     } as any; 
   }
-  getTitle = () => {
-    const {transition, traces} = this.props;
+  getTitle = (): string => {
+    const {transition, traces, workspaces} = this.props;
     const trace = traces.get(transition.traceId);
-    if(trace === undefined){
-      return ""; }
-    return trace.name;
+    if(trace === undefined){ return ""; }
+    const workspace = workspaces.get(trace.workspaceId);
+    if(workspace === undefined){ return trace.name; }
+    return `${workspace.name}/${trace.name}`;
   }
 
   handleRelayout = (e: any) => {

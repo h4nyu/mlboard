@@ -42,7 +42,7 @@ module.exports = {
   resolve: {
     alias: {
       '~': '/srv/src',
-      'storybook': '/srv/storybook',
+      'stories': '/srv/stories',
       'tests': '/srv/tests',
       'package.json':'/srv/package.json',
     },

@@ -1,14 +1,12 @@
 import React from 'react';
 import { ITransition } from '~/models/interfaces'; 
 import styled from 'styled-components';
-import * as styles from '~/styles';
 import {IProps as IChildProps} from '~/connectors/Transition';
 import { Map } from 'immutable';
 
 const Layout = styled.div`
   display: flex;
   flex-direction: column;
-  ${styles.card}
   height: 100%;
   overflow-y: scroll;
 `;

@@ -12,7 +12,7 @@ async def main() -> None:
     })
 
     for i in range(2):
-        await trace_uc.register(f"#{randint(0, 5)}", workspace_id)
+        await trace_uc.register(f"metric#{randint(0, 5)}", workspace_id)
     traces = await trace_uc.all()
 
     for t in traces:

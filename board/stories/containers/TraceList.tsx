@@ -2,7 +2,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import Component from '~/containers/TraceList';
 import { Map } from 'immutable';
-import Mock from 'storybook/Mock';
+import Mock from 'stories/Mock';
 import {trace, workspace} from 'tests/mocks/models';
 
 

@@ -16,7 +16,7 @@ export interface IProps {
 const Check = (props: IProps) => {
   const {value, children} = props;
   return (
-    <Layout onClick={props.onClick}>
+    <Layout onClick={() => props.onClick()}>
       {value ? <ToggleOn/> : <ToggleOff/>}
       {children}
     </Layout>
