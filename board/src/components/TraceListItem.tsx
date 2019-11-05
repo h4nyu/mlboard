@@ -1,7 +1,6 @@
 import React from 'react';
 import { ITrace } from '~/models/interfaces'; 
 import styled from 'styled-components';
-import * as styles from '~/styles';
 
 
 const Layout = styled.div`
@@ -12,13 +11,11 @@ const Layout = styled.div`
   &:hover {
     background-color: #EEEEEE;
   };
-  ${styles.card}
   cursor: pointer;
 `;
 
 const Tag = styled.div`
   grid-area: ta;
-  ${styles.text}
 `;
 
 const Space = styled.div`
@@ -28,7 +25,7 @@ const Space = styled.div`
 
 const UpdatedAt = styled.div`
   grid-area: up;
-  ${styles.text}
+  white-space:nowrap;
 `;
 
 
@@ -40,7 +37,7 @@ export default class TraceListItem extends React.Component<IProps> {
   render = () => {
     const {trace} = this.props;
     return (
-      <Layout onClick={() => this.props.onSelect(trace.id)}>
+      <Layout className="card" onClick={() => this.props.onSelect(trace.id)}>
         <Tag>
           {trace.name}
         </Tag>

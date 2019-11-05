@@ -4,12 +4,12 @@ import WorkspaceList from '~/containers/WorkspaceList';
 import Workspace from '~/connectors/Workspace';
 import store from "~/store";
 
-const {workspaceStore, transitionUsecase} = store;
+const {transitionUsecase} = store;
 
 
 const Component = () => (
   <WorkspaceList
-    workspaces={workspaceStore.rows}
+    workspaces={transitionUsecase.workspaces}
     keyword={transitionUsecase.traceKeyword}
     onInput={transitionUsecase.setTraceKeyword}
     Child={Workspace}

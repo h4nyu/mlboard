@@ -24,6 +24,10 @@ export default class TransitionUsecase{
     this.workspaceApi = workspaceApi;
   }
 
+  @computed get workspaces() {
+    return this.root.workspaceStore.rows.sortBy(x => - x.createdAt);
+  }
+
   @computed get traces() {
     const keywords = this.traceKeyword.split(',').map(x => x.trim());
     const traces =  this.root.traceStore.rows.sortBy(x => - x.updatedAt);

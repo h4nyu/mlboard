@@ -22,6 +22,7 @@ export interface ILoadingStore {
 export interface ITransitionUsecase {
   traceKeyword: string;
   traces: Map<string, ITrace>;
+  workspaces: Map<string, IWorkspace>;
 
   fetchAll: () => void;
   add: (traceId: string) => void;
