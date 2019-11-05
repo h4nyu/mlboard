@@ -24,6 +24,7 @@
     "plotly.js-dist": "^1.50.1",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
+    "react-json-view": "^1.19.1",
     "react-loader": "^2.4.5",
     "react-loading-overlay": "^1.0.1",
     "react-md-spinner": "^1.0.0",
