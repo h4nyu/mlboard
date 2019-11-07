@@ -80,7 +80,6 @@ class PointQuery:
     async def bulk_insert(self, rows: t.Sequence[IPoint]) -> int:
         conn = self._query.conn
         if len(rows) > 0:
-            []
             records = [
                 (x.ts, x.value, x.trace_id)
                 for x
