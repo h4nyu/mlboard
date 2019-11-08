@@ -7,7 +7,6 @@ requires = [
     "toolz",
     "asyncpg",
     "fastapi",
-    "starlette",
     "PyYAML",
     "ujson",
     "requests",
