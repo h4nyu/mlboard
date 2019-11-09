@@ -29,6 +29,7 @@ export interface ITransitionUsecase {
   delete: (id: string) => void;
   setTraceKeyword: (keyword: string) => void;
   updateRange: (id: string,fromDate: Moment, toDate: Moment) => void;
+  updateRangeInWorkspace: (id: string,fromDate: Moment, toDate: Moment) => void;
   updateSmoothWeight: (id: string, value: number) => void;
   toggleIsLog: (id: string) => void;
   toggleIsDatetime: (id: string) => void;

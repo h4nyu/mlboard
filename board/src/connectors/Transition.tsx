@@ -15,7 +15,7 @@ const Component = (props: IProps) => (
     workspaces={workspaceStore.rows}
     traces={traceStore.rows}
     onWeightChange={transitionUsecase.updateSmoothWeight}
-    onRangeChange={transitionUsecase.updateRange}
+    onRangeChange={transitionUsecase.updateRangeInWorkspace}
     onClose={transitionUsecase.delete}
     onIsLogChange={transitionUsecase.toggleIsLog}
     onIsDatetimeChange={transitionUsecase.toggleIsDatetime}

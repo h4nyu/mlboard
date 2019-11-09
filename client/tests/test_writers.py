@@ -5,8 +5,8 @@ import pytest
 @pytest.fixture
 def writer() -> Writer:
     return Writer(
-        'http://api:5000', 
-        'test',
+        'http://web/api/',
+        'test0',
         {
             'p0': 12,
             'p1': {
