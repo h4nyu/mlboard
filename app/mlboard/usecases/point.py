@@ -23,11 +23,12 @@ class PointUsecase:
         self,
         trace_id: UUID,
         value: float,
+        ts:t.Optional[datetime]=None,
     ) -> None:
         point = Point(
             trace_id=trace_id,
             value=value,
-            ts=datetime.now(TZ),
+            ts=ts if ts is not None else datetime.now(TZ),
         )
         async with self.get_conn() as conn:
             await self.point_query(conn).bulk_insert([point])
@@ -55,3 +56,21 @@ class PointUsecase:
                 trace_id,
                 limit
             )
+
+    async def add_scalars(
+        self,
+        values: t.Dict[UUID,float],
+        ts:t.Optional[datetime]=None,
+    ) -> None:
+        ts = ts if ts is not None else datetime.now(TZ)
+        points = [
+            Point(
+                trace_id=x,
+                value=y,
+                ts=ts,
+            )
+            for x, y
+            in values.items()
+        ]
+        async with self.get_conn() as conn:
+            await self.point_query(conn).bulk_insert(points)

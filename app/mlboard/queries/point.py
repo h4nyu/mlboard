@@ -43,7 +43,7 @@ class PointQuery:
     ) -> t.Sequence[IPoint]:
         rows = await self._query.conn.fetch(
             f"""
-                SELECT *
+                SELECT value, ts
                 FROM {TABLE_NAME}
                 WHERE trace_id = $1
                 ORDER BY ts DESC
@@ -52,7 +52,16 @@ class PointQuery:
             trace_id,
             limit,
         )
-        return self._query.to_models(rows)
+
+        return [
+            Point(
+                value=r['value'],
+                trace_id=trace_id,
+                ts=r['ts'],
+            )
+            for r
+            in rows
+        ]
 
     async def range_by(
         self,
@@ -63,7 +72,7 @@ class PointQuery:
     ) -> t.Sequence[IPoint]:
         rows = await self._query.conn.fetch(
             f"""
-                SELECT *
+                SELECT value, ts
                 FROM {TABLE_NAME}
                 WHERE trace_id = $1
                     AND ts BETWEEN $2 AND $3
@@ -75,7 +84,15 @@ class PointQuery:
             to_date,
             limit,
         )
-        return self._query.to_models(rows)
+        return [
+            Point(
+                value=r['value'],
+                trace_id=trace_id,
+                ts=r['ts'],
+            )
+            for r
+            in rows
+        ]
 
     async def bulk_insert(self, rows: t.Sequence[IPoint]) -> int:
         conn = self._query.conn

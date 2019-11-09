@@ -86,7 +86,7 @@ export default class Transition extends React.Component<IProps>{
         x: x,
         y: smooth(y, transition.smoothWeight),
         mode: transition.isScatter ? "markers" : "markers+lines",
-        type: "scatter",
+        type: "scattergl",
         marker: {
           size: 5,
         },

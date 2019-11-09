@@ -6,6 +6,7 @@ from mlboard.usecases.connectors import get_point_usecase
 from mlboard.models.protocols import IPoint
 from datetime import datetime
 from logging import getLogger
+from pydantic import BaseModel
 
 logger = getLogger("api.trace")
 router = APIRouter()
@@ -26,4 +27,30 @@ async def filter_by_limit(trace_id: UUID, limit: int) -> t.Sequence[IPoint]:
     return await usecase.filter_by_limit(
         trace_id=trace_id,
         limit=limit,
+    )
+
+
+class AddScalarIn(BaseModel):
+    trace_id: UUID
+    value: float
+    ts: t.Optional[datetime]
+
+@router.post('/point/add-scalar')
+async def add_scalar(payload:AddScalarIn) -> None:
+    await usecase.add_scalar(
+        trace_id=payload.trace_id,
+        value=payload.value,
+        ts=payload.ts,
+    )
+
+
+class AddScalarsIn(BaseModel):
+    values: t.Dict[UUID, float]
+    ts: t.Optional[datetime]
+
+@router.post('/point/add-scalars')
+async def add_scalars(payload:AddScalarsIn) -> None:
+    await usecase.add_scalars(
+        values=payload.values,
+        ts=payload.ts,
     )
