@@ -48,3 +48,6 @@ class TraceQuery:
 
     async def get_by(self, **kwargs: t.Any) -> t.Optional[ITrace]:
         return await self._query.get_by(**kwargs)
+
+    async def filter_by(self, **kwargs: t.Any) -> t.Sequence[ITrace]:
+        return await self._query.filter_by(**kwargs)

@@ -31,4 +31,6 @@ def get_workspace_usecase() -> IWorkspaceUsecase:
     return WorkspaceUsecase(
         get_conn=get_conn,
         workspace_query=WorkspaceQuery,
+        trace_query=TraceQuery,
+        point_query=PointQuery,
     )

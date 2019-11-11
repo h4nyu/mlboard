@@ -25,3 +25,7 @@ async def register(payload:RegisterIn) -> UUID:
         name=payload.name,
         params=payload.params,
     )
+
+@router.delete('/workspace')
+async def delete_by(id:UUID) -> None:
+    return await usecase.delete_by(id=id)
