@@ -36,7 +36,7 @@ class WorkspaceUsecase:
             ]
             await self.trace_query.delete_by(workspace_id=id)
             for x in trace_ids:
-                await self.point_query.delete_by(config_id=x)
+                await self.point_query.delete_by(trace_id=x)
 
     async def register(self, name: str, params: t.Dict[str, t.Any]) -> UUID:
         async with self.transaction:

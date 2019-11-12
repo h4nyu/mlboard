@@ -160,4 +160,12 @@ export default class TransitionUsecase{
     this.root.segmentStore.delete(id);
     this.root.transitionStore.delete(id);
   }
+
+  deleteWorkspace = async (id: string) => {
+    await this.root.loadingStore.dispatch<Promise<void>>(
+      () => this.workspaceApi.delete(id)
+    );
+    this.root.workspaceStore.delete(id)
+  }
 }
+

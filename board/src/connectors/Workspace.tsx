@@ -3,6 +3,8 @@ import React from "react";
 import { IWorkspace } from '~/models/interfaces'; 
 import Workspace from '~/containers/Workspace';
 import TraceList from '~/connectors/TraceList';
+import store from '~/store';
+const {transitionUsecase} = store;
 
 export interface IProps{
   workspace: IWorkspace;
@@ -10,6 +12,7 @@ export interface IProps{
 const Component = (props: IProps) => (
   <Workspace
     workspace={props.workspace}
+    onDeleteClick={transitionUsecase.deleteWorkspace}
     Child={TraceList}
   />
 );

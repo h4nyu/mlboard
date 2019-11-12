@@ -24,7 +24,7 @@ export default class WorkspaceApi {
     return rows;
   };
 
-  deleteBy = async (id:string): Promise<void> => {
+  delete = async (id:string): Promise<void> => {
     const res = await axios.delete(`api/workspace`, {
       params: {
         id: id

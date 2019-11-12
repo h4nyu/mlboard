@@ -13,21 +13,27 @@ const Layout = styled.div`
   background-color: ${styles.light};
 `;
 const HeaderArea = styled.div`
-  display: grid;
-  grid-template-areas: "params dt";
-  grid-template-columns: 1fr auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 
+const DeleteBtn = (props: {onClick: () => void}) => (
+  <div className="button is-small is-danger" onClick={props.onClick}>
+    <i className="far fa-trash-alt"></i>
+  </div>
+)
 
 export interface IProps {
   workspace: IWorkspace;
+  onDeleteClick: (workspaceId:string) => void;
   Child: React.ComponentType<{workspace: IWorkspace}>;
 }
 
 export default class Workspace extends React.Component<IProps> {
   render = () => {
-    const {workspace, Child} = this.props;
+    const {workspace, Child, onDeleteClick} = this.props;
     return (
       <Layout >
         <HeaderArea className="card"> 
@@ -41,6 +47,7 @@ export default class Workspace extends React.Component<IProps> {
             displayObjectSize={false}
             style={{fontSize:"1em", fontFamily:"sans-serif"}}
           />
+          <DeleteBtn onClick={() => onDeleteClick(workspace.id)}/>
         </HeaderArea>
         <Child workspace={workspace}/>
       </Layout>
