@@ -75,6 +75,11 @@ jobs:
             docker-compose -v
 
       - run:
+          name: build prod images
+          command: |
+            docker-compose -f docker-compose.build.yml build
+
+      - run:
           name: push docker image
           command: |
             docker-compose -f docker-compose.build.yml push
