@@ -2,7 +2,9 @@ version: 2
 
 jobs:
   test:
-    machine: true
+    machine:
+      docker_layer_caching: true
+
     steps:
       - checkout
       - run:
@@ -59,7 +61,8 @@ jobs:
 
 
   deploy:
-    machine: true
+    machine:
+      docker_layer_caching: true
     filters:
       branches:
         only:
@@ -86,3 +89,5 @@ workflows:
     jobs:
       - test
       - deploy
+        requires:
+          - test
