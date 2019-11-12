@@ -28,15 +28,6 @@ services:
     depends_on:
       - migration
 
-  client:
-    build : 
-      <<: *default-build
-      context: ./app
-    volumes: 
-      - ./client:/srv
-    depends_on:
-      - api
-
   api:
     command:  sh start_api.sh
     <<: *default-app
