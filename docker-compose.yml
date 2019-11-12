@@ -38,7 +38,7 @@ services:
       - api
 
   api:
-    command:  python api.py
+    command:  sh start_api.sh
     <<: *default-app
     depends_on:
       - db

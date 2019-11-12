@@ -42,6 +42,7 @@ export default class TransitionUsecase{
       return res;
     });
   }
+
   fetchAll = () => {
     this.fetchTraces();
     this.fetchWorkspaces();
@@ -58,6 +59,7 @@ export default class TransitionUsecase{
     if(rows === undefined) {return;}
     rows.forEach(x => this.root.traceStore.upsert(x.id, x));
   }
+
   @action add = async (
     traceId: string,
   ) => {
@@ -108,6 +110,22 @@ export default class TransitionUsecase{
     this.root.segmentStore.upsert(id, points);
   }
 
+  @action updateRangeInWorkspace = async (id: string, fromDate: Moment, toDate: Moment) => {
+    const transition = this.root.transitionStore.rows.get(id);
+    if(transition === undefined){return;}
+    const trace = this.root.traceStore.rows.get(transition.traceId);
+    if(trace === undefined){return;}
+    const traceIds = this.root.traceStore.rows
+      .filter(x => x.workspaceId == trace.workspaceId)
+      .map(x => x.id)
+      .toSet();
+    this.root.transitionStore.rows
+      .filter(x => traceIds.includes(x.traceId))
+      .forEach(x => {
+        this.updateRange(x.id, fromDate, toDate);
+      });
+  }
+
   @action toggleIsScatter = (id: string) => {
     const row = this.root.transitionStore.rows.get(id);
     if(row){
@@ -142,4 +160,18 @@ export default class TransitionUsecase{
     this.root.segmentStore.delete(id);
     this.root.transitionStore.delete(id);
   }
+
+  deleteWorkspace = async (id: string) => {
+    await this.root.loadingStore.dispatch<Promise<void>>(
+      () => this.workspaceApi.delete(id)
+    );
+    const traceIds = this.root.traceStore.rows.filter(x => x.workspaceId === id).map(x => x.id);
+    traceIds.forEach(x => {
+      this.root.traceStore.delete(x);
+      this.root.transitionStore.delete(x);
+    });
+
+    this.root.workspaceStore.delete(id);
+  }
 }
+

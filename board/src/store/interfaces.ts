@@ -10,6 +10,7 @@ export interface IModelStore<T> {
 
 export interface IAppStore {
   init: () => void;
+  reflesh: () => void;
 }
 
 export interface ILoadingStore {
@@ -27,8 +28,10 @@ export interface ITransitionUsecase {
   fetchAll: () => void;
   add: (traceId: string) => void;
   delete: (id: string) => void;
+  deleteWorkspace: (workspaceId: string) => void;
   setTraceKeyword: (keyword: string) => void;
   updateRange: (id: string,fromDate: Moment, toDate: Moment) => void;
+  updateRangeInWorkspace: (id: string, fromDate: Moment, toDate: Moment) => void;
   updateSmoothWeight: (id: string, value: number) => void;
   toggleIsLog: (id: string) => void;
   toggleIsDatetime: (id: string) => void;

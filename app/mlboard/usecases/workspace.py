@@ -1,8 +1,10 @@
 import typing as t
 from mlboard.queries.protocols import (
-    IWorkspaceQuery
+    IWorkspaceQuery,
+    ITraceQuery,
+    IPointQuery,
+    ITransaction,
 )
-from mlboard.dao.postgresql import Connection, IConnection
 from mlboard.models.protocols import IWorkspace
 from mlboard.models.workspace import Workspace
 from uuid import UUID
@@ -11,29 +13,44 @@ from uuid import UUID
 class WorkspaceUsecase:
     def __init__(
         self,
-        get_conn: t.Callable[[], Connection],
-        workspace_query: t.Callable[[IConnection], IWorkspaceQuery],
-    ):
-        self.get_conn = get_conn
+        transaction: ITransaction,
+        workspace_query: IWorkspaceQuery,
+        trace_query: ITraceQuery,
+        point_query: IPointQuery,
+    ) -> None:
+        self.transaction = transaction
         self.workspace_query = workspace_query
+        self.point_query = point_query
+        self.trace_query = trace_query
 
     async def all(self) -> t.Sequence[IWorkspace]:
-        async with self.get_conn() as conn:
-            return await self.workspace_query(conn).all()
+        return await self.workspace_query.all()
+
+    async def delete_by(self, id: UUID) -> None:
+        async with self.transaction:
+            await self.workspace_query.delete_by(id=id)
+            trace_ids = [
+                x.id
+                for x
+                in await self.trace_query.filter_by(workspace_id=id)
+            ]
+            await self.trace_query.delete_by(workspace_id=id)
+            for x in trace_ids:
+                await self.point_query.delete_by(trace_id=x)
 
     async def register(self, name: str, params: t.Dict[str, t.Any]) -> UUID:
-        async with self.get_conn() as conn:
-            async with conn.transaction():
-                row = await self.workspace_query(conn).get_by(name=name)
-                if(row is None):
-                    new_row = Workspace(name=name, params=params)
-                    await self.workspace_query(conn).insert(new_row)
-                    return new_row.id
-                else:
-                    await self.workspace_query(conn).update(
-                        id=row.id,
-                        payload={
-                            'params': params,
-                        }
-                    )
-                    return row.id
+        async with self.transaction:
+            row = await self.workspace_query.get_by(name=name)
+            if(row is None):
+                new_row = Workspace(name=name, params=params)
+                await self.workspace_query.insert(new_row)
+                return new_row.id
+            else:
+                await self.workspace_query.update(
+                    key='id',
+                    value=row.id,
+                    payload={
+                        'params': params,
+                    }
+                )
+                return row.id

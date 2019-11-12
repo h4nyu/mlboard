@@ -7,6 +7,7 @@ export interface ITraceApi {
 
 export interface IWorkspaceApi {
   all: () => Promise<IWorkspace[]>;
+  delete: (id: string) => Promise<void>;
 }
 
 export interface IPointApi {

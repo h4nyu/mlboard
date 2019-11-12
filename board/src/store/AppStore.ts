@@ -13,4 +13,8 @@ export default class AppStore {
   init = () => {
     this.root.transitionUsecase.fetchAll();
   }
+
+  reflesh = () => {
+    this.root.transitionUsecase.fetchAll();
+  }
 }

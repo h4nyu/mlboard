@@ -1,4 +1,4 @@
-from mlboard.api import create_app
+from mlboard.infra.web import create_app
 from starlette.testclient import TestClient
 import pytest
 
