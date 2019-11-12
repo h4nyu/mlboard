@@ -1,71 +1,30 @@
 import typing as t
-import asyncpg
-import ujson
-from typing_extensions import Protocol
-from types import TracebackType
-
-
-IRecord = t.Dict[str, t.Any]
-
-
-class IConnection(Protocol):
-    async def fetch(self, sql: str, *args: t.Any) -> t.List[IRecord]: ...
-    async def fetchval(self, sql: str, *args: t.Any) -> t.Optional[t.Any]: ...
-    async def fetchrow(self, sql: str, *args: t.Any) -> t.Optional[IRecord]: ...
-    async def execute(self, sql: str, *args: t.Any) -> None: ...
-    async def copy_records_to_table(
-        self, table_name: str, columns: t.Iterable[str], records: t.Iterable[t.Tuple]) -> None: ...
-
-    async def close(self) -> None: ...
-    async def set_type_codec(self, *args: t.Any, **kwargs: t.Any) -> None: ...
-    def transaction(self) -> t.AsyncContextManager: ...
-
-
-class Connection:
-    def __init__(self, url: str) -> None:
-        self.url = url
-
-    async def __aenter__(self) -> IConnection:
-        conn: IConnection = await asyncpg.connect(self.url)
-        await conn.set_type_codec(
-            'json',
-            encoder=ujson.dumps,
-            decoder=ujson.loads,
-            schema='pg_catalog'
-        )
-        self._conn = conn
-        return conn
-
-    async def __aexit__(
-        self,
-        exc_type: t.Optional[t.Type[BaseException]],
-        exc_value: t.Optional[BaseException],
-        traceback: t.Optional[TracebackType]
-    ) -> None:
-        await self._conn.close()
-
+from .protocols import IRecord, IConnection
 
 U = t.TypeVar('U')
 T = t.TypeVar('T')
 
 
-class PostgresqlQuery(t.Generic[T, U]):
+class ModelQuery(t.Generic[T, U]):
+    conn: IConnection
+    table_name: str
+
     def __init__(
         self, conn: IConnection,
         table_name: str,
-        model_factory: t.Callable[[t.Dict], T],
+        to_model: t.Callable[[IRecord], T],
     ) -> None:
         self.conn = conn
         self.table_name = table_name
-        self.model_factory = model_factory
+        self.to_model = to_model  # type: ignore
 
-    def to_models(self, rows: t.List[IRecord]) -> t.List[T]:
+    def to_models(self, rows: t.Sequence[IRecord]) -> t.Sequence[T]:
         return [self.to_model(row) for row in rows]
 
-    def to_model(self, row: IRecord) -> T:
-        return self.model_factory(row)  # type: ignore
+    @staticmethod
+    def to_model(row: IRecord) -> T: ...
 
-    async def all(self) -> t.List[T]:
+    async def all(self) -> t.Sequence[T]:
         sql = f"""
             SELECT * FROM {self.table_name}
         """
@@ -135,7 +94,7 @@ class PostgresqlQuery(t.Generic[T, U]):
             *values,
         )
 
-    async def filter_by(self, **kwargs: t.Any) -> t.List[T]:
+    async def filter_by(self, **kwargs: t.Any) -> t.Sequence[T]:
         map_str = " AND ".join(
             [f"{k}=(${i})" for i, k in enumerate(kwargs.keys(), start=1)])
         sql = f"""

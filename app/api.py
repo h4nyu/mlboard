@@ -1,2 +1,2 @@
-from mlboard.api import create_app
+from mlboard.infra.web import create_app
 app = create_app()

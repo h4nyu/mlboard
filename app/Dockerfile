@@ -1,6 +1,6 @@
 FROM python:3.8-alpine AS prod
 
-RUN apk add --no-cache gcc libc-dev make
+RUN apk add --no-cache gcc libc-dev make inotify-tools
 
 RUN mkdir pycache
 ENV PYTHONPYCACHEPREFIX /pycache

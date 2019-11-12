@@ -1,36 +1,27 @@
-from mlboard.dao.postgresql import Connection
-from mlboard.config import DB_CONN
 from ..queries.point import PointQuery
 from ..queries.trace import TraceQuery
 from ..queries.workspace import WorkspaceQuery
-from .point import PointUsecase
-from .trace import TraceUsecase
-from .workspace import WorkspaceUsecase
-from .protocols import IPointUsecase, ITraceUsecase, IWorkspaceUsecase
+from .point import PointUsecase as _PointUsecase
+from .trace import TraceUsecase as _TraceUsecase
+from .workspace import WorkspaceUsecase as _WorkspaceUsecase
 
 
-def get_conn() -> Connection: return Connection(DB_CONN)
+def PointUsecase(x): return _PointUsecase(
+    transaction=x.transaction,
+    point_query=PointQuery(x),
+)
 
 
-def get_point_usecase() -> IPointUsecase:
-    return PointUsecase(
-        get_conn=get_conn,
-        point_query=PointQuery,
-    )
+def TraceUsecase(x): return _TraceUsecase(
+    transaction=x.transaction(),
+    trace_query=TraceQuery(x),
+    point_query=PointQuery(x),
+)
 
 
-def get_trace_usecase() -> ITraceUsecase:
-    return TraceUsecase(
-        get_conn=get_conn,
-        trace_query=TraceQuery,
-        point_query=PointQuery,
-    )
-
-
-def get_workspace_usecase() -> IWorkspaceUsecase:
-    return WorkspaceUsecase(
-        get_conn=get_conn,
-        workspace_query=WorkspaceQuery,
-        trace_query=TraceQuery,
-        point_query=PointQuery,
-    )
+def WorkspaceUsecase(x): return _WorkspaceUsecase(
+    transaction=x.transaction(),
+    trace_query=TraceQuery(x),
+    point_query=PointQuery(x),
+    workspace_query=WorkspaceQuery(x)
+)
