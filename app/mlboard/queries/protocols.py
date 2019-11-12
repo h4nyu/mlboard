@@ -8,7 +8,6 @@ from typing_extensions import Protocol
 
 IRecord = t.Dict[str, t.Any]
 
-
 ITransaction = t.AsyncContextManager[None]
 
 
@@ -22,7 +21,6 @@ class IConnection(Protocol):
 
     async def close(self) -> None: ...
     async def set_type_codec(self, *args: t.Any, **kwargs: t.Any) -> None: ...
-    def transaction(self) -> ITransaction: ...
 
 
 U = t.TypeVar('U')
