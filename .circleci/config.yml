@@ -60,10 +60,6 @@ jobs:
 
   deploy:
     machine: true
-    filters:
-      branches:
-        only:
-          - master
     steps:
       - checkout
       - run:
@@ -85,3 +81,9 @@ workflows:
   test_and_deploy:
     jobs:
       - test
+
+      - deploy
+        filters:
+          branches:
+            only:
+              - master
