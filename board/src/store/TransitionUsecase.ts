@@ -119,11 +119,11 @@ export default class TransitionUsecase{
       .filter(x => x.workspaceId == trace.workspaceId)
       .map(x => x.id)
       .toSet();
-    const transitions = this.root.transitionStore.rows
+    this.root.transitionStore.rows
       .filter(x => traceIds.includes(x.traceId))
       .forEach(x => {
         this.updateRange(x.id, fromDate, toDate);
-      })
+      });
   }
 
   @action toggleIsScatter = (id: string) => {
@@ -165,7 +165,13 @@ export default class TransitionUsecase{
     await this.root.loadingStore.dispatch<Promise<void>>(
       () => this.workspaceApi.delete(id)
     );
-    this.root.workspaceStore.delete(id)
+    const traceIds = this.root.traceStore.rows.filter(x => x.workspaceId === id).map(x => x.id);
+    traceIds.forEach(x => {
+      this.root.traceStore.delete(x);
+      this.root.transitionStore.delete(x);
+    });
+
+    this.root.workspaceStore.delete(id);
   }
 }
 

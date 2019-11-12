@@ -23,11 +23,11 @@ const DeleteBtn = (props: {onClick: () => void}) => (
   <div className="button is-small is-danger" onClick={props.onClick}>
     <i className="far fa-trash-alt"></i>
   </div>
-)
+);
 
 export interface IProps {
   workspace: IWorkspace;
-  onDeleteClick: (workspaceId:string) => void;
+  onDeleteClick: (workspaceId: string) => void;
   Child: React.ComponentType<{workspace: IWorkspace}>;
 }
 

@@ -10,6 +10,7 @@ export interface IModelStore<T> {
 
 export interface IAppStore {
   init: () => void;
+  reflesh: () => void;
 }
 
 export interface ILoadingStore {
