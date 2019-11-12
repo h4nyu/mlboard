@@ -3,7 +3,7 @@ import requests
 from uuid import UUID
 from urllib.parse import urljoin
 from datetime import datetime
-from toolz.curried import keymap
+from cytoolz.curried import keymap
 
 
 class Writer:

@@ -1,5 +1,5 @@
 import typing as t
-from toolz.curried import pipe, map, partition_all
+from cytoolz.curried import pipe, map, partition_all
 import pytest
 import asyncio
 from datetime import datetime
