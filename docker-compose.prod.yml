@@ -1,9 +1,5 @@
 version: '3'
 
-volumes:
-  db-data:
-  web-data:
-
 services:
   db:
     image: h4nyu/mlboard_db
@@ -12,7 +8,7 @@ services:
         max-size: "200k"
         max-file: "10"
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - ./db-data:/var/lib/postgresql/data
     
     restart: on-failure
 
@@ -33,13 +29,13 @@ services:
   board:
     image: h4nyu/mlboard_board
     volumes:
-      - web-data:/public
+      - ./web-data:/public
     logging: *default-logging
 
   web:
     image: h4nyu/mlboard_web
     volumes:
-        - web-data:/public
+        - ./web-data:/public
     depends_on:
       - api
       - board

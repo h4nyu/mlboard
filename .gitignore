@@ -5,3 +5,5 @@ test_data
 **/*.DS_Store
 deploy.sh
 data
+db-data
+web-data

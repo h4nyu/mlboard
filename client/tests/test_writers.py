@@ -1,4 +1,5 @@
 from mlboard_client.writers import Writer
+from random import random
 import pytest
 
 
@@ -17,13 +18,12 @@ def writer() -> Writer:
 
 
 def test_add_scalar(writer: Writer) -> None:
-    for i in range(100):
-        writer.add_scaler('aaa/test', i)
+    writer.add_scaler('aaa/test', 1)
 
 def test_add_scalars(writer: Writer) -> None:
-    for i in range(1000):
+    for i in range(10000):
         writer.add_scalers({
-            'aaa': i,
-            'bbb': i,
-            'ccc': i,
+            'aaa': random(),
+            'bbb': random(),
+            'ccc': random(),
         })
