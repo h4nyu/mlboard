@@ -77,7 +77,7 @@ jobs:
       - run:
           name: build prod images
           command: |
-            docker-compose -f docker-compose.build.yml build
+            docker-compose -f docker-compose.build.yml build --parallel
 
       - run:
           name: docker login
