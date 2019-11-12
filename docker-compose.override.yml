@@ -1,0 +1,13 @@
+version: '3.7'
+
+services:
+  board:
+    build:
+      target: dev
+    image:  h4nyu/mlboard_board
+
+  storybook:
+    image:  h4nyu/mlboard_board
+    command: yarn storybook
+    ports:
+      - "${STORYBOOK_PORT}:9001"

@@ -77,7 +77,7 @@ jobs:
       - run:
           name: build prod images
           command: |
-            docker-compose -f docker-compose.build.yml build --parallel
+            docker-compose -f docker-compose.yml build --parallel
 
       - run:
           name: docker login
@@ -87,7 +87,7 @@ jobs:
       - run:
           name: push docker image
           command: |
-            docker-compose -f docker-compose.build.yml push
+            docker-compose -f docker-compose.yml push
 
 
 workflows:
