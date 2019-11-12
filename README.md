@@ -8,12 +8,8 @@ WEB_PORT=80
 STORYBOOK_PORT=8080
 DB_PORT=5432
 ```
-## start for production
-```
-$ docker-compose -f docker-compose.prod.yml up -d
-```
 
-## start for development
+## start
 ```
 $ docker-compose -d
 ```
