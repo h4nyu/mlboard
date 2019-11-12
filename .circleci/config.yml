@@ -80,6 +80,11 @@ jobs:
             docker-compose -f docker-compose.build.yml build
 
       - run:
+          name: docker login
+          command: |
+            docker login -u $DOCKER_USER -p $DOCKER_PASS
+
+      - run:
           name: push docker image
           command: |
             docker-compose -f docker-compose.build.yml push
