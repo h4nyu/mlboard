@@ -81,8 +81,7 @@ workflows:
   test_and_deploy:
     jobs:
       - test
-
-      - deploy
+      - deploy:
         filters:
           branches:
             only:
