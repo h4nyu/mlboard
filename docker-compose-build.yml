@@ -1,0 +1,38 @@
+version: '3.7'
+
+services:
+  db:
+    build: &default-build
+      context: ./db
+      args:
+        - http_proxy
+        - https_proxy
+    image: h4nyu/mlboard_db
+  app:
+    build : 
+      <<: *default-build
+      context: ./app
+    image:  h4nyu/mlboard_app
+
+  migration:
+    build:
+      <<: *default-build
+      context: ./migration
+    image: h4nyu/mlboard_migration
+
+  board:
+    build:
+      <<: *default-build
+      context: ./board
+      target: ${STAGE}
+    image:  h4nyu/mlboard_board
+    ports:
+      - "${STORYBOOK_PORT}:9001"
+
+  web:
+    build:
+      <<: *default-build
+      context: ./web
+    image:  h4nyu/mlboard_web
+    ports:
+      - "${STORYBOOK_PORT}:9001"

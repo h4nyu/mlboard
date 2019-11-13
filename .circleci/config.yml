@@ -20,6 +20,7 @@ jobs:
             echo 'export WEB_PORT=8000' >> $BASH_ENV
             echo 'export DB_PORT=8001' >> $BASH_ENV
             echo 'export STORYBOOK_PORT=8002' >> $BASH_ENV
+            echo 'export STAGE=dev' >> $BASH_ENV
 
       - run:
           name: Build Docker Test Images
@@ -73,6 +74,11 @@ jobs:
             chmod +x ~/docker-compose
             sudo mv ~/docker-compose /usr/local/bin/docker-compose
             docker-compose -v
+
+      - run:
+          name: Set Environment variables
+          command: |
+            echo 'export STAGE=prod' >> $BASH_ENV
 
       - run:
           name: build prod images

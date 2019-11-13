@@ -2,46 +2,21 @@ version: '3.7'
 
 services:
   db:
-    build: &default-build
-      context: ./db
-      args:
-        - http_proxy
-        - https_proxy
     image: h4nyu/mlboard_db
-    volumes:
-      - ./db/postgresql.conf:/etc/postgresql.conf
-    environment:
-      - PGTZ=Asia/Tokyo
     ports:
       - "${DB_PORT}:5432"
 
-  app: &default-app
-    build : 
-      <<: *default-build
-
-      context: ./app
-    image: h4nyu/mlboard_db
-    environment:
-      - TZ=Asia/Tokyo
-      - FLASK_DEBUG=1
-      - PYTHON_ENV=development
+  api: &default-app
+    image: h4nyu/mlboard_app
+    command: sh start_api.sh
     volumes: 
       - ./app:/srv
       - ./store:/store
-    depends_on:
-      - migration
-
-  api:
-    command:  sh start_api.sh
-    <<: *default-app
     depends_on:
       - db
       - migration
 
   migration:
-    build:
-      <<: *default-build
-      context: ./migration
     volumes:
       - ./migration:/srv
     image: h4nyu/mlboard_migration
@@ -49,28 +24,18 @@ services:
       - db
 
   board: &default-node
-    build:
-      <<: *default-build
-      context: ./board
-    environment: 
-      - NODE_ENV=development
-      - http_proxy
-      - https_proxy
+    image:  h4nyu/mlboard_board
     volumes:
       - ./board:/srv
-    command: npm run watch
-    image:  h4nyu/mlboard_board
+    command: yarn watch
 
   web:
-    build:
-      <<: *default-build
-      context: ./web
+    image:  h4nyu/mlboard_web
     volumes:
       - ./web/nginx.prod.conf:/etc/nginx/nginx.conf
       - ./board/dist:/public/
     ports:
       - "${WEB_PORT}:80"
-    image:  h4nyu/mlboard_web
     depends_on:
       - api
       - board
