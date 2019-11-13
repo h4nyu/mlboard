@@ -14,7 +14,7 @@ jobs:
             docker-compose -v
 
       - run:
-          name: Set Environment variables
+          name: Set Environment Variables
           command: |
             echo 'export SUBNET=192.168.10.1/24' >> $BASH_ENV
             echo 'export WEB_PORT=8000' >> $BASH_ENV
@@ -23,9 +23,9 @@ jobs:
             echo 'export STAGE=dev' >> $BASH_ENV
 
       - run:
-          name: Build Docker Test Images
+          name: Build Images
           command: |
-            docker-compose build --parallel
+            docker-compose -f docker-compose-build.yml build --parallel
 
       - run:
           name: Test Migration
@@ -36,17 +36,17 @@ jobs:
       - run:
           name: Tpye check App
           command: |
-            docker-compose run --rm app mypy .
+            docker-compose run --rm api mypy .
 
       - run:
           name: Lint App
           command: |
-            docker-compose run --rm  app sh fix_lint.sh
+            docker-compose run --rm api sh fix_lint.sh
 
       - run:
           name: Test App
           command: |
-            docker-compose run --rm app pytest
+            docker-compose run --rm api pytest
 
       - run:
           name: Type Check Board 
@@ -76,24 +76,24 @@ jobs:
             docker-compose -v
 
       - run:
-          name: Set Environment variables
+          name: Set Environment Variables
           command: |
             echo 'export STAGE=prod' >> $BASH_ENV
 
       - run:
-          name: build prod images
+          name: Build Production Images
           command: |
-            docker-compose -f docker-compose.yml build --parallel
+            docker-compose -f docker-compose-build.yml build --parallel
 
       - run:
-          name: docker login
+          name: Docker Login
           command: |
             docker login -u $DOCKER_USER -p $DOCKER_PASS
 
       - run:
-          name: push docker image
+          name: Push Images
           command: |
-            docker-compose -f docker-compose.yml push
+            docker-compose -f docker-compose-build.yml push
 
 
 workflows:
