@@ -1,8 +1,0 @@
-version: '3.7'
-
-services:
-  storybook:
-    image:  h4nyu/mlboard_board
-    volumes:
-      - ./board:/srv
-    command: yarn storybook

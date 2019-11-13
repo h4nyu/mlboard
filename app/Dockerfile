@@ -8,3 +8,6 @@ ENV PYTHONPYCACHEPREFIX /pycache
 WORKDIR /srv
 COPY ./ /srv
 RUN pip install -e .[dev]
+
+CMD sh start_api.sh
+
