@@ -26,13 +26,9 @@ services:
       context: ./board
       target: ${STAGE}
     image:  h4nyu/mlboard_board
-    ports:
-      - "${STORYBOOK_PORT}:9001"
 
   web:
     build:
       <<: *default-build
       context: ./web
     image:  h4nyu/mlboard_web
-    ports:
-      - "${STORYBOOK_PORT}:9001"
