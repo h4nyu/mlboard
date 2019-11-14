@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import React from 'react';
-import appStyle from '~/styles/app.scss'
+import appStyle from '~/styles/app.scss';
 
 
 
@@ -42,5 +42,5 @@ export default (props: IProps) => {
       </Btn>
     </Layout>
   );
-}
+};
 

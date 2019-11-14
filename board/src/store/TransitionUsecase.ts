@@ -48,7 +48,7 @@ export default class TransitionUsecase{
     this.fetchWorkspaces();
     this.root.transitionStore.rows.forEach(x => {
       this.updateRange(x.id, x.fromDate, x.toDate);
-    })
+    });
   }
 
   fetchWorkspaces = async () => {
