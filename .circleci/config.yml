@@ -80,7 +80,7 @@ jobs:
           name: Set Environment Variables
           command: |
             echo 'export STAGE=prod' >> $BASH_ENV
-            echo 'export TAG=$CIRCLE_TAG' >> $BASH_ENV
+            echo 'export TAG=latest' >> $BASH_ENV
 
       - run:
           name: Build Production Images
