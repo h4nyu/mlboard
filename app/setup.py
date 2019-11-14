@@ -10,6 +10,7 @@ requires = [
     "PyYAML",
     "requests",
     "python-dateutil",
+    "ujson",
     "uvicorn",
 ]
 dev_requires = [

@@ -1,40 +1,46 @@
 import styled from 'styled-components';
 import React from 'react';
+import appStyle from '~/styles/app.scss'
 
 
+
+const Layout = styled.div`
+  background-color: ${appStyle.primary}
+  height: 52px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`;
 const Brand = styled.span`
   font-family: Impact;
   font-size: 26px;
+  padding: 0.5em;
+  color: white;
 `;
-export default class PageHeader extends React.Component<{}, {}> {
-  getMenuClassName() {
-    return 'navbar-burger burger';
-  }
 
-  render = () => {
-    return (
-      <div className="navbar is-primary" style={{zIndex: 30}}>
-        <div className="navbar-brand">
-          <Brand className="navbar-item"> 
-            MLBOARD
-          </Brand>
+const Btn = styled.div`
+  margin: 0.5em;
+`;
 
-          <a role="button"
-            className={this.getMenuClassName()}
-            aria-label="menu"
-            aria-expanded="false"
-            data-target="navbarBasicExample">
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-          </a>
-        </div>
-        <div className='navbar-menu'>
-          <div className="navbar-start">
-          </div>
-        </div>
-      </div>
-    );
-  }
+
+
+interface IProps {
+  onRefleshClick: () => void;
+}
+export default (props: IProps) => {
+  const {onRefleshClick} = props;
+  return (
+    <Layout style={{zIndex: 30}}>
+      <Brand> 
+        MLBOARD
+      </Brand>
+      <Btn className="button" onClick={onRefleshClick}>
+        <span className="icon is-small">
+          <i className="fas fa-sync-alt" />
+        </span>
+      </Btn>
+    </Layout>
+  );
 }
 

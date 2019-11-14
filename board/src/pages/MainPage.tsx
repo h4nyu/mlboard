@@ -1,7 +1,7 @@
 import React from 'react';
 import WorkspaceList from '~/connectors/WorkspaceList';
 import TransitionList from '~/connectors/TransitionList';
-import PageHeader from '~/components/PageHeader';
+import PageHeader from '~/connectors/PageHeader';
 import styled from 'styled-components';
 
 const Layout = styled.div`

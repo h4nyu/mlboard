@@ -44,6 +44,8 @@ services:
     volumes:
       - ./board:/srv
     command: yarn storybook
+    ports:
+      - "${STORYBOOK_PORT}:9001"
 
 networks:
   default:
