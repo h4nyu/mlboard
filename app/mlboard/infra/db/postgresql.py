@@ -1,7 +1,7 @@
 import typing as t
 import asyncpg
-import ujson
 from types import TracebackType
+import ujson
 from .protocols import IConnection, IContextManager
 
 

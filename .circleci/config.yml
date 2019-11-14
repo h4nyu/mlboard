@@ -21,6 +21,7 @@ jobs:
             echo 'export DB_PORT=8001' >> $BASH_ENV
             echo 'export STORYBOOK_PORT=8002' >> $BASH_ENV
             echo 'export STAGE=dev' >> $BASH_ENV
+            echo 'export TAG=$CIRCLE_SHA1' >> $BASH_ENV
 
       - run:
           name: Build Images
@@ -79,6 +80,7 @@ jobs:
           name: Set Environment Variables
           command: |
             echo 'export STAGE=prod' >> $BASH_ENV
+            echo 'export TAG=latest' >> $BASH_ENV
 
       - run:
           name: Build Production Images

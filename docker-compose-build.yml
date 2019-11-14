@@ -7,28 +7,28 @@ services:
       args:
         - http_proxy
         - https_proxy
-    image: h4nyu/mlboard_db
+    image: "h4nyu/mlboard_db:${TAG}"
   app:
     build : 
       <<: *default-build
       context: ./app
-    image:  h4nyu/mlboard_app
+    image: "h4nyu/mlboard_app:${TAG}"
 
   migration:
     build:
       <<: *default-build
       context: ./migration
-    image: h4nyu/mlboard_migration
+    image: "h4nyu/mlboard_migration:${TAG}"
 
   board:
     build:
       <<: *default-build
       context: ./board
       target: ${STAGE}
-    image:  h4nyu/mlboard_board
+    image: "h4nyu/mlboard_board:${TAG}"
 
   web:
     build:
       <<: *default-build
       context: ./web
-    image:  h4nyu/mlboard_web
+    image: "h4nyu/mlboard_web:${TAG}"

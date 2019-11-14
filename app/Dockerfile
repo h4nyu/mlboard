@@ -1,13 +1,12 @@
-FROM python:3.8-alpine AS prod
+FROM python:3.8-alpine
 
-RUN apk add --no-cache gcc libc-dev make inotify-tools
-
-RUN mkdir pycache
 ENV PYTHONPYCACHEPREFIX /pycache
 
 WORKDIR /srv
 COPY ./ /srv
-RUN pip install -e .[dev]
+RUN apk update \
+    && apk add --no-cache gcc libc-dev make inotify-tools \
+    && pip install --no-cache-dir -e .[dev] \
+    && apk del gcc libc-dev make
 
 CMD sh start_api.sh
-

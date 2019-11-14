@@ -1,10 +1,9 @@
 import typing as t
-from typing_extensions import Protocol
 from mlboard.queries.protocols import IConnection
 from types import TracebackType
 
 
-class IContextManager(Protocol):
+class IContextManager(t.Protocol):
     async def __aenter__(self) -> IConnection: ...
 
     async def __aexit__(

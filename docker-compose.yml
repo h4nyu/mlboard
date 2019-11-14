@@ -2,12 +2,12 @@ version: '3.7'
 
 services:
   db:
-    image: h4nyu/mlboard_db
+    image: "h4nyu/mlboard_db:${TAG}"
     ports:
       - "${DB_PORT}:5432"
 
   api: &default-app
-    image: h4nyu/mlboard_app
+    image: "h4nyu/mlboard_app:${TAG}"
     volumes: 
       - ./app:/srv
       - ./store:/store
@@ -18,18 +18,18 @@ services:
   migration:
     volumes:
       - ./migration:/srv
-    image: h4nyu/mlboard_migration
+    image: "h4nyu/mlboard_migration:${TAG}"
     depends_on:
       - db
 
   board: &default-node
-    image:  h4nyu/mlboard_board
+    image: "h4nyu/mlboard_board:${TAG}"
     volumes:
       - ./board:/srv
     command: yarn watch
 
   web:
-    image:  h4nyu/mlboard_web
+    image: "h4nyu/mlboard_web:${TAG}"
     volumes:
       - ./web/nginx.prod.conf:/etc/nginx/nginx.conf
       - ./board/dist:/public/
@@ -40,10 +40,12 @@ services:
       - board
 
   storybook:
-    image:  h4nyu/mlboard_board
+    image: "h4nyu/mlboard_board:${TAG}"
     volumes:
       - ./board:/srv
     command: yarn storybook
+    ports:
+      - "${STORYBOOK_PORT}:9001"
 
 networks:
   default:
