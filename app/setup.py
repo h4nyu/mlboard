@@ -20,7 +20,6 @@ dev_requires = [
     "flake8",
     "autopep8",
     "pytest-asyncio",
-    "profilehooks",
     "mypy",
     "pytest-mypy",
     "typing_extensions",
