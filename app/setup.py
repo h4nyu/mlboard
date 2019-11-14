@@ -8,7 +8,6 @@ requires = [
     "asyncpg",
     "fastapi",
     "PyYAML",
-    "ujson",
     "requests",
     "python-dateutil",
     "uvicorn",
@@ -21,8 +20,6 @@ dev_requires = [
     "autopep8",
     "pytest-asyncio",
     "mypy",
-    "pytest-mypy",
-    "typing_extensions",
 ]
 
 setup(
