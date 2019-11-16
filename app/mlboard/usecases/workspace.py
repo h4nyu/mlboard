@@ -47,8 +47,7 @@ class WorkspaceUsecase:
                 return new_row.id
             else:
                 await self.workspace_query.update(
-                    key='id',
-                    value=row.id,
+                    keys=[row.id],
                     payload={
                         'params': params,
                     }

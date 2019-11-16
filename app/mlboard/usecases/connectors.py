@@ -12,6 +12,7 @@ from .protocols import IPointUsecase, IWorkspaceUsecase, ITraceUsecase
 def PointUsecase(x: IConnection) -> IPointUsecase: return _PointUsecase(
     transaction=Transaction(x),
     point_query=PointQuery(x),
+    trace_query=TraceQuery(x),
 )
 
 
