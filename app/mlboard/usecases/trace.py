@@ -7,7 +7,6 @@ from mlboard.queries.protocols import (
     ITransaction,
 )
 from mlboard.models.protocols import ITrace
-from datetime import datetime
 
 
 class TraceUsecase:
@@ -42,12 +41,10 @@ class TraceUsecase:
                 return new_row.id
             else:
                 await self.trace_query.update(
-                    key="id",
-                    value=row.id,
+                    keys=[row.id],
                     payload={
                         'name': name,
                         'workspace_id': workspace_id,
-                        'updated_at': datetime.now(),
                     }
                 )
                 return row.id

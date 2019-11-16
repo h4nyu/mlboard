@@ -9,12 +9,12 @@ async def main() -> None:
         trace_uc = TraceUsecase(conn)
         point_uc = PointUsecase(conn)
         workspace_uc = WorkspaceUsecase(conn)
-        workspace_id = await workspace_uc.register(f'workspace#{randint(0, 9)}', params={
+        workspace_id = await workspace_uc.register(f'workspace#{randint(0, 1)}', params={
             'lr': 0.01
         })
 
         for i in range(2):
-            await trace_uc.register(f"metric#{randint(0, 5)}", workspace_id)
+            await trace_uc.register(f"metric#{randint(0, 1)}", workspace_id)
         traces = await trace_uc.all()
 
         for t in traces:

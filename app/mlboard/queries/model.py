@@ -31,7 +31,7 @@ class ModelQuery(t.Generic[T, U]):
         rows = await self.conn.fetch(sql)
         return self.to_models(rows)
 
-    async def insert(self, obj: T, key: str = "id") -> None:
+    async def insert(self, obj: T) -> None:
         prop_dict = obj.__dict__
         keys = prop_dict.keys()
         keys_str = ",".join(keys)
@@ -46,15 +46,19 @@ class ModelQuery(t.Generic[T, U]):
             *values
         )
 
-    async def update(self, key: str, value: U, payload: t.Dict[str, t.Any]) -> None:
-        map_str = ",".join([f"{k}=${i}" for i, k in enumerate(payload.keys(), start=2)])
+    async def update(self, keys: t.Sequence[U], payload: t.Dict[str, t.Any]) -> None:
+        key_len = len(keys)
+        if key_len == 0:
+            return None
+        key_stmt = ",".join([f"${i+1}" for i in range(key_len)])
+        map_stmt = ",".join([f"{k}=${i+1}" for i, k in enumerate(payload.keys(), start=key_len)])
         await self.conn.fetchval(
             f"""
                 UPDATE {self.table_name}
-                SET {map_str}
-                WHERE {key} = $1
+                SET {map_stmt}
+                WHERE id IN ({key_stmt})
             """,
-            value,
+            *keys,
             *payload.values(),
         )
 

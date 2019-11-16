@@ -1,4 +1,4 @@
-import moment, {Moment} from 'moment';
+import {Moment} from 'moment';
 import { action, observable, computed } from 'mobx';
 import { IPointApi, ITraceApi, IWorkspaceApi } from '~/api/interfaces';
 import { IRoot } from './interfaces';
@@ -66,6 +66,9 @@ export default class TransitionUsecase{
   @action add = async (
     traceId: string,
   ) => {
+    const trace = this.root.traceStore.rows.get(traceId);
+    if(trace === undefined){return;}
+    const lastDate = trace.updatedAt.clone();
     const transition = {
       id: traceId,
       traceId: traceId,
@@ -73,8 +76,8 @@ export default class TransitionUsecase{
       isLog: false,
       isScatter:false,
       isDatetime:true,
-      fromDate: moment().add(-1, 'days'),
-      toDate: moment(),
+      fromDate: lastDate.clone().add(-10, 'minutes'),
+      toDate: lastDate.clone().add(1, 'minutes'),
     };
     const points = await this.root.loadingStore.dispatch<Promise<IPoint[]>>(
       () => this.pointApi.rangeBy(traceId, transition.fromDate, transition.toDate)

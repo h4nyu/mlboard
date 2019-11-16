@@ -4,6 +4,7 @@ from mlboard.models.protocols import IPoint
 from mlboard.queries.protocols import (
     IPointQuery,
     ITransaction,
+    ITraceQuery,
 )
 from mlboard.models.point import Point
 from mlboard.config import TZ
@@ -15,9 +16,21 @@ class PointUsecase:
         self,
         transaction: ITransaction,
         point_query: IPointQuery,
+        trace_query: ITraceQuery,
     ) -> None:
         self.transaction = transaction
         self.point_query = point_query
+        self.trace_query = trace_query
+
+    async def update_last_date(
+        self,
+        trace_ids: t.Sequence[UUID],
+        last_ts: datetime,
+    ) -> None:
+        await self.trace_query.update(
+            keys=trace_ids,
+            payload={'updated_at': last_ts}
+        )
 
     async def add_scalar(
         self,
@@ -25,12 +38,14 @@ class PointUsecase:
         value: float,
         ts: t.Optional[datetime] = None,
     ) -> None:
+        ts = ts if ts is not None else datetime.now(TZ)
         point = Point(
             trace_id=trace_id,
             value=value,
-            ts=ts if ts is not None else datetime.now(TZ),
+            ts=ts,
         )
         await self.point_query.bulk_insert([point])
+        await self.update_last_date([trace_id], ts)
 
     async def range_by(
         self,
@@ -70,3 +85,4 @@ class PointUsecase:
             in values.items()
         ]
         await self.point_query.bulk_insert(points)
+        await self.update_last_date(list(values.keys()), ts)
