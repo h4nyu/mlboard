@@ -25,7 +25,19 @@ export default class TransitionUsecase{
   }
 
   @computed get workspaces() {
-    return this.root.workspaceStore.rows.sortBy(x => - x.createdAt);
+    const keywords = this.traceKeyword.split(',').map(x => x.trim());
+    const workspaces = this.root.workspaceStore.rows.sortBy(x => - x.createdAt);
+    if(this.traceKeyword.length === 0){
+      return workspaces;
+    }
+
+    return workspaces.filter(x => {
+      const target = `
+        ${x.name}
+      `;
+      const res = _.some(keywords.map(y => target.includes(y.trim())));
+      return res;
+    });
   }
 
   @computed get traces() {
