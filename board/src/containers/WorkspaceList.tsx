@@ -8,6 +8,12 @@ const Layout = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+`;
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   overflow-y: scroll;
 `;
 
@@ -28,7 +34,9 @@ const Component = (props: IProps) => {
         defaultValue={keyword}
         onInput={onInput}
       />
-      {Array.from(workspaces.values()).map(x => <Child key={x.id} workspace={x}/>)}
+      <Container>
+        {workspaces.toList().map(x => <Child key={x.id} workspace={x}/>)}
+      </Container>
     </Layout>
   );
 };
