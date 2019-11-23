@@ -8,10 +8,13 @@ const StyledDiv = styled.div`
   border-width: 1px;
 `;
 
-const Component = () => (
+interface IProps {
+  name?: string
+}
+const Component = (props: IProps) => (
   <StyledDiv>
     <span>
-      Mock
+      Mock - {props.name}
     </span>
   </StyledDiv>
 );
