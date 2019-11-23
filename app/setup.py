@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 requires = [
     "cytoolz",
-    "asyncpg",
+    "asyncpg<0.19.0",
     "fastapi",
     "PyYAML",
     "requests",
