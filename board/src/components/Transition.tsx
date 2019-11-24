@@ -6,7 +6,7 @@ import {smooth} from '~/logics/converters';
 import { AutoSizer } from 'react-virtualized';
 import Slider from '~/components/Slider';
 import Plot from '~/components/Plot';
-import _ from 'lodash';
+import {max, range, min, last}  from 'lodash';
 import Check from '~/components/Check';
 import {ITransition, IPoint, ITrace, IWorkspace } from '~/models/interfaces';
 
@@ -14,11 +14,11 @@ import {ITransition, IPoint, ITrace, IWorkspace } from '~/models/interfaces';
 const Layout = styled.div`
   display: grid;
   grid-template-areas:
-    "title control close"
-    "plot plot plot";
+    "title statistics control close"
+    "plot plot plot plot";
   padding: 0.5em;
   margin: 0.25em;
-  grid-template-columns: 1fr auto auto;
+  grid-template-columns: 1fr auto auto auto;
   grid-template-rows: auto 1fr;
 `;
 const PlotArea = styled.div`
@@ -35,7 +35,7 @@ const Close = styled.a`
 const SmoothWeight = styled.span`
   width: 2em;
 `;
-const ControlItem = styled.div`
+const Item = styled.div`
   padding-left: 0.25em;
   padding-right: 0.25em;
   display: flex;
@@ -47,7 +47,16 @@ const Title = styled.span`
   font-weight: bold;
 `;
 
-const CotrolArea = styled.span`
+const Statistic = styled.span`
+`;
+
+const StatisticsArea = styled.div`
+  grid-area: statistics;
+  display: flex;
+  flex-direction: row;
+`;
+
+const CotrolArea = styled.div`
   grid-area: control;
   display: flex;
   flex-direction: row;
@@ -68,7 +77,7 @@ export interface IProps {
   onIsScatterChange: (id: string) => void;
 }
 export default class Transition extends React.Component<IProps>{
-  getPlotData = () => {
+  getPlotData = (values: number[]) => {
     const { transition, segments } = this.props;
     let points = segments.get(transition.id);
     if(points === undefined){
@@ -78,9 +87,9 @@ export default class Transition extends React.Component<IProps>{
     if(transition.isDatetime){
       x = points.map(p => formatDatetime(p.ts));
     }else{
-      x = _.range(points.length);
+      x = range(points.length);
     }
-    const y = points.map(t => t.value);
+    const y = values;
     return [
       {
         x: x,
@@ -93,15 +102,33 @@ export default class Transition extends React.Component<IProps>{
       },
     ] as any;
   }
+  getValues = () => {
+    const { transition, segments } = this.props;
+    let points = segments.get(transition.id);
+    if(points === undefined){return [];}
+    const values = points.map((x: IPoint) => x.value);
+    return values;
+  }
+  getCount = (values: number[]): number|undefined => {
+    return values.length;
+  }
 
-  getPlotLayout = () => {
+  getMax = (values: number[]): number|undefined => {
+    return max(values);
+  }
+  getMin = (values: number[]) => {
+    return min(values);
+  }
+
+  getPlotLayout = (values: number[]) => {
     const { transition } = this.props;
+    const lastValue = values.length > 0 ? last(values) : 0;
     return {
       margin: {
         r: 5,
         t: 5,
         b: 30,
-        l: 50,
+        l: 80,
       },
       xaxis: {
         range:[transition.fromDate, transition.toDate].map(formatDatetime),
@@ -113,6 +140,21 @@ export default class Transition extends React.Component<IProps>{
         fixedrange: true,
       },
       showTips: false,
+      shapes: [
+        {
+          type: 'line',
+          xref: 'paper',
+          x0: 0,
+          x1: 1,
+          y0: lastValue,
+          y1: lastValue,
+          line:{
+            color: 'orange',
+            width: 1,
+          }
+        },
+
+      ],
     } as any; 
   }
   getTitle = (): string => {
@@ -140,9 +182,13 @@ export default class Transition extends React.Component<IProps>{
   }
 
   render = () => {
-    const plotData = this.getPlotData();
-    const plotLayout = this.getPlotLayout();
+    const values = this.getValues();
+    const plotData = this.getPlotData(values);
+    const plotLayout = this.getPlotLayout(values);
     const title = this.getTitle();
+    const maxValue = this.getMax(values);
+    const minValue = this.getMin(values);
+    const countValue = this.getCount(values);
     const {handleRelayout} = this;
     const {
       transition, onClose, 
@@ -152,8 +198,19 @@ export default class Transition extends React.Component<IProps>{
     return (
       <Layout className="card">
         <Title> {title} </Title>
+        <StatisticsArea>
+          <Item>
+            {maxValue ? <Statistic>Max: {maxValue}</Statistic> : null}
+          </Item>
+          <Item>
+            {minValue ? <Statistic>Min: {minValue}</Statistic> : null}
+          </Item>
+          <Item>
+            <Statistic>Count: {countValue}</Statistic>
+          </Item>
+        </StatisticsArea>
         <CotrolArea>
-          <ControlItem>
+          <Item>
             <Slider
               step={0.01} 
               min={0} 
@@ -164,16 +221,16 @@ export default class Transition extends React.Component<IProps>{
             <SmoothWeight>
               {transition.smoothWeight}
             </SmoothWeight>
-          </ControlItem>
-          <ControlItem>
+          </Item>
+          <Item>
             <Check value={transition.isLog} onClick={() => onIsLogChange(transition.id)}> Log </Check>
-          </ControlItem>
-          <ControlItem>
+          </Item>
+          <Item>
             <Check value={transition.isScatter} onClick={() => onIsScatterChange(transition.id)}> Scatter </Check>
-          </ControlItem>
-          <ControlItem>
+          </Item>
+          <Item>
             <Check value={transition.isDatetime} onClick={() => onIsDatetimeChange(transition.id)}> Date </Check>
-          </ControlItem>
+          </Item>
         </CotrolArea>
         <Close className="delete" onClick={() => onClose(transition.id)}/>
         <PlotArea>
