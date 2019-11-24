@@ -2,6 +2,7 @@ import moment, {Moment} from 'moment';
 import { Map } from 'immutable';
 import React from 'react';
 import styled from 'styled-components';
+import {format} from 'd3';
 import {smooth} from '~/logics/converters';
 import { AutoSizer } from 'react-virtualized';
 import Slider from '~/components/Slider';
@@ -102,6 +103,9 @@ export default class Transition extends React.Component<IProps>{
       },
     ] as any;
   }
+  formatValue = (value: number): string => {
+    return format('~s')(value);
+  }
   getValues = () => {
     const { transition, segments } = this.props;
     let points = segments.get(transition.id);
@@ -109,14 +113,14 @@ export default class Transition extends React.Component<IProps>{
     const values = points.map((x: IPoint) => x.value);
     return values;
   }
-  getCount = (values: number[]): number|undefined => {
+  getCount = (values: number[]): number => {
     return values.length;
   }
 
   getMax = (values: number[]): number|undefined => {
     return max(values);
   }
-  getMin = (values: number[]) => {
+  getMin = (values: number[]): number|undefined => {
     return min(values);
   }
 
@@ -189,7 +193,7 @@ export default class Transition extends React.Component<IProps>{
     const maxValue = this.getMax(values);
     const minValue = this.getMin(values);
     const countValue = this.getCount(values);
-    const {handleRelayout} = this;
+    const {handleRelayout, formatValue} = this;
     const {
       transition, onClose, 
       onIsScatterChange, onIsLogChange, 
@@ -200,13 +204,13 @@ export default class Transition extends React.Component<IProps>{
         <Title> {title} </Title>
         <StatisticsArea>
           <Item>
-            {maxValue ? <Statistic>Max: {maxValue}</Statistic> : null}
+            {maxValue ? <Statistic>Max: {formatValue(maxValue)}</Statistic> : null}
           </Item>
           <Item>
-            {minValue ? <Statistic>Min: {minValue}</Statistic> : null}
+            {minValue ? <Statistic>Min: {formatValue(minValue)}</Statistic> : null}
           </Item>
           <Item>
-            <Statistic>Count: {countValue}</Statistic>
+            <Statistic>Count: {formatValue(countValue)}</Statistic>
           </Item>
         </StatisticsArea>
         <CotrolArea>

@@ -21,6 +21,10 @@ const points = [
     value: 2.112,
     ts: moment('2015-01-03'),
   },
+  {
+    value: 2.1121213123,
+    ts: moment('2015-01-04'),
+  },
 ];
 const workspaces = Map({
   [workspace.id]:{
