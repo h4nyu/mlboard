@@ -2,7 +2,7 @@ import {Moment} from 'moment';
 import { action, observable, computed } from 'mobx';
 import { IPointApi, ITraceApi, IWorkspaceApi } from '~/api/interfaces';
 import { IRoot } from './interfaces';
-import { IPoint } from '~/models/interfaces'; 
+import { IPoint, ITrace, IWorkspace } from '~/models/interfaces'; 
 import _ from 'lodash';
 
 export default class TransitionUsecase{
@@ -64,13 +64,17 @@ export default class TransitionUsecase{
   }
 
   fetchWorkspaces = async () => {
-    const rows = await this.workspaceApi.all();
+    const rows = await this.root.loadingStore.dispatch<Promise<IWorkspace[]>>(
+      () => this.workspaceApi.all()
+    );
     if(rows === undefined) {return;}
     rows.forEach(x => this.root.workspaceStore.upsert(x.id, x));
   }
 
   fetchTraces = async () => {
-    const rows = await this.traceApi.all();
+    const rows = await this.root.loadingStore.dispatch<Promise<ITrace[]>>(
+      () => this.traceApi.all()
+    );
     if(rows === undefined) {return;}
     rows.forEach(x => this.root.traceStore.upsert(x.id, x));
   }
