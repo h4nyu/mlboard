@@ -14,6 +14,12 @@ services:
       context: ./app
     image: "h4nyu/mlboard_app:${TAG}"
 
+  app_go:
+    build : 
+      <<: *default-build
+      context: ./app_go
+    image: "h4nyu/mlboard_app_go:${TAG}"
+
   migration:
     build:
       <<: *default-build
