@@ -4,14 +4,14 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/lib/pq"
-	"myapp/pkg/interfaces/database"
+	"app/pkg/interfaces/database"
 )
 
 type SqlHandler struct {
 	Conn *sql.DB
 }
 
-func NewSqlHandler(user string, password string, host string, port int64) database.SqlHandler {
+func newSqlHandler(user string, password string, host string, port int64) database.SqlHandler {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+"password=%s", host, port, user, password)
 	conn, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
@@ -21,6 +21,10 @@ func NewSqlHandler(user string, password string, host string, port int64) databa
 		Conn: conn,
 	}
 	return sqlHandler
+}
+
+func NewSqlHandler() database.SqlHandler {
+    return newSqlHandler("mlboard", "mlboard", "db", 5432)
 }
 
 func (handler *SqlHandler) Execute(statement string, args ...interface{}) (database.Result, error) {

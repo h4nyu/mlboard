@@ -20,6 +20,12 @@ services:
       context: ./app_go
     image: "h4nyu/mlboard_app_go:${TAG}"
 
+  app_rust:
+    build : 
+      <<: *default-build
+      context: ./app_rust
+    image: "h4nyu/mlboard_app_rust:${TAG}"
+
   migration:
     build:
       <<: *default-build

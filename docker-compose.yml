@@ -23,6 +23,14 @@ services:
       - db
       - migration
 
+  app_rust: 
+    image: "h4nyu/mlboard_app_rust:${TAG}"
+    volumes: 
+      - ./app_rust:/srv
+    depends_on:
+      - db
+      - migration
+
   migration:
     volumes:
       - ./migration:/srv

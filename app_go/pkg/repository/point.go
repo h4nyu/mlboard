@@ -1,9 +1,10 @@
 package repository
 
 import (
-	"myapp/pkg/model"
+    "app/pkg/model"
 )
 
 type PointRepository interface {
-	All() ([]*model.Point, error)
+	All() (model.Points, error)
 }
+
