@@ -20,8 +20,9 @@ async def prepare() -> None:
 async def test_performance_of_insert() -> None:
     ts = datetime.now()
     trace_id = uuid4()
+    start = time.time()
     points = pipe(
-        range(100000),
+        range(1000000),
         map(lambda x: Point(
             value=0,
             ts=ts,
@@ -29,6 +30,8 @@ async def test_performance_of_insert() -> None:
         )),
         list
     )
+    duration = time.time() - start
+    print(duration)
 
     start = time.time()
     async with ContextManager() as conn:

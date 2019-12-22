@@ -2,16 +2,21 @@ package database;
 
 import (
     "testing"
+    "app/pkg/model"
+    "time"
 )
 
 func TestAll(t *testing.T) {
+    start := time.Now()
     repo := NewPointRepository()
-    res, _:= repo.All()
-    t.Log(res)
-}
-
-func TestBulkInsert(t *testing.T) {
-    repo := NewPointRepository()
-    res, _:= repo.All()
-    t.Log(res)
+    var points []*model.Point
+    for i := 0; i < 1000000; i++ {
+        points = append(points, model.NewPoint())
+    }
+    elapsed := time.Since(start)
+    t.Log(elapsed)
+    _, err:= repo.BulkInsert(points)
+    elapsed = time.Since(start)
+    t.Log(elapsed)
+    t.Log(err)
 }

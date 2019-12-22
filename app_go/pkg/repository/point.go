@@ -5,6 +5,6 @@ import (
 )
 
 type PointRepository interface {
-	All() (model.Points, error)
+	All() ([]*model.Point, error)
+    BulkInsert(rows []*model.Point) (int, error)
 }
-
