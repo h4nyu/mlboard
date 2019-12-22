@@ -21,7 +21,7 @@ async def test_performance_of_insert() -> None:
     ts = datetime.now()
     trace_id = uuid4()
     points = pipe(
-        range(10000),
+        range(100000),
         map(lambda x: Point(
             value=0,
             ts=ts,
@@ -30,18 +30,9 @@ async def test_performance_of_insert() -> None:
         list
     )
 
-    async def load_chunk(chunk: t.Sequence[Point]) -> None:
-        async with ContextManager() as conn:
-            await PointQuery(conn).bulk_insert(chunk)
-
-    cors = pipe(
-        points,
-        partition_all(2000),
-        map(load_chunk),
-        list
-    )
-
     start = time.time()
-    await asyncio.gather(*cors)
+    async with ContextManager() as conn:
+        await PointQuery(conn).bulk_insert(points)
     duration = time.time() - start
+    print(duration)
     print(f'insert rate:{len(points)/duration}')

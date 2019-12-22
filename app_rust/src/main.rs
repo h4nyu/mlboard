@@ -1,5 +1,6 @@
 use std::thread;
 use std::time::Duration;
+use rayon::prelude::*;
 
 fn main() {
 
