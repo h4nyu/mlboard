@@ -31,11 +31,14 @@ async def test_performance_of_insert() -> None:
         list
     )
     duration = time.time() - start
-    print(duration)
 
-    start = time.time()
     async with ContextManager() as conn:
+        start = time.time()
         await PointQuery(conn).bulk_insert(points)
-    duration = time.time() - start
-    print(duration)
+        duration = time.time() - start
+        print(duration)
+        start = time.time()
+        await PointQuery(conn).all()
+        duration = time.time() - start
+        print(duration)
     print(f'insert rate:{len(points)/duration}')

@@ -6,7 +6,8 @@ use criterion::{
 };
 use chrono::prelude::{Utc, DateTime};
 use uuid::Uuid;
-use app::infra::database::{bulk_insert, Point};
+use app::infra::database::{bulk_insert};
+use app::models::{Point};
 use std::time::{Duration};
 
 fn criterion_benchmark(c: &mut Criterion) {
