@@ -1,102 +1,105 @@
-use chrono::prelude::{Utc};
-use postgres::{Client,  NoTls, Row};
-use serde::{Serialize};
-use uuid::Uuid;
+use crate::models::{Point, Trace};
+use chrono::prelude::Utc;
+use postgres::{Client, NoTls, Row};
 use rayon::prelude::*;
-use csv::Writer;
-use crate::models::{Point};
-use std::io::{Write};
+use serde::Serialize;
+use std::io::Write;
+use uuid::Uuid;
 
 pub fn with_connection<F>(f: F)
-    where F:Fn(&mut Client) -> () {
+where
+    F: Fn(&mut Client) -> (),
+{
     let mut client = Client::connect("host=db user=mlboard password=mlboard", NoTls).unwrap();
     f(&mut client);
 }
 
-pub struct Repository<'a> {
+pub struct PointRepository<'a, T> {
     conn: &'a mut Client,
     table_name: &'static str,
+    to_model: fn() -> T,
 }
 
-pub trait IRepository<T> {
-    fn all(&mut self) -> Vec<T>;
-    fn clear(&mut self);
-    fn bulk_insert(&mut self, rows: &[T]) -> u64;
-}
-
-pub trait ConvertTo<T> {
-    fn to(row: &Row) -> T;
-}
-
-impl <'a> ConvertTo<Point> for Repository<'a> {
-    fn to(row: &Row) -> Point {
-        Point{
-            ts: row.get("ts"),
-            value: row.get("value"),
-            trace_id: row.get("trace_id"),
-        }
-    }
-}
-impl<'a, T> IRepository<T> for Repository<'a> 
-where Self: ConvertTo<T>, T: Serialize
-{
-    fn all(&mut self) -> Vec<T> {
-        return self.conn.query::<str>(&format!("SELECT * FROM {}", self.table_name), &[])
-            .unwrap()
-            .iter()
-            .map(Self::to)
-            .collect::<Vec<T>>();
-    }
-
-    fn bulk_insert(&mut self, rows: &[T]) -> u64 {
-        let mut wtr = self.conn.copy_in::<str>(&format!("COPY {} FROM STDIN CSV HEADER", self.table_name)).unwrap();
-        let mut csv_wtr = Writer::from_writer(vec![]);
-        rows.iter().for_each(|x|{csv_wtr.serialize(x).unwrap();});
-        let data = String::from_utf8(csv_wtr.into_inner().unwrap()).unwrap();
-        wtr.write_all(data.as_bytes()).unwrap();
-        return wtr.finish().unwrap()
-    }
-
-    fn clear(&mut self){
-        self.conn.execute::<str>(&format!("TRUNCATE TABLE {}", self.table_name), &[]).unwrap();
+pub fn to_point() -> Point {
+    Point {
+        ts: Utc::now(),
+        value: 0.1,
+        trace_id: Uuid::new_v4(),
     }
 }
 
-impl <'a> Repository<'a> {
-    pub fn new(conn: &mut Client) -> Repository {
-        return Repository{
-            conn: conn,
+pub fn to_trace() -> Trace {
+    Trace {
+        id: Uuid::new_v4(),
+        name: "aaaa".to_string(),
+        created_at: Utc::now(),
+        updated_at: Utc::now(),
+    }
+}
+
+impl<'a> PointRepository<'a, Point> {
+    pub fn new(client: &'a mut Client) -> PointRepository<'a, Point> {
+        return PointRepository::<Point> {
+            conn: client,
             table_name: "points",
-        }
+            to_model: to_point,
+        };
     }
 }
 
+impl<'a> PointRepository<'a, Trace> {
+    pub fn new(client: &'a mut Client) -> PointRepository<'a, Trace> {
+        return PointRepository::<Trace> {
+            conn: client,
+            table_name: "traces",
+            to_model: to_trace,
+        };
+    }
+}
+
+pub trait Repository<T> {
+    fn clear(&mut self);
+}
+
+impl<'a> Repository<Trace> for PointRepository<'a, Trace> {
+    fn clear(&mut self) {
+        println!("{:?}", self.table_name);
+        self.conn
+            .execute::<str>(&format!("TRUNCATE TABLE {}", self.table_name), &[])
+            .unwrap();
+    }
+}
+
+impl<'a> Repository<Point> for PointRepository<'a, Point> {
+    fn clear(&mut self) {
+        println!("{:?}", self.table_name);
+        self.conn
+            .execute::<str>(&format!("TRUNCATE TABLE {}", self.table_name), &[])
+            .unwrap();
+    }
+}
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    pub fn setup(repo: &mut dyn IRepository<Point>){
+    fn with_point_repo(repo: &mut Repository<Point>) {
+        repo.clear();
+    }
+
+    fn with_trace_repo(repo: &mut Repository<Trace>) {
         repo.clear();
     }
 
     #[test]
     fn test_all() {
-        let trace_id = Uuid::new_v4();
-        let count = 10000;
-        let rows = (0..count)
-            .map(|x| Point{
-                value:x as f64,
-                ts: Utc::now(),
-                trace_id: trace_id,
-            })
-        .collect::<Vec<Point>>();
         with_connection(|client| {
-            let mut repo = Repository::new(client);
-            setup(&mut repo);
-            let queried_count = repo.bulk_insert(&rows);
-            assert_eq!(queried_count, count);
+            let mut repo_point = PointRepository::<Point>::new(client);
+            repo_point.clear();
+            let mut repo_trace = PointRepository::<Trace>::new(client);
+            repo_trace.clear();
+            // with_point_repo(&mut repo);
+            // with_trace_repo(&mut repo);
         })
     }
 }
-

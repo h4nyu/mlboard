@@ -8,4 +8,5 @@ ARG RUNTIME_DEPS="inotify-tools"
 RUN apt-get update \
     && apt-get install -y ${RUNTIME_DEPS} \
     && update-ca-certificates \
+    && rustup component add rustfmt \
     && cargo fetch
