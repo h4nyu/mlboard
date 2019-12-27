@@ -1,8 +1,9 @@
 use crate::models::{Point, Trace};
-use chrono::prelude::Utc;
+use chrono::prelude::{DateTime, Utc};
 use postgres::{Client, NoTls, Row};
 use rayon::prelude::*;
 use serde::Serialize;
+use uuid::Uuid;
 
 pub fn with_connection<F>(f: F)
 where
@@ -69,22 +70,44 @@ where
 
     fn clear(&mut self) {
         let table_name = Self::get_table_name();
+        println!("{}", table_name);
         self.execute::<str>(&format!("TRUNCATE TABLE {}", table_name), &[])
             .unwrap();
+    }
+}
+
+pub struct PointUsecase<'a> {
+    client: &'a mut Client,
+}
+impl<'a> PointUsecase<'a> {
+    pub fn new(client: &mut Client) -> PointUsecase {
+        return PointUsecase { client: client };
+    }
+
+    fn point_repo(&mut self) -> &mut dyn Repository<Point> {
+        return self.client as &mut dyn Repository<Point>;
+    }
+
+    fn trace_repo(&mut self) -> &mut dyn Repository<Trace> {
+        return self.client as &mut Repository<Trace>;
+    }
+
+    pub fn add_scalar(&mut self) -> () {
+        self.point_repo().clear();
+        self.trace_repo().clear();
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    // fn with_point_repo(repo: &mut Repository<Point>) {
-    //     repo.clear();
-    // }
-    //
-    // fn with_trace_repo(repo: &mut Repository<Trace>) {
-    //     repo.clear();
-    // }
+    #[test]
+    fn test_point_usecase() {
+        with_connection(|client| {
+            let mut uc = PointUsecase::new(client);
+            uc.add_scalar();
+        });
+    }
 
     #[test]
     fn test_all() {
