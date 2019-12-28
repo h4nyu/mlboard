@@ -85,11 +85,11 @@ impl<'a> PointUsecase<'a> {
     }
 
     fn point_repo(&mut self) -> &mut dyn Repository<Point> {
-        return self.client as &mut dyn Repository<Point>;
+        return self.client;
     }
 
     fn trace_repo(&mut self) -> &mut dyn Repository<Trace> {
-        return self.client as &mut Repository<Trace>;
+        return self.client;
     }
 
     pub fn add_scalar(&mut self) -> () {
@@ -112,7 +112,7 @@ mod tests {
     #[test]
     fn test_all() {
         with_connection(|client| {
-            let trace_repo = client as &mut dyn Repository<Point>;
+            let trace_repo: &mut dyn Repository<Point> = client;
             trace_repo.all();
             let point_repo = client as &mut dyn Repository<Trace>;
             point_repo.all();
