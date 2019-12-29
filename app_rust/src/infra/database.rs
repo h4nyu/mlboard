@@ -1,4 +1,4 @@
-use crate::models::{Point, Trace};
+use crate::domain::entities::{Point, Trace};
 use chrono::prelude::{DateTime, Utc};
 use postgres::{Client, NoTls, Row};
 use rayon::prelude::*;
