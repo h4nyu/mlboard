@@ -1,127 +1,84 @@
 use crate::domain::entities::{Point, Trace};
+use crate::domain::Repository;
 use chrono::prelude::{DateTime, Utc};
-use postgres::{Client, NoTls, Row};
+use postgres::{types::ToSql, Client, NoTls, Row};
 use rayon::prelude::*;
 use serde::Serialize;
 use uuid::Uuid;
 
-pub fn with_connection<F>(f: F)
-where
-    F: Fn(&mut Client) -> (),
-{
-    let mut client = Client::connect("host=db user=mlboard password=mlboard", NoTls).unwrap();
-    f(&mut client);
-}
-
-// pub struct Table<'a> {
-//     conn: &'a mut Client,
+// pub struct Postgresql {
+//     conn: Client,
 // }
+pub struct Postgresql(Client);
 
-pub trait Table<T> {
-    fn get_table_name() -> &'static str;
-    fn from_row(row: &Row) -> T;
+pub struct QueryValue<'a>(&'static str, &'a dyn ToSql);
+
+pub trait SQLable {
+    fn select() -> &'static str;
+    fn from_row(row: &Row) -> Self;
 }
 
-impl Table<Point> for Client {
-    fn get_table_name() -> &'static str {
-        "points"
+impl Postgresql {
+    pub fn new() -> Postgresql {
+        Postgresql(Client::connect("host=db user=mlboard password=mlboard", NoTls).unwrap())
     }
-    fn from_row(row: &Row) -> Point {
-        Point {
-            ts: row.get("ts"),
+}
+
+impl SQLable for Point {
+    fn select() -> &'static str {
+        "SELECT * FROM points"
+    }
+    fn from_row(row: &Row) -> Self {
+        Self {
             value: row.get("value"),
             trace_id: row.get("trace_id"),
+            ts: row.get("ts"),
         }
     }
 }
 
-impl Table<Trace> for Client {
-    fn get_table_name() -> &'static str {
-        "traces"
+impl SQLable for Trace {
+    fn select() -> &'static str {
+        "SELECT * FROM traces"
     }
-    fn from_row(row: &Row) -> Trace {
-        Trace {
+    fn from_row(row: &Row) -> Self {
+        Self {
             id: row.get("id"),
             name: row.get("name"),
-            created_at: row.get("created_at"),
             updated_at: row.get("updated_at"),
+            created_at: row.get("created_at"),
         }
     }
 }
 
-pub trait Repository<T> {
-    fn all(&mut self) -> Vec<T>;
-    fn clear(&mut self);
-}
-
-impl<T> Repository<T> for Client
-where
-    Self: Table<T>,
-{
+impl<T: SQLable> Repository<T> for Postgresql {
     fn all(&mut self) -> Vec<T> {
-        let table_name = Self::get_table_name();
         return self
-            .query::<str>(&format!("SELECT * FROM {}", table_name), &[])
+            .0
+            .query::<str>(T::select(), &[])
             .unwrap()
             .iter()
-            .map(Self::from_row)
+            .map(T::from_row)
             .collect::<Vec<T>>();
     }
 
-    fn clear(&mut self) {
-        let table_name = Self::get_table_name();
-        println!("{}", table_name);
-        self.execute::<str>(&format!("TRUNCATE TABLE {}", table_name), &[])
-            .unwrap();
-    }
-}
-
-pub struct PointUsecase<'a> {
-    client: &'a mut Client,
-}
-impl<'a> PointUsecase<'a> {
-    pub fn new(client: &mut Client) -> PointUsecase {
-        return PointUsecase { client: client };
-    }
-
-    fn point_repo(&mut self) -> &mut dyn Repository<Point> {
-        return self.client;
-    }
-
-    fn trace_repo(&mut self) -> &mut dyn Repository<Trace> {
-        return self.client;
-    }
-
-    pub fn add_scalar(&mut self) -> () {
-        self.point_repo().clear();
-        self.trace_repo().clear();
+    fn get(&mut self, id: Uuid) -> Option<T> {
+        return None;
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    fn test_all<R>(mut repo: R) -> ()
+    where
+        R: Repository<Point>,
+    {
+        repo.all();
+    }
     #[test]
     fn test_point_usecase() {
-        with_connection(|client| {
-            let mut uc = PointUsecase::new(client);
-            uc.add_scalar();
-        });
-    }
-
-    #[test]
-    fn test_all() {
-        with_connection(|client| {
-            let trace_repo: &mut dyn Repository<Point> = client;
-            trace_repo.all();
-            let point_repo = client as &mut dyn Repository<Trace>;
-            point_repo.all();
-            // let mut repo_point = PointRepository::<Point>::new(client);
-            // repo_point.clear();
-            // let mut repo_trace = PointRepository::<Trace>::new(client);
-            // repo_trace.clear();
-            // with_point_repo(&mut repo);
-            // with_trace_repo(&mut repo);
-        })
+        let mut repo = Postgresql::new();
+        test_all(repo);
     }
 }
