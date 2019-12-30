@@ -1,22 +1,16 @@
 use crate::domain::entities::{Point, Trace};
 use crate::domain::usecase::PointService;
-use crate::domain::usecase::{HavePointQuery, HaveTraceQuery};
 use crate::domain::Repository;
-use crate::infra::database::Postgresql;
+use actix_web::{web, App, Responder};
 
-impl HavePointQuery for Postgresql {
-    fn point_query(&mut self) -> &mut dyn Repository<Point> {
-        return self;
-    }
+async fn index() -> impl Responder {
+    "Hello world!"
 }
 
-impl HaveTraceQuery for Postgresql {
-    fn trace_query(&mut self) -> &mut dyn Repository<Trace> {
-        return self;
-    }
-}
-
-pub fn find_all_traces() -> Vec<Trace> {
-    let mut uc = Postgresql::new();
-    uc.all_traces()
-}
+// use crate::infra::database::{Postgresql};
+//
+//
+// pub fn find_all_traces() -> Vec<Trace> {
+//     let mut uc = Postgresql::new();
+//     uc.all_traces()
+// }

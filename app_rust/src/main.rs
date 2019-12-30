@@ -1,13 +1,13 @@
-use rayon::prelude::*;
-use std::thread;
-use std::time::Duration;
+use actix_web::{web, App, Responder};
 
-fn main() {
-    let v = vec![1, 2, 3];
-    let handle = thread::spawn(move || {
-        println!("Here's a vector: {:?}", v);
-        thread::sleep(Duration::from_millis(1));
-    });
+async fn index() -> impl Responder {
+    "Hello world!"
+}
 
-    handle.join().unwrap();
+#[rustfmt::skip]
+#[actix_rt::main]
+async fn main() {
+    App::new().service(
+        web::scope("/app")
+            .route("/index.html", web::get().to(index)));
 }

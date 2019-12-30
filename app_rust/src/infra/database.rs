@@ -1,4 +1,5 @@
 use crate::domain::entities::{Point, Trace};
+use crate::domain::usecase::{HavePointQuery, HaveTraceQuery};
 use crate::domain::Repository;
 use chrono::prelude::{DateTime, Utc};
 use postgres::{types::ToSql, Client, NoTls, Row};
@@ -6,11 +7,7 @@ use rayon::prelude::*;
 use serde::Serialize;
 use uuid::Uuid;
 
-// pub struct Postgresql {
-//     conn: Client,
-// }
 pub struct Postgresql(Client);
-
 pub struct QueryValue<'a>(&'static str, &'a dyn ToSql);
 
 pub trait SQLable {
@@ -64,6 +61,18 @@ impl<T: SQLable> Repository<T> for Postgresql {
 
     fn get(&mut self, id: Uuid) -> Option<T> {
         return None;
+    }
+}
+
+impl HavePointQuery for Postgresql {
+    fn point_query(&mut self) -> &mut dyn Repository<Point> {
+        return self;
+    }
+}
+
+impl HaveTraceQuery for Postgresql {
+    fn trace_query(&mut self) -> &mut dyn Repository<Trace> {
+        return self;
     }
 }
 
