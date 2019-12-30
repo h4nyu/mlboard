@@ -27,6 +27,7 @@ services:
     image: "h4nyu/mlboard_app_rust:${TAG}"
     volumes: 
       - ./app_rust:/srv
+    command: cargo run
     depends_on:
       - db
       - migration
