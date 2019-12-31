@@ -35,7 +35,7 @@ mod tests {
         let req = test::TestRequest::post()
             .uri("/")
             .set_json(&MyObj {
-                name: "my-name".to_owned(),
+                name: "my-name".into(),
                 number: 43,
             })
             .to_request();

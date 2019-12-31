@@ -1,7 +1,7 @@
 use uuid::Uuid;
 pub mod entities;
 pub mod usecase;
-use crate::domain::entities::Point;
+use crate::domain::entities::{Point, Trace};
 
 pub trait Repository<T> {
     fn all(&mut self) -> Vec<T>;
@@ -9,3 +9,4 @@ pub trait Repository<T> {
 }
 
 pub trait PointRepository: Repository<Point> {}
+pub trait TraceRepository: Repository<Trace> {}

@@ -1,6 +1,6 @@
 use crate::domain::entities::{Point, Trace};
 use crate::domain::usecase::{HavePointQuery, HaveTraceQuery};
-use crate::domain::Repository;
+use crate::domain::{PointRepository, Repository, TraceRepository};
 use chrono::prelude::{DateTime, Utc};
 use postgres::{types::ToSql, Client, NoTls, Row};
 use rayon::prelude::*;
@@ -63,15 +63,17 @@ impl<T: SQLable> Repository<T> for Postgresql {
         return None;
     }
 }
+impl PointRepository for Postgresql {}
+impl TraceRepository for Postgresql {}
 
 impl HavePointQuery for Postgresql {
-    fn point_query(&mut self) -> &mut dyn Repository<Point> {
+    fn point_query(&mut self) -> &mut dyn PointRepository {
         return self;
     }
 }
 
 impl HaveTraceQuery for Postgresql {
-    fn trace_query(&mut self) -> &mut dyn Repository<Trace> {
+    fn trace_query(&mut self) -> &mut dyn TraceRepository {
         return self;
     }
 }
@@ -87,7 +89,7 @@ mod tests {
     }
     #[test]
     fn test_point_usecase() {
-        let mut repo = Postgresql::new();
+        let repo = Postgresql::new();
         test_all(repo);
     }
 }

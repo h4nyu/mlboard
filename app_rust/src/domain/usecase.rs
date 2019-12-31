@@ -1,12 +1,12 @@
 use crate::domain::entities::{Point, Trace};
-use crate::domain::Repository;
+use crate::domain::{PointRepository, TraceRepository};
 
 pub trait HavePointQuery {
-    fn point_query(&mut self) -> &mut Repository<Point>;
+    fn point_query(&mut self) -> &mut dyn PointRepository;
 }
 
 pub trait HaveTraceQuery {
-    fn trace_query(&mut self) -> &mut Repository<Trace>;
+    fn trace_query(&mut self) -> &mut dyn TraceRepository;
 }
 
 pub trait PointService {
