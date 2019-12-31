@@ -8,8 +8,8 @@ use rayon::prelude::*;
 use serde::Serialize;
 use std::error::Error;
 use std::io::Write;
+use std::sync::{Arc, Mutex};
 use uuid::Uuid;
-use std::sync::{Mutex, Arc};
 pub struct Postgresql(Arc<Mutex<Client>>);
 pub struct QueryValue<'a>(&'static str, &'a dyn ToSql);
 
@@ -22,13 +22,9 @@ pub trait SQLable {
 
 impl Postgresql {
     pub fn new() -> Postgresql {
-        Postgresql(
-            Arc::new(
-                Mutex::new(
-                    Client::connect("host=db user=mlboard password=mlboard", NoTls).unwrap()
-                )
-            )
-        )
+        Postgresql(Arc::new(Mutex::new(
+            Client::connect("host=db user=mlboard password=mlboard", NoTls).unwrap(),
+        )))
     }
 }
 
@@ -76,7 +72,9 @@ where
     T: SQLable + Serialize,
 {
     fn all(&self) -> Vec<T> {
-        Arc::clone(&self.0).lock().unwrap()
+        Arc::clone(&self.0)
+            .lock()
+            .unwrap()
             .query::<str>(T::select(), &[])
             .unwrap()
             .iter()
@@ -103,8 +101,11 @@ where
     }
     fn clear(&self) -> () {
         let sql = format!("TRUNCATE TABLE {}", T::table_name());
-        Arc::clone(&self.0).lock().unwrap()
-            .execute::<str>(&sql, &[]).unwrap();
+        Arc::clone(&self.0)
+            .lock()
+            .unwrap()
+            .execute::<str>(&sql, &[])
+            .unwrap();
     }
 }
 
@@ -112,13 +113,13 @@ impl PointRepository for Postgresql {}
 impl TraceRepository for Postgresql {}
 
 impl HavePointQuery for Postgresql {
-    fn point_query(&mut self) -> &mut dyn PointRepository {
+    fn point_query(&self) -> &dyn PointRepository {
         return self;
     }
 }
 
 impl HaveTraceQuery for Postgresql {
-    fn trace_query(&mut self) -> &mut dyn TraceRepository {
+    fn trace_query(&self) -> &dyn TraceRepository {
         return self;
     }
 }
@@ -126,13 +127,17 @@ impl HaveTraceQuery for Postgresql {
 impl Transition for Postgresql {
     fn with_tx<F>(&self, f: F) -> ()
     where
-        F: Fn() -> Result<(), ()>
+        F: Fn() -> Result<(), ()>,
     {
         let conn = Arc::clone(&self.0);
         conn.lock().unwrap().execute("BEGIN;", &[]).unwrap();
         match f() {
-            Ok(()) => {conn.lock().unwrap().execute("COMMIT;", &[]).unwrap();},
-            Err(e) => {conn.lock().unwrap().execute("ROLLBACK;", &[]).unwrap();}
+            Ok(()) => {
+                conn.lock().unwrap().execute("COMMIT;", &[]).unwrap();
+            }
+            Err(e) => {
+                conn.lock().unwrap().execute("ROLLBACK;", &[]).unwrap();
+            }
         }
     }
 }
@@ -145,13 +150,15 @@ mod tests {
     fn test_transtion() {
         let repo = Postgresql::new();
         let trace_id = Uuid::new_v4();
-        let points = (0..10).collect::<Vec<_>>().into_iter().map(|x| {
-            Point{
+        let points = (0..10)
+            .collect::<Vec<_>>()
+            .into_iter()
+            .map(|x| Point {
                 value: x as f64,
                 ts: Utc::now(),
                 trace_id: trace_id,
-            }
-        }).collect::<Vec<_>>();
+            })
+            .collect::<Vec<_>>();
         let point_repo: &PointRepository = &repo;
         point_repo.clear();
         repo.with_tx(|| {

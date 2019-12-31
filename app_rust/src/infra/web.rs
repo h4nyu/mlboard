@@ -1,5 +1,5 @@
 use crate::domain::entities::{Point, Trace};
-use crate::domain::usecase::PointService;
+use crate::domain::usecase::PointUsecase;
 use crate::domain::Repository;
 use actix_web::{get, web, App, HttpResponse, HttpServer};
 use serde::{Deserialize, Serialize};
