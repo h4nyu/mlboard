@@ -1,8 +1,9 @@
 use crate::domain::entities::{Point, Trace};
 // use crate::domain::{PointRepository, Repository, TraceRepository, Transition};
 use chrono::prelude::{DateTime, Utc};
-use tokio_postgres::{NoTls};
+use tokio_postgres::{NoTls, Client};
 use std::error::Error;
+use tokio::runtime::Runtime;
 // use csv::Writer;
 // use postgres::{types::ToSql, Client, NoTls, Row};
 // use rayon::prelude::*;
@@ -149,13 +150,36 @@ use std::error::Error;
 //     }
 // }
 //
+//
+//
+//
+//
+struct Conn {
+    client:Client
+}
+impl Conn {
+    pub async fn new() -> Result<Self, Box<Error>> {
+        let (client, connection) = tokio_postgres::connect(
+            "host=db user=mlboard password=mlboard", 
+            NoTls
+        ).await?;
+        Ok(Conn{
+            client: client,
+        })
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
     use async_std::{fs::File, io, prelude::*, task};
+    use tokio;
     #[test]
     fn test_transtion() -> Result<(), Box<dyn Error>> {
-        let (client, connection) = tokio_postgres::connect("host=localhost user=postgres", NoTls).await?;
-        Ok(())
+        let mut rt = Runtime::new()?;
+        rt.block_on(async {
+            let conn = Conn::new().await?;
+            Ok(())
+        })
     }
 }
