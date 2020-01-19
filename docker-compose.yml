@@ -15,6 +15,14 @@ services:
       - db
       - migration
 
+  app_node: 
+    image: "h4nyu/mlboard_app_node:${TAG}"
+    volumes: 
+      - ./app_node:/srv
+    depends_on:
+      - db
+      - migration
+
   app_go: 
     image: "h4nyu/mlboard_app_go:${TAG}"
     volumes: 

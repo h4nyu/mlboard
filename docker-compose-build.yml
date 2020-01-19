@@ -8,6 +8,7 @@ services:
         - http_proxy
         - https_proxy
     image: "h4nyu/mlboard_db:${TAG}"
+
   app:
     build : 
       <<: *default-build
@@ -25,6 +26,12 @@ services:
       <<: *default-build
       context: ./app_rust
     image: "h4nyu/mlboard_app_rust:${TAG}"
+
+  app_node:
+    build : 
+      <<: *default-build
+      context: ./app_node
+    image: "h4nyu/mlboard_app_node:${TAG}"
 
   migration:
     build:
