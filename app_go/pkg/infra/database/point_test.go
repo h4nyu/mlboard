@@ -2,21 +2,23 @@ package database;
 
 import (
     "testing"
+    "gotest.tools/assert"
     "app/pkg/model"
-    "time"
 )
 
 func TestAll(t *testing.T) {
-    start := time.Now()
     repo := NewPointRepository()
-    var points []*model.Point
-    for i := 0; i < 1000000; i++ {
-        points = append(points, model.NewPoint())
+    var points []model.Point
+    for i := 0; i < 100; i++ {
+        points = append(points, *model.NewPoint())
     }
-    elapsed := time.Since(start)
-    t.Log(elapsed)
-    _, err:= repo.BulkInsert(points)
-    elapsed = time.Since(start)
-    t.Log(elapsed)
-    t.Log(err)
+    count, err:= repo.BulkInsert(points)
+    assert.Assert(t, err == nil)
+    assert.Assert(t, count == 100)
+}
+
+func TestClear(t *testing.T) {
+    repo := NewPointRepository()
+    err:= repo.Clear()
+    assert.Assert(t, err == nil)
 }
