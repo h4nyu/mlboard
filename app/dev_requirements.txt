@@ -1,0 +1,8 @@
+pytest
+pytest-mock
+pytest-cov
+flake8
+autopep8
+pytest-asyncio
+mypy
+

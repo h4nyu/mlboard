@@ -2,26 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from setuptools import setup, find_packages
+from pip.req import parse_requirements
 
-requires = [
-    "cytoolz",
-    "asyncpg<0.19.0",
-    "fastapi",
-    "PyYAML",
-    "requests",
-    "python-dateutil",
-    "ujson",
-    "uvicorn",
-]
-dev_requires = [
-    "pytest",
-    "pytest-mock",
-    "pytest-cov",
-    "flake8",
-    "autopep8",
-    "pytest-asyncio",
-    "mypy",
-]
+install_requires = parse_requirements('/srv/requirements.txt')
+dev_requires = parse_requirements('/srv/dev_requirements.txt')
 
 setup(
     name="mlboard",
@@ -31,7 +15,7 @@ setup(
     author_email='yao.ntno@google.com',
     license="TODO",
     packages=find_packages(),
-    install_requires=requires,
+    install_requires=install_requires,
     extras_require={
         'dev': dev_requires
     }

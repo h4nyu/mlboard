@@ -12,6 +12,7 @@ services:
     build : 
       <<: *default-build
       context: ./app
+      target: prod
     image: "h4nyu/mlboard_app:${TAG}"
 
   migration:
