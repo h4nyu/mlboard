@@ -1,0 +1,29 @@
+version: '3.7'
+
+services:
+  api: &default-app
+    build: 
+      target: dev
+    volumes: 
+      - ./app:/srv
+      - ./store:/store
+
+  migration:
+    volumes:
+      - ./migration:/srv
+
+  board: &default-node
+    volumes:
+      - ./board:/srv
+    build: 
+      context: ./board
+      target: dev
+    command: yarn watch
+
+  storybook:
+    image: "h4nyu/mlboard_board:${TAG}"
+    volumes:
+      - ./board:/srv
+    command: yarn storybook
+    ports:
+      - "${STORYBOOK_PORT}:9001"

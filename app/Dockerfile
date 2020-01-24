@@ -18,7 +18,7 @@ RUN apt-get update \
 
 COPY ./ /srv
 
-FROM python:3.8-alpine AS prod
+FROM python:3.8-slim AS prod
 ENV PYTHONPATH=/dependencies/lib/python3.8/site-packages \
     PATH=/dependencies/bin:$PATH
 COPY --from=dev /dependencies /dependencies
