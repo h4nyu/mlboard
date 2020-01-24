@@ -1,8 +1,0 @@
-cytoolz
-asyncpg<0.19.0
-fastapi
-PyYAML
-requests
-python-dateutil
-ujson
-uvicorn
