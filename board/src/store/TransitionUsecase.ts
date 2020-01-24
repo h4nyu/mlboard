@@ -2,7 +2,6 @@ import {Moment} from 'moment';
 import { action, observable, computed } from 'mobx';
 import { IPointApi, ITraceApi, IWorkspaceApi } from '~/api/interfaces';
 import { IRoot } from './interfaces';
-import { IPoint, ITrace, IWorkspace } from '~/models/interfaces'; 
 import _ from 'lodash';
 
 export default class TransitionUsecase{
@@ -64,19 +63,19 @@ export default class TransitionUsecase{
   }
 
   fetchWorkspaces = async () => {
-    const rows = await this.root.loadingStore.dispatch<Promise<IWorkspace[]>>(
-      () => this.workspaceApi.all()
-    );
-    if(rows === undefined) {return;}
-    rows.forEach(x => this.root.workspaceStore.upsert(x.id, x));
+    await this.root.loadingStore.dispatch(async() => {
+      const rows = await this.workspaceApi.all();
+      if(rows === undefined) {return;}
+      rows.forEach(x => this.root.workspaceStore.upsert(x.id, x));
+    });
   }
 
   fetchTraces = async () => {
-    const rows = await this.root.loadingStore.dispatch<Promise<ITrace[]>>(
-      () => this.traceApi.all()
-    );
-    if(rows === undefined) {return;}
-    rows.forEach(x => this.root.traceStore.upsert(x.id, x));
+    await this.root.loadingStore.dispatch(async() => {
+      const rows = await this.traceApi.all();
+      if(rows === undefined) {return;}
+      rows.forEach(x => this.root.traceStore.upsert(x.id, x));
+    });
   }
 
   @action add = async (
@@ -95,12 +94,12 @@ export default class TransitionUsecase{
       fromDate: lastDate.clone().add(-10, 'minutes'),
       toDate: lastDate.clone().add(1, 'minutes'),
     };
-    const points = await this.root.loadingStore.dispatch<Promise<IPoint[]>>(
-      () => this.pointApi.rangeBy(traceId, transition.fromDate, transition.toDate)
-    );
-    if(points === undefined){return;}
-    this.root.transitionStore.upsert(transition.id, transition);
-    this.root.segmentStore.upsert(transition.id, points);
+    await this.root.loadingStore.dispatch(async () => {
+      const points = await this.pointApi.rangeBy(traceId, transition.fromDate, transition.toDate);
+      if(points === undefined){return;}
+      this.root.transitionStore.upsert(transition.id, transition);
+      this.root.segmentStore.upsert(transition.id, points);
+    });
   }
 
   @action setTraceKeyword = (keyword: string) => {
@@ -118,18 +117,18 @@ export default class TransitionUsecase{
 
 
   @action updateRange = async (id: string, fromDate: Moment, toDate: Moment) => {
-    const transition = this.root.transitionStore.rows.get(id);
-    if(transition === undefined){return;}
-    this.root.transitionStore.upsert(id, {
-      ...transition,
-      fromDate,
-      toDate,
+    await this.root.loadingStore.dispatch(async() => {
+      const transition = this.root.transitionStore.rows.get(id);
+      if(transition === undefined){return;}
+      this.root.transitionStore.upsert(id, {
+        ...transition,
+        fromDate,
+        toDate,
+      });
+      const points = await this.pointApi.rangeBy(transition.traceId, fromDate, toDate);
+      if(points === undefined){return;}
+      this.root.segmentStore.upsert(id, points);
     });
-    const points = await this.root.loadingStore.dispatch<Promise<IPoint[]>>(
-      () => this.pointApi.rangeBy(transition.traceId, fromDate, toDate)
-    );
-    if(points === undefined){return;}
-    this.root.segmentStore.upsert(id, points);
   }
 
   @action updateRangeInWorkspace = async (id: string, fromDate: Moment, toDate: Moment) => {
@@ -184,16 +183,16 @@ export default class TransitionUsecase{
   }
 
   deleteWorkspace = async (id: string) => {
-    await this.root.loadingStore.dispatch<Promise<void>>(
-      () => this.workspaceApi.delete(id)
-    );
-    const traceIds = this.root.traceStore.rows.filter(x => x.workspaceId === id).map(x => x.id);
-    traceIds.forEach(x => {
-      this.root.traceStore.delete(x);
-      this.root.transitionStore.delete(x);
-    });
+    await this.root.loadingStore.dispatch(async() => {
+      await this.workspaceApi.delete(id);
+      const traceIds = this.root.traceStore.rows.filter(x => x.workspaceId === id).map(x => x.id);
+      traceIds.forEach(x => {
+        this.root.traceStore.delete(x);
+        this.root.transitionStore.delete(x);
+      });
 
-    this.root.workspaceStore.delete(id);
+      this.root.workspaceStore.delete(id);
+    });
   }
 }
 
