@@ -1,6 +1,10 @@
-use app::infra::web::run;
+// use app::infra::web::run;
+//
+//
+//
 
-#[actix_rt::main]
-async fn main() -> std::io::Result<()> {
-    run().await
-}
+// #[actix_rt::main]
+// fn main() -> std::io::Result<()> {
+//     // run().await
+// }
+fn main() {}
