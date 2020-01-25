@@ -8,8 +8,6 @@ services:
       args:
         - http_proxy
         - https_proxy
-    ports:
-      - "${DB_PORT}:5432"
 
   api: &default-app
     command: sh start_api.sh
@@ -47,8 +45,6 @@ services:
       context: ./web
     volumes:
       - ./web-data:/public
-    ports:
-      - "${WEB_PORT}:80"
     depends_on:
       - api
       - board

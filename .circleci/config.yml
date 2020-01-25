@@ -17,16 +17,11 @@ jobs:
           name: Set Environment Variables
           command: |
             echo 'export SUBNET=192.168.10.1/24' >> $BASH_ENV
-            echo 'export WEB_PORT=8000' >> $BASH_ENV
-            echo 'export DB_PORT=8001' >> $BASH_ENV
-            echo 'export STORYBOOK_PORT=8002' >> $BASH_ENV
-            echo 'export STAGE=dev' >> $BASH_ENV
-            echo 'export TAG=$CIRCLE_SHA1' >> $BASH_ENV
 
       - run:
           name: Build Images
           command: |
-            docker-compose -f docker-compose-build.yml build --parallel
+            docker-compose -f docker-compose-build.yml build
 
       - run:
           name: Test Migration

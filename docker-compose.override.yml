@@ -1,6 +1,10 @@
 version: '3.7'
 
 services:
+  db: 
+    ports:
+      - "${DB_PORT}:5432"
+
   api: &default-app
     build: 
       target: dev
@@ -27,3 +31,6 @@ services:
     command: yarn storybook
     ports:
       - "${STORYBOOK_PORT}:9001"
+  web:
+    ports:
+      - "${WEB_PORT}:80"

@@ -10,7 +10,7 @@ ENV PYTHONPATH=/dependencies/lib/python3.8/site-packages:/dev-dependencies/lib/p
 
 RUN apt-get update \
     && apt-get install --no-install-recommends -y $BUILD_DEPS inotify-tools \
-    && pip install --prefix=/dependencies/ --no-cache-dir -Ue . \
+    && pip install --prefix=/dependencies --no-cache-dir -Ue . \
     && pip install --prefix=/dev-dependencies --no-cache-dir -Ue .[dev] \
     && apt-get purge $BUILD_DEPS -y \
     && apt-get autoremove -y
