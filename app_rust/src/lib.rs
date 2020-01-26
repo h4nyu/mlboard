@@ -1,5 +1,6 @@
 pub mod client;
-pub mod network;
-pub mod models;
 pub mod infra;
+pub mod models;
+pub mod network;
 pub mod repository;
+pub mod domain;
