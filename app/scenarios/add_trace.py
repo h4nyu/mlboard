@@ -13,18 +13,19 @@ async def main() -> None:
             'lr': 0.01
         })
 
-        for i in range(2):
-            await trace_uc.register(f"metric#{randint(0, 1)}", workspace_id)
+        for i in range(100):
+            await trace_uc.register(f"metric#{i}", workspace_id)
         traces = await trace_uc.all()
 
-        for t in traces:
-            await point_uc.add_scalar(t.id, 0.5)
-            await asyncio.sleep(0.5)
-            await point_uc.add_scalar(t.id, 0.1)
-            await asyncio.sleep(0.5)
-            await point_uc.add_scalar(t.id, 0.8)
-            await asyncio.sleep(0.5)
-            await point_uc.add_scalar(t.id, -1.0)
+
+        for i in range(1000):
+            print("insert")
+            values = {
+                trace.id: randint(0, 100)
+                for trace
+                in traces
+            }
+            await point_uc.add_scalars(values)
 
 if __name__ == '__main__':
     asyncio.run(main())

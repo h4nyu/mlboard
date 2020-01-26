@@ -51,7 +51,6 @@ class PointQuery(ModelQuery[IPoint, UUID]):
         trace_id: UUID,
         from_date: datetime,
         to_date: datetime,
-        limit: int = 10000,
     ) -> t.Sequence[IPoint]:
         rows = await self.conn.fetch(
             f"""
@@ -60,12 +59,10 @@ class PointQuery(ModelQuery[IPoint, UUID]):
                 WHERE trace_id = $1
                     AND ts BETWEEN $2 AND $3
                 ORDER BY ts ASC
-                LIMIT $4
             """,
             trace_id,
             from_date,
             to_date,
-            limit,
         )
         return [
             Point(

@@ -4,17 +4,19 @@ import (
     "app/pkg/model"
     "app/pkg/repository"
 	"database/sql"
+    "github.com/lib/pq"
+    "github.com/google/uuid"
     "time"
 	"app/pkg/interfaces/database"
     "fmt"
-    "github.com/satori/go.uuid"
-    // "bytes"
 )
 
 
 type PointRepository struct {
     conn *sql.DB
 }
+const TABLE_NAME = "points"
+var COLUMNS = []string{"aaa", "bbb"}
 
 func NewPointRepository() repository.PointRepository {
     conn, _ := NewConn()
@@ -24,40 +26,50 @@ func NewPointRepository() repository.PointRepository {
     return repo
 }
 
-func toModels(rows database.Row) (points []*model.Point) {
+func toModels(rows database.Row) (points []model.Point) {
     for rows.Next() {
+        fmt.Printf("%v", rows)
         var value float32
         var timestamp time.Time
-        if err := rows.Scan(&value, &timestamp); err != nil {
-            continue
-        }
+        var traceId uuid.UUID
         point := model.Point{
             Value: value,
             Timestamp: timestamp,
+            TraceId: traceId,
         }
-        points = append(points, &point)
+        err := rows.Scan(
+            &point.Value,
+            &point.Timestamp,
+            &point.TraceId,
+        )
+        fmt.Printf("%v", err)
+        points = append(points, point)
     }
     return
 }
 
-func (repo *PointRepository) All() (points []*model.Point, err error) {
-    rows, err := repo.conn.Query("SELECT * FROM points;")
+func (repo *PointRepository) All() (points []model.Point, err error) {
+    rows, err := repo.conn.Query(fmt.Sprintf("SELECT * FROM %s;", TABLE_NAME))
     if err != nil {return}
     points = toModels(rows)
     return
 }
 
-func (repo *PointRepository) BulkInsert(rows []*model.Point) (count int, err error) {
+func (repo *PointRepository) BulkInsert(rows []model.Point) (count int, err error) {
     txn, err := repo.conn.Begin()
     if err != nil {return}
-    stmt, err := txn.Prepare("COPY points FROM STDIN WITH CSV")
-    traceId := uuid.NewV4()
+    stmt, err := txn.Prepare(pq.CopyIn("points", "value", "ts", "trace_id"))
     if err != nil {return}
     for _, item := range rows {
-        _, err = stmt.Exec(fmt.Sprintf("%s, %f,%s", item.Timestamp.Format(time.RFC3339), item.Value, traceId))
+        stmt.Exec(item.Value, item.Timestamp, item.TraceId)
     }
     err = stmt.Close()
     txn.Commit()
     count = 0
+    return
+}
+
+func (repo *PointRepository) Clear() (err error) {
+    _, err = repo.conn.Query("TRUNCATE TABLE points;");
     return
 }

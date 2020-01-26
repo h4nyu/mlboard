@@ -11,7 +11,7 @@ func newConn(user string, password string, host string, port int64) (conn *sql.D
     conn, err = sql.Open("postgres", psqlInfo)
     return
 }
-//
+
 func NewConn() (conn *sql.DB, err error) {
     return newConn("mlboard", "mlboard", "db", 5432)
 }

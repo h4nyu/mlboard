@@ -1,22 +1,37 @@
 package database;
 
 import (
+	"time"
     "testing"
     "app/pkg/model"
-    "time"
+    "gotest.tools/assert"
+    "github.com/google/uuid"
+    "app/pkg/repository"
 )
 
+func setup(repo repository.PointRepository) {
+    repo.Clear()
+}
+
 func TestAll(t *testing.T) {
-    start := time.Now()
     repo := NewPointRepository()
-    var points []*model.Point
-    for i := 0; i < 1000000; i++ {
-        points = append(points, model.NewPoint())
+    setup(repo)
+
+    var points []model.Point
+    count := 1
+    for i := 0; i < count; i++ {
+        p := model.Point {
+            Value: 1,
+            TraceId: uuid.New(),
+            Timestamp: time.Now(),
+        }
+        points = append(points, p)
     }
-    elapsed := time.Since(start)
-    t.Log(elapsed)
     _, err:= repo.BulkInsert(points)
-    elapsed = time.Since(start)
-    t.Log(elapsed)
+    assert.Assert(t, err == nil)
+    points, err = repo.All()
+    assert.Assert(t, err == nil)
+    t.Log(points)
+    assert.Assert(t, len(points) == count)
     t.Log(err)
 }

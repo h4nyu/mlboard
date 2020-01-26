@@ -12,6 +12,15 @@ module.exports = {
       template: "./templates/index.html",
     }),
   ],
+  output:{
+    filename: "[name].[contenthash].js"
+  },
+  optimization:{
+    splitChunks: {
+      name: 'vendor',
+      chunks: 'initial',
+    }
+  },
   module: {
     rules: [
       {

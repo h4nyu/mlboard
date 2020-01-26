@@ -3,14 +3,18 @@ version: '3.7'
 services:
   db:
     image: "h4nyu/mlboard_db:${TAG}"
-    ports:
-      - "${DB_PORT}:5432"
+    build: &default-build
+      context: ./db
+      args:
+        - http_proxy
+        - https_proxy
 
   api: &default-app
+    command: sh start_api.sh
     image: "h4nyu/mlboard_app:${TAG}"
-    volumes: 
-      - ./app:/srv
-      - ./store:/store
+    build : 
+      <<: *default-build
+      context: ./app
     depends_on:
       - db
       - migration
@@ -23,45 +27,35 @@ services:
       - db
       - migration
 
-  app_rust: 
-    image: "h4nyu/mlboard_app_rust:${TAG}"
-    volumes: 
-      - ./app_rust:/srv
-    depends_on:
-      - db
-      - migration
-
   migration:
+    command: alembic upgrade head
     volumes:
       - ./migration:/srv
     image: "h4nyu/mlboard_migration:${TAG}"
+    build:
+      <<: *default-build
+      context: ./migration
     depends_on:
       - db
 
   board: &default-node
     image: "h4nyu/mlboard_board:${TAG}"
+    build:
+      <<: *default-build
+      context: ./board
     volumes:
-      - ./board:/srv
-    command: yarn watch
+      - ./web-data:/srv/dist
 
   web:
     image: "h4nyu/mlboard_web:${TAG}"
+    build:
+      <<: *default-build
+      context: ./web
     volumes:
-      - ./web/nginx.prod.conf:/etc/nginx/nginx.conf
-      - ./board/dist:/public/
-    ports:
-      - "${WEB_PORT}:80"
+      - ./web-data:/public
     depends_on:
       - api
       - board
-
-  storybook:
-    image: "h4nyu/mlboard_board:${TAG}"
-    volumes:
-      - ./board:/srv
-    command: yarn storybook
-    ports:
-      - "${STORYBOOK_PORT}:9001"
 
 networks:
   default:

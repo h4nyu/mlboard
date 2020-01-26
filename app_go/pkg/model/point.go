@@ -2,16 +2,11 @@ package model
 
 import (
 	"time"
+    "github.com/google/uuid"
 )
 
 type Point struct {
 	Value     float32
+    TraceId uuid.UUID
 	Timestamp time.Time
-}
-
-func NewPoint() *Point {
-	return &Point{
-		Value:     0,
-		Timestamp: time.Now(),
-	}
 }

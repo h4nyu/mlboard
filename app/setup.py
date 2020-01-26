@@ -4,8 +4,8 @@
 from setuptools import setup, find_packages
 
 requires = [
-    "cytoolz",
-    "asyncpg",
+    "cytoolz>=0.10.1",
+    "asyncpg>=0.20.1",
     "fastapi",
     "PyYAML",
     "requests",

@@ -17,16 +17,15 @@ export default class LoadingStore {
     }
   }
 
-  dispatch = async<T>(callback: () => T) => {
-    let result: T | undefined = undefined;
+  dispatch = async(callback: () => Promise<void>) => {
     this.activate();
     try {
-      result = await callback();
+      await callback();
     } catch(e) {
-      console.error(e);
-      console.error('Error caught, no action taken');
+      throw e;
     } 
-    this.deactivate();
-    return result;
+    finally{
+      this.deactivate();
+    }
   }
 }

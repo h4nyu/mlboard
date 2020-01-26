@@ -18,6 +18,11 @@ const HeaderArea = styled.div`
   justify-content: space-between;
 `;
 
+const ListArea = styled.div`
+  overflow-y: scroll;
+  max-height: 200px;
+`;
+
 
 const DeleteBtn = (props: {onClick: () => void}) => (
   <div className="button is-small is-danger" onClick={props.onClick}>
@@ -49,7 +54,9 @@ export default class Workspace extends React.Component<IProps> {
           />
           <DeleteBtn onClick={() => onDeleteClick(workspace.id)}/>
         </HeaderArea>
-        <Child workspace={workspace}/>
+        <ListArea>
+          <Child workspace={workspace}/>
+        </ListArea>
       </Layout>
     );
   }

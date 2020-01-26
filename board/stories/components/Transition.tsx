@@ -10,15 +10,20 @@ import { action } from '@storybook/addon-actions';
 
 const points = [
   {
-    value: 19.0,
-    ts: moment('2015-01-01'), },
+    value: 2.111,
+    ts: moment('2015-01-01'), 
+  },
   {
-    value: 20.0,
+    value: 2.113,
     ts: moment('2015-01-02'),
   },
   {
-    value: 15.0,
+    value: 2.112,
     ts: moment('2015-01-03'),
+  },
+  {
+    value: 2.1121213123,
+    ts: moment('2015-01-04'),
   },
 ];
 const workspaces = Map({
@@ -27,17 +32,42 @@ const workspaces = Map({
   }
 })
 
-const segments = Map([
-  [transition.id, points],
-]);
 const traces = Map({
   [transition.traceId]: {
     ...trace,
     workspaceId: workspace.id
-  }
+  },
 });
 storiesOf('Transition', module)
   .add('default', () => {
+    const segments = Map([
+      [transition.id, points],
+    ]);
+    return (
+      <Component 
+        transition={{
+          ...transition,
+          isDatetime: boolean('isDatetime', false),
+          isScatter: boolean('isScatter', false),
+          isLog: boolean('isLog', false),
+          smoothWeight: number('smoothWeight', 0.5),
+        }}
+        workspaces={workspaces}
+        segments={segments}
+        traces={traces}
+        onWeightChange={action('onWeightChange')}
+        onRangeChange={action('onRangeChange')}
+        onClose={action('onClose')}
+        onIsLogChange={action('onIsLogChange')}
+        onIsDatetimeChange={action('onIsDatetimeChange')}
+        onIsScatterChange={action('onIsScatterChange')}
+      />
+    );
+  })
+  .add('empty', () => {
+    const segments = Map([
+      [transition.id, []],
+    ]);
     return (
       <Component 
         transition={{

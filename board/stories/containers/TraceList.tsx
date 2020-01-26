@@ -17,7 +17,7 @@ storiesOf('TraceList', module)
       <Component 
         workspace={workspaceMock}
         traces={traces}
-        Child={Mock}
+        Child={(props) => <Mock/>}
       />
     );
   });

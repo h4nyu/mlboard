@@ -17,7 +17,7 @@ export interface ILoadingStore {
   pendingNum: number;
   activate: () => void;
   deactivate: () => void;
-  dispatch: <T>(collback: () => T) => Promise<T| undefined>;
+  dispatch: (callback: () => Promise<void>) => Promise<void>;
 }
 
 export interface ITransitionUsecase {
