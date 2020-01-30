@@ -1,5 +1,0 @@
-DB_CONN: "postgresql://mlboard:mlboard@db/mlboard"
-STORE_DIR: "/store"
-DEBUG: True
-TZ: "Asia/Tokyo"
-MAX_CONTENT_LENGTH: 1048576
