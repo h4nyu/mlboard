@@ -23,11 +23,23 @@ where
     Ok(id)
 }
 
-pub fn find_all<R>(repo: &R) -> Result<Vec<Trace>, Error>
+pub fn find_trace_all<R>(repo: &R) -> Result<Vec<Trace>, Error>
 where
     R: TraceRepository,
 {
     repo.all()
+}
+
+pub fn find_point_by_range<R>(
+    repo: &R,
+    trace_id: &Uuid,
+    from_date: &DateTime<Utc>,
+    to_date: &DateTime<Utc>,
+) -> Result<Vec<Point>, Error>
+where
+    R: PointRepository,
+{
+    repo.range_by(trace_id, from_date, to_date)
 }
 
 pub fn add_scalars<R, T>(

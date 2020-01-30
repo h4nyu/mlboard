@@ -81,7 +81,7 @@ impl TraceRepository for Postgresql {
 }
 
 impl PointRepository for Postgresql {
-    fn range_by(&self) -> Result<Vec<Point>, Error> {
+    fn range_by(&self, trace_id:&Uuid, from_date:&DateTime<Utc>, to_date:&DateTime<Utc>) -> Result<Vec<Point>, Error> {
         let sql = format!(
             "SELECT value, ts
             FROM {}
@@ -94,7 +94,7 @@ impl PointRepository for Postgresql {
             .0
             .lock()
             .unwrap()
-            .query(&sql[..], &[])?
+            .query(&sql[..], &[trace_id, from_date, to_date])?
             .iter()
             .map(Point::from_row)
             .collect();
@@ -150,7 +150,7 @@ where
         Ok(())
     }
 }
-//
+
 #[cfg(test)]
 mod tests {
     use super::*;
