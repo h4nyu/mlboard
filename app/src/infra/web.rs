@@ -8,6 +8,8 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use uuid::Uuid;
 use serde_json::Value;
+use env_logger;
+
 
 pub fn wrap<T, O>(f: O) -> Result<HttpResponse, error::Error>
 where
@@ -77,6 +79,25 @@ fn register_workspace(
     })
 }
 
+#[derive(Deserialize)]
+struct RegisterTrace {
+    name: String,
+    workspace_id: Uuid,
+}
+#[post("/trace/register")]
+fn register_trace(
+    payload: web::Json<RegisterTrace>,
+) -> Result<HttpResponse, error::Error> {
+    wrap(|repo| {
+        let res = uc::register_trace(
+            repo,
+            &payload.workspace_id,
+            &payload.name,
+        )?;
+        Ok(res)
+    })
+}
+
 
 #[derive(Deserialize)]
 struct WorkspaceDelete {
@@ -105,14 +126,18 @@ fn add_scalars(payload: web::Json<PointAddScalars>) -> Result<HttpResponse, erro
 }
 
 pub fn run() -> std::io::Result<()> {
+    std::env::set_var("RUST_LOG", "actix_web=info");
+    env_logger::init();
     HttpServer::new(|| {
         App::new()
             .wrap(Logger::default())
+            .wrap(Logger::new("%a %{User-Agent}i"))
             .service(get_point_by_range)
             .service(get_trace_all)
             .service(get_workspace_all)
             .service(register_workspace)
             .service(delete_workspace)
+            .service(register_trace)
             .service(add_scalars)
     })
     .bind("0.0.0.0:5000")?

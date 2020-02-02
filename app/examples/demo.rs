@@ -1,7 +1,6 @@
 use app::infra::database::Postgresql;
 use app::usecase::*;
 use chrono::prelude::Utc;
-use failure::Error;
 use serde_json::json;
 use std::collections::HashMap;
 use uuid::Uuid;

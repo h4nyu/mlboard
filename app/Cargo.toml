@@ -17,6 +17,7 @@ csv = "1.1.1"
 failure = "0.1.6"
 maplit = "1.0.2"
 mockall = "0.6.0"
+env_logger = "0.7.1"
 
 [dev-dependencies]
 criterion = "0.3"
