@@ -37,7 +37,7 @@ jobs:
       - run:
           name: Test App
           command: |
-            docker-compose run --rm cargo test
+            docker-compose run --rm api cargo test
 
       - run:
           name: Type Check Board 
