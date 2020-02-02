@@ -114,7 +114,7 @@ fn delete_workspace(payload: web::Query<WorkspaceDelete>) -> Result<HttpResponse
 
 #[derive(Deserialize)]
 struct PointAddScalars {
-    ts: Option<DateTime<Utc>>,
+    ts: DateTime<Utc>,
     values: HashMap<Uuid, f64>,
 }
 #[post("/point/add-scalars")]
