@@ -12,6 +12,5 @@ RUN apt-get update \
     && cargo install --path . 
 
 FROM debian:buster-slim AS prod
-COPY --from=dev /srv/target/release /srv/target/release
-COPY --from=builder /usr/local/cargo/bin/app /usr/local/bin/app
+COPY --from=dev /usr/local/cargo/bin/app /usr/local/bin/app
 CMD ["app"]
