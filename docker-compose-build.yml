@@ -13,6 +13,7 @@ services:
     build : 
       <<: *default-build
       context: ./app
+      target: ${STAGE}
     image: "h4nyu/mlboard_app:${TAG}"
 
   migration:

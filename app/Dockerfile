@@ -1,4 +1,4 @@
-FROM rust:1.40-slim
+FROM rust:1.40-slim AS dev
 
 WORKDIR /srv
 COPY . .
@@ -9,5 +9,9 @@ RUN apt-get update \
     && apt-get install -y ${RUNTIME_DEPS} \
     && update-ca-certificates \
     && rustup component add rustfmt \
-    && cargo fetch \
-    && cargo build
+    && cargo install --path . 
+
+FROM debian:buster-slim AS prod
+COPY --from=dev /srv/target/release /srv/target/release
+COPY --from=builder /usr/local/cargo/bin/app /usr/local/bin/app
+CMD ["app"]
