@@ -72,19 +72,19 @@ pub fn add_scalars<R>(
 where
     R: PointRepository + TraceRepository,
 {
-    let points: Vec<Point> = values
-        .iter()
-        .map(|(k, v)| {
-            let mut p = Point::new();
-            p.value = v.to_owned();
-            p.trace_id = k.to_owned();
-            p
-        })
-        .collect();
-    repo.bulk_insert(&points.iter().collect::<Vec<_>>())?;
-    for p in points.iter() {
-        repo.update_last_ts(&p.trace_id, ts)?;
+    let mut points: Vec<Point> = vec![];
+    let mut trace_ids: Vec<&Uuid> = vec![];
+
+    for (k, v) in values.iter() {
+        let mut p = Point::new();
+        p.value = v.to_owned();
+        p.trace_id = k.to_owned();
+        points.push(p);
+        trace_ids.push(k);
     }
+
+    repo.bulk_insert(&points.iter().collect::<Vec<_>>())?;
+    repo.update_last_ts(&trace_ids, ts)?;
     Ok(())
 }
 

@@ -6,22 +6,22 @@ use uuid::Uuid;
 use std::collections::HashMap;
 use chrono::prelude::{Utc};
 
-fn main() -> Result<(), Error> {
-    let mut repo = Postgresql::new()?;
+fn main() {
+    let mut repo = Postgresql::new().unwrap();
     {
         let workspace_id = register_workspace(
             &mut repo,
             "demo", 
             &json!({"A": 1, "B":"text", "C": 0.1})
-        )?;
+        ).unwrap();
         let trace_ids:Vec<Uuid> = ["trace0", "trace1"]
             .iter()
-            .flat_map(|x| {
+            .map(|x| {
                 register_trace(
                     &mut repo,
                     &workspace_id, 
                     x,
-                )
+                ).unwrap()
             })
             .collect();
         for _i in 0..10000{
@@ -33,8 +33,7 @@ fn main() -> Result<(), Error> {
                 &mut repo,
                 &values,
                 &Utc::now(),
-            )?;
+            ).unwrap();
         }
     }
-    Ok(())
 }

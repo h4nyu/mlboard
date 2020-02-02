@@ -30,7 +30,7 @@ pub trait TraceRepository: BulkInsert<Trace> + Clear<Trace> + GetAll<Trace>
     fn get(&mut self, name: &str, workspace_id:&Uuid) -> Result<Vec<Trace>, Error>;
     fn get_by_workspace_id(&mut self, workspace_id: &Uuid) -> Result<Vec<Trace>, Error>;
     fn insert(&mut self, row: &Trace) -> Result<Uuid, Error>;
-    fn update_last_ts(&mut self, id:&Uuid, updated_at:&DateTime<Utc>) -> Result<(), Error>;
+    fn update_last_ts(&mut self, ids:&[&Uuid], updated_at:&DateTime<Utc>) -> Result<(), Error>;
     fn delete(&mut self, ids: &[&Uuid]) -> Result<(), Error>;
 }
 

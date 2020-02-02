@@ -34,7 +34,7 @@ impl TraceRepository for Postgresql {
     fn insert(&mut self, row: &Trace) -> Result<Uuid, Error>{
         let sql = format!(
             "INSERT INTO {} (id, name, workspace_id, created_at, updated_at) VALUES ($1, $2, $3, $4, $5)", 
-            Workspace::table_name()
+            Trace::table_name()
         );
         self.execute(
             &sql,
@@ -49,14 +49,14 @@ impl TraceRepository for Postgresql {
         Ok(row.id)
     }
 
-    fn update_last_ts(&mut self, id:&Uuid, updated_at:&DateTime<Utc>) -> Result<(), Error>{
+    fn update_last_ts(&mut self, ids:&[&Uuid], updated_at:&DateTime<Utc>) -> Result<(), Error>{
         let sql = format!(
             "UPDATE {}
             SET updated_at = $1
-            WHERE id = $2",
+            WHERE id = ANY($2)",
             Trace::table_name(),
         );
-        self.execute(&sql, &[updated_at, id])
+        self.execute(&sql, &[updated_at, &ids])
     }
     fn delete(&mut self, ids: &[&Uuid]) -> Result<(), Error>{
         let sql = format!(
