@@ -1,5 +1,5 @@
 use crate::infra::database::Postgresql;
-use crate::usecase::*;
+use crate::usecase as uc;
 use actix_web::middleware::Logger;
 use actix_web::{delete, error, get, post, web, App, HttpResponse, HttpServer};
 use chrono::prelude::{DateTime, Utc};
@@ -7,6 +7,7 @@ use failure::Error;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use uuid::Uuid;
+use serde_json::Value;
 
 pub fn wrap<T, O>(f: O) -> Result<HttpResponse, error::Error>
 where
@@ -28,9 +29,9 @@ struct PointRangeBy {
 }
 
 #[get("/point/range-by")]
-fn point_range_by(payload: web::Query<PointRangeBy>) -> Result<HttpResponse, error::Error> {
+fn get_point_by_range(payload: web::Query<PointRangeBy>) -> Result<HttpResponse, error::Error> {
     wrap(|repo| {
-        get_point_by_range(
+        uc::get_point_by_range(
             repo,
             &payload.trace_id,
             &payload.from_date,
@@ -40,20 +41,42 @@ fn point_range_by(payload: web::Query<PointRangeBy>) -> Result<HttpResponse, err
 }
 
 #[get("/trace/all")]
-fn trace_all() -> Result<HttpResponse, error::Error> {
+fn get_trace_all() -> Result<HttpResponse, error::Error> {
     wrap(|repo| {
-        let res = get_trace_all(repo)?;
+        let res = uc::get_trace_all(repo)?;
         Ok(res)
     })
 }
 
 #[get("/workspace/all")]
-fn workspace_all() -> Result<HttpResponse, error::Error> {
+fn get_workspace_all() -> Result<HttpResponse, error::Error> {
     wrap(|repo| {
-        let res = get_workspace_all(repo)?;
+        let res = uc::get_workspace_all(repo)?;
         Ok(res)
     })
 }
+
+
+
+#[derive(Deserialize)]
+struct RegisterWorkspace {
+    name: String,
+    params: Value,
+}
+#[post("/workspace/register")]
+fn register_workspace(
+    payload: web::Json<RegisterWorkspace>,
+) -> Result<HttpResponse, error::Error> {
+    wrap(|repo| {
+        let res = uc::register_workspace(
+            repo,
+            &payload.name,
+            &payload.params,
+        )?;
+        Ok(res)
+    })
+}
+
 
 #[derive(Deserialize)]
 struct WorkspaceDelete {
@@ -61,9 +84,9 @@ struct WorkspaceDelete {
 }
 
 #[delete("/workspace")]
-fn workspace_delete(payload: web::Query<WorkspaceDelete>) -> Result<HttpResponse, error::Error> {
+fn delete_workspace(payload: web::Query<WorkspaceDelete>) -> Result<HttpResponse, error::Error> {
     wrap(|repo| {
-        let res = delete_workspace(repo, &payload.id)?;
+        let res = uc::delete_workspace(repo, &payload.id)?;
         Ok(res)
     })
 }
@@ -74,9 +97,9 @@ struct PointAddScalars {
     values: HashMap<Uuid, f64>,
 }
 #[post("/point/add-scalars")]
-fn point_add_scalars(payload: web::Json<PointAddScalars>) -> Result<HttpResponse, error::Error> {
+fn add_scalars(payload: web::Json<PointAddScalars>) -> Result<HttpResponse, error::Error> {
     wrap(|repo| {
-        let res = add_scalars(repo, &payload.values, &payload.ts)?;
+        let res = uc::add_scalars(repo, &payload.values, &payload.ts)?;
         Ok(res)
     })
 }
@@ -85,10 +108,12 @@ pub fn run() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
             .wrap(Logger::default())
-            .service(point_range_by)
-            .service(trace_all)
-            .service(workspace_all)
-            .service(workspace_delete)
+            .service(get_point_by_range)
+            .service(get_trace_all)
+            .service(get_workspace_all)
+            .service(register_workspace)
+            .service(delete_workspace)
+            .service(add_scalars)
     })
     .bind("0.0.0.0:5000")?
     .run()
