@@ -114,13 +114,17 @@ fn delete_workspace(payload: web::Query<WorkspaceDelete>) -> Result<HttpResponse
 
 #[derive(Deserialize)]
 struct PointAddScalars {
-    ts: DateTime<Utc>,
+    ts: Option<DateTime<Utc>>,
     values: HashMap<Uuid, f64>,
 }
 #[post("/point/add-scalars")]
 fn add_scalars(payload: web::Json<PointAddScalars>) -> Result<HttpResponse, error::Error> {
     wrap(|repo| {
-        let res = uc::add_scalars(repo, &payload.values, &payload.ts)?;
+        let res = uc::add_scalars(
+            repo, 
+            &payload.values, 
+            &payload.ts
+        )?;
         Ok(res)
     })
 }
