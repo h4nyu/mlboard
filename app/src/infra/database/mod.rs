@@ -1,12 +1,12 @@
-mod trace;
 mod point;
+mod trace;
 mod workspace;
 use crate::domain::entities::*;
 use crate::domain::*;
 use chrono::prelude::{DateTime, Utc};
 use csv::{QuoteStyle, WriterBuilder};
 use failure::Error;
-use postgres::{Client, NoTls, Row, types::ToSql};
+use postgres::{types::ToSql, Client, NoTls, Row};
 use serde::Serialize;
 use std::io::Write;
 use uuid::Uuid;
@@ -18,8 +18,9 @@ pub trait Table {
 
 pub struct Postgresql(Client);
 
-impl <T> GetAll<T> for Postgresql
-where T:Table + Serialize
+impl<T> GetAll<T> for Postgresql
+where
+    T: Table + Serialize,
 {
     fn get_all(&mut self) -> Result<Vec<T>, Error> {
         let sql = format!("SELECT * from {}", T::table_name());
@@ -27,8 +28,9 @@ where T:Table + Serialize
     }
 }
 
-impl <T> BulkInsert<T> for Postgresql
-where T:Table + Serialize
+impl<T> BulkInsert<T> for Postgresql
+where
+    T: Table + Serialize,
 {
     fn bulk_insert(&mut self, rows: &[&T]) -> Result<usize, Error> {
         let mut csv_wtr = WriterBuilder::new()
@@ -55,7 +57,8 @@ where T:Table + Serialize
     }
 }
 impl<T> Clear<T> for Postgresql
-where T:Table + Serialize
+where
+    T: Table + Serialize,
 {
     fn clear(&mut self) -> Result<(), Error> {
         let sql = format!("TRUNCATE TABLE {}", T::table_name());
@@ -69,19 +72,17 @@ impl Postgresql {
         Ok(Postgresql(client))
     }
 
-    fn get_equations(
-        columns: &[&str],
-        index:usize,
-    ) -> Vec<String>{
-        let mut equations:Vec<String> = vec![];
+    fn get_equations(columns: &[&str], index: usize) -> Vec<String> {
+        let mut equations: Vec<String> = vec![];
         for (i, k) in columns.iter().enumerate() {
-            equations.push(format!("{} = ${}", k, i+1+index));
-        };
+            equations.push(format!("{} = ${}", k, i + 1 + index));
+        }
         equations
     }
 
-    pub fn query<T>(&mut self, sql: &str, args:&[&(dyn ToSql + Sync)]) -> Result<Vec<T>, Error>
-        where T:Table
+    pub fn query<T>(&mut self, sql: &str, args: &[&(dyn ToSql + Sync)]) -> Result<Vec<T>, Error>
+    where
+        T: Table,
     {
         let rows: Vec<T> = self
             .0
@@ -92,10 +93,8 @@ impl Postgresql {
         Ok(rows)
     }
 
-    pub fn execute(&mut self, sql: &str, args:&[&(dyn ToSql + Sync)]) -> Result<(), Error>
-    {
-        self.0
-            .execute(&sql[..], args)?;
+    pub fn execute(&mut self, sql: &str, args: &[&(dyn ToSql + Sync)]) -> Result<(), Error> {
+        self.0.execute(&sql[..], args)?;
         Ok(())
     }
 
@@ -103,23 +102,24 @@ impl Postgresql {
         &mut self,
         conditions: &[(&str, &(dyn ToSql + Sync))],
         update_values: &[(&str, &(dyn ToSql + Sync))],
-    ) -> Result<(), Error> 
-        where T:Table
+    ) -> Result<(), Error>
+    where
+        T: Table,
     {
-        let mut keys:Vec<&str> = vec![];
-        let mut values:Vec<&(dyn ToSql + Sync)> = vec![];
+        let mut keys: Vec<&str> = vec![];
+        let mut values: Vec<&(dyn ToSql + Sync)> = vec![];
 
         for (k, v) in update_values.iter() {
             keys.push(k);
             values.push(*v);
-        };
+        }
         let set_stmt = Self::get_equations(&keys, 0).join(",");
 
         keys = vec![];
         for (k, v) in conditions.iter() {
             keys.push(k);
             values.push(*v);
-        };
+        }
         let where_stmt = Self::get_equations(&keys, update_values.len()).join(" AND ");
 
         let sql = format!(
@@ -134,26 +134,22 @@ impl Postgresql {
 
     pub fn get_by_args<T>(
         &mut self,
-        conditions: &[(&str, &(dyn ToSql+Sync))]
-    ) -> Result<Vec<T>, Error> 
-        where T: Table,
+        conditions: &[(&str, &(dyn ToSql + Sync))],
+    ) -> Result<Vec<T>, Error>
+    where
+        T: Table,
     {
-        let mut keys:Vec<&str> = vec![];
-        let mut values:Vec<&(dyn ToSql + Sync)> = vec![];
+        let mut keys: Vec<&str> = vec![];
+        let mut values: Vec<&(dyn ToSql + Sync)> = vec![];
         for (k, v) in conditions.iter() {
             keys.push(k);
             values.push(*v);
-        };
+        }
         let where_stmt = Self::get_equations(&keys, 0).join(" AND ");
-        let sql = format!(
-            "SELECT * FROM {} WHERE {};",
-            T::table_name(),
-            where_stmt,
-        );
+        let sql = format!("SELECT * FROM {} WHERE {};", T::table_name(), where_stmt,);
         self.query(&sql, &values)
     }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -161,16 +157,12 @@ mod tests {
     #[test]
     fn test() -> Result<(), Error> {
         let mut repo = Postgresql::new()?;
-        let _rows:Vec<Trace> = repo.get_by_args(
-            &[
-                ( "name", &"aaaa"), 
-                ( "workspace_id", &Uuid::new_v4())
-            ],
-        )?;
+        let _rows: Vec<Trace> =
+            repo.get_by_args(&[("name", &"aaaa"), ("workspace_id", &Uuid::new_v4())])?;
 
         repo.update_by::<Trace>(
-            &[ ("name", &"aaaa"), ( "workspace_id", &Uuid::new_v4()) ],
-            &[ ("name", &"bbb")]
+            &[("name", &"aaaa"), ("workspace_id", &Uuid::new_v4())],
+            &[("name", &"bbb")],
         )?;
         Ok(())
     }

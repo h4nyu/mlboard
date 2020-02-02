@@ -24,9 +24,13 @@ impl Table for SlimPoint {
     }
 }
 
-
 impl PointRepository for Postgresql {
-    fn get_by_range(&mut self, trace_id:&Uuid, from_date:&DateTime<Utc>, to_date:&DateTime<Utc>) -> Result<Vec<SlimPoint>, Error> {
+    fn get_by_range(
+        &mut self,
+        trace_id: &Uuid,
+        from_date: &DateTime<Utc>,
+        to_date: &DateTime<Utc>,
+    ) -> Result<Vec<SlimPoint>, Error> {
         let sql = format!(
             "SELECT value, ts
             FROM {}
@@ -37,7 +41,7 @@ impl PointRepository for Postgresql {
         );
         self.query(&sql, &[trace_id, from_date, to_date])
     }
-    fn delete(&mut self, trace_ids:&[&Uuid]) -> Result<(), Error> {
+    fn delete(&mut self, trace_ids: &[&Uuid]) -> Result<(), Error> {
         let sql = format!(
             "DELETE FROM {} WHERE trace_id = ANY($1)",
             Point::table_name(),

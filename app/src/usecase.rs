@@ -2,11 +2,11 @@ use crate::domain::entities::*;
 use crate::domain::*;
 use chrono::prelude::{DateTime, Utc};
 use failure::Error;
+use serde_json::Value;
 use std::collections::HashMap;
 use uuid::Uuid;
-use serde_json::Value;
 
-pub fn register_trace<R>(repo: &mut R,  workspace_id: &Uuid, name: &str) -> Result<Uuid, Error>
+pub fn register_trace<R>(repo: &mut R, workspace_id: &Uuid, name: &str) -> Result<Uuid, Error>
 where
     R: TraceRepository,
 {
@@ -26,9 +26,7 @@ where
     R: WorkspaceRepository,
 {
     let id = match repo.get(name)?.first() {
-        Some(x) => {
-            repo.update(&x.id, name, params)?
-        }
+        Some(x) => repo.update(&x.id, name, params)?,
         None => {
             let new_workspace = Workspace::new(name, params);
             repo.insert(&new_workspace)?
@@ -88,15 +86,12 @@ where
     Ok(())
 }
 
-pub fn delete_workspace<R>(
-    repo: &mut R,
-    workspace_id: &Uuid,
-) -> Result<Uuid, Error>
+pub fn delete_workspace<R>(repo: &mut R, workspace_id: &Uuid) -> Result<Uuid, Error>
 where
     R: PointRepository + TraceRepository + WorkspaceRepository,
 {
     let traces = repo.get_by_workspace_id(workspace_id)?;
-    let trace_ids:Vec<&Uuid> = traces.iter().map(|x| &x.id).collect();
+    let trace_ids: Vec<&Uuid> = traces.iter().map(|x| &x.id).collect();
     PointRepository::delete(repo, &trace_ids)?;
     TraceRepository::delete(repo, &trace_ids)?;
     WorkspaceRepository::delete(repo, workspace_id)?;

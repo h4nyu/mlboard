@@ -1,20 +1,19 @@
 use chrono::prelude::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use uuid::Uuid;
 use serde_json::Value;
 use std::convert::Into;
-
+use uuid::Uuid;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Workspace {
     pub id: Uuid,
     pub name: String,
-    pub params: Value, 
+    pub params: Value,
     pub created_at: DateTime<Utc>,
 }
 
 impl Workspace {
-    pub fn new(name: &str, params: &Value)  -> Self {
+    pub fn new(name: &str, params: &Value) -> Self {
         Workspace {
             id: Uuid::new_v4(),
             created_at: Utc::now(),
@@ -46,10 +45,10 @@ pub struct SlimPoint {
     pub value: f64,
 }
 
-impl Into<SlimPoint> for Point{
+impl Into<SlimPoint> for Point {
     fn into(self) -> SlimPoint {
-        SlimPoint{
-            ts:self.ts,
+        SlimPoint {
+            ts: self.ts,
             value: self.value,
         }
     }
@@ -65,7 +64,7 @@ pub struct Trace {
 }
 
 impl Trace {
-    pub fn new(name: &str, workspace_id:&Uuid) -> Self {
+    pub fn new(name: &str, workspace_id: &Uuid) -> Self {
         Self {
             id: Uuid::new_v4(),
             name: name.to_owned(),
