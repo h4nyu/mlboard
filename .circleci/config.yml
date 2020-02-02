@@ -35,19 +35,9 @@ jobs:
             docker-compose run --rm migration alembic downgrade base
 
       - run:
-          name: Tpye check App
-          command: |
-            docker-compose run --rm api mypy .
-
-      - run:
-          name: Lint App
-          command: |
-            docker-compose run --rm api sh fix_lint.sh
-
-      - run:
           name: Test App
           command: |
-            docker-compose run --rm api pytest
+            docker-compose run --rm cargo test
 
       - run:
           name: Type Check Board 

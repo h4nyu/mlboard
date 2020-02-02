@@ -11,7 +11,7 @@ services:
     volumes: 
       - ./app:/srv
       - ./store:/store
-    command: cargo run
+    command: cargo run --release
     depends_on:
       - db
       - migration
