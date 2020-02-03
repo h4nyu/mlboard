@@ -1,13 +1,12 @@
-FROM node:13-alpine AS dev
-
-WORKDIR /
-ENV PATH /node_modules/.bin:$PATH
-COPY package.json *yarn* /
-RUN yarn install
+FROM node:13-slim AS dev
 
 WORKDIR /srv
-COPY ./  /srv
+COPY package.json  /srv/package.json
+COPY yarn.lock /srv/yarn.lock
+RUN yarn install
+
 ENV NODE_ENV development
+COPY ./  /srv
 RUN yarn run build
 
 FROM busybox AS prod
