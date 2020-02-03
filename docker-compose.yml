@@ -11,6 +11,10 @@ services:
       - '${MQUI_PORT}:15672'
     volumes:
       - ./mq-data:/var/lib/rabbitmq
+  worker:
+    image: "h4nyu/mlboard_worker:${TAG}"
+    volumes: 
+      - ./worker:/srv
 
   api: &default-app
     image: "h4nyu/mlboard_app:${TAG}"

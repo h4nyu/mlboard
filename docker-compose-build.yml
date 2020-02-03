@@ -9,6 +9,13 @@ services:
         - https_proxy
     image: "h4nyu/mlboard_db:${TAG}"
 
+  worker:
+    build : 
+      <<: *default-build
+      context: ./worker
+      target: ${STAGE}
+    image: "h4nyu/mlboard_worker:${TAG}"
+
   app:
     build : 
       <<: *default-build
