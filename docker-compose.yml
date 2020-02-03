@@ -5,6 +5,12 @@ services:
     image: "h4nyu/mlboard_db:${TAG}"
     ports:
       - "${DB_PORT}:5432"
+  mq:
+    image: rabbitmq:3.8.2-management
+    ports:
+      - '${MQUI_PORT}:15672'
+    volumes:
+      - ./mq-data:/var/lib/rabbitmq
 
   api: &default-app
     image: "h4nyu/mlboard_app:${TAG}"

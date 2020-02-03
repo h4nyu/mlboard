@@ -7,3 +7,4 @@ deploy.sh
 data
 db-data
 web-data
+mq-data
