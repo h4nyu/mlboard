@@ -8,10 +8,12 @@ services:
         - http_proxy
         - https_proxy
     image: "h4nyu/mlboard_db:${TAG}"
+
   app:
     build : 
       <<: *default-build
       context: ./app
+      target: ${STAGE}
     image: "h4nyu/mlboard_app:${TAG}"
 
   migration:

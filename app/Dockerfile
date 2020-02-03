@@ -1,12 +1,17 @@
-FROM python:3.8-alpine
-
-ENV PYTHONPYCACHEPREFIX /pycache
+FROM rust:1.40-slim AS dev
 
 WORKDIR /srv
-COPY ./ /srv
-RUN apk update \
-    && apk add --no-cache gcc libc-dev make inotify-tools \
-    && pip install --no-cache-dir -e .[dev] \
-    && apk del gcc libc-dev make
+COPY . .
+COPY ./cacert.crt /usr/local/share/ca-certificates
 
-CMD sh start_api.sh
+ARG RUNTIME_DEPS="inotify-tools"
+RUN apt-get update \
+    && apt-get install -y ${RUNTIME_DEPS} \
+    && update-ca-certificates \
+    && rustup component add rustfmt \
+    && cargo install --path . 
+CMD cargo run
+
+FROM debian:buster-slim AS prod
+COPY --from=dev /usr/local/cargo/bin/app /usr/local/bin/app
+CMD ["app"]
