@@ -16,7 +16,7 @@ storiesOf('WorkspaceList', module)
         workspaces={rows}
         keyword={'aaaa'}
         onInput={console.debug}
-        Child={Mock}
+        Child={(props) => <Mock/>}
       />
     );
   });

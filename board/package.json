@@ -89,7 +89,7 @@
     "webpack-dev-server": "^3.1.14"
   },
   "scripts": {
-    "build": "webpack --mode development --debug --progress",
+    "build": "webpack --mode production --debug --progress",
     "watch": "webpack --mode development --watch --progress --colors",
     "tsc": "tsc",
     "watch-ts": "tsc --noEmit -w",

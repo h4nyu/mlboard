@@ -21,7 +21,7 @@ const Component = (props: IProps) => {
 
   return (
     <Layout className="card">
-      {Array.from(filteredTrace.values()).map(x => <Child key={x.id} trace={x}/>)}
+      {filteredTrace.toList().map(x => <Child key={x.id} trace={x}/>)}
     </Layout>
   );
 };

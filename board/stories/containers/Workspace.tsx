@@ -13,7 +13,7 @@ storiesOf('Workspace', module)
       <Component 
         workspace={workspace}
         onDeleteClick={action('onDeleteClick')}
-        Child={Mock}
+        Child={(props) => <Mock/>}
       />
     );
   });

@@ -2,7 +2,7 @@ import {Moment} from 'moment';
 import { action, observable, computed } from 'mobx';
 import { IPointApi, ITraceApi, IWorkspaceApi } from '~/api/interfaces';
 import { IRoot } from './interfaces';
-import { IPoint } from '~/models/interfaces'; 
+import { IPoint, ITrace, IWorkspace } from '~/models/interfaces'; 
 import _ from 'lodash';
 
 export default class TransitionUsecase{
@@ -25,7 +25,19 @@ export default class TransitionUsecase{
   }
 
   @computed get workspaces() {
-    return this.root.workspaceStore.rows.sortBy(x => - x.createdAt);
+    const keywords = this.traceKeyword.split(',').map(x => x.trim());
+    const workspaces = this.root.workspaceStore.rows.sortBy(x => - x.createdAt);
+    if(this.traceKeyword.length === 0){
+      return workspaces;
+    }
+
+    return workspaces.filter(x => {
+      const target = `
+        ${x.name}
+      `;
+      const res = _.some(keywords.map(y => target.includes(y.trim())));
+      return res;
+    });
   }
 
   @computed get traces() {
@@ -52,13 +64,17 @@ export default class TransitionUsecase{
   }
 
   fetchWorkspaces = async () => {
-    const rows = await this.workspaceApi.all();
+    const rows = await this.root.loadingStore.dispatch<Promise<IWorkspace[]>>(
+      () => this.workspaceApi.all()
+    );
     if(rows === undefined) {return;}
     rows.forEach(x => this.root.workspaceStore.upsert(x.id, x));
   }
 
   fetchTraces = async () => {
-    const rows = await this.traceApi.all();
+    const rows = await this.root.loadingStore.dispatch<Promise<ITrace[]>>(
+      () => this.traceApi.all()
+    );
     if(rows === undefined) {return;}
     rows.forEach(x => this.root.traceStore.upsert(x.id, x));
   }
