@@ -1,5 +1,6 @@
 use app::infra::web::run;
 
-fn main() -> std::io::Result<()> {
-    run()
+#[actix_rt::main]
+async fn main() -> std::io::Result<()> {
+    run().await
 }
