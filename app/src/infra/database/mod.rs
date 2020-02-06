@@ -1,34 +1,22 @@
 mod point;
 mod trace;
-// mod workspace;
+mod workspace;
+
 use crate::domain::entities::*;
 use crate::domain::*;
 use chrono::prelude::{DateTime, Utc};
 use failure::Error;
-use tokio_postgres::{NoTls, connect, Row, types::ToSql};
-use tokio;
-// use serde::Serialize;
+use tokio_postgres::{NoTls, Row};
 use uuid::Uuid;
 use async_trait::async_trait;
-use deadpool_postgres::{Client, Pool};
+use deadpool_postgres::{Client, Pool, Config};
 
-#[async_trait]
-pub trait Query {
-    async fn query<T>(&self, sql: &str, args: &[&(dyn ToSql + Sync)]) -> Result<Vec<T>, Error>;
+pub fn create_connection_pool() -> Result<Pool, Error> {
+    let mut cfg = Config::default();
+    cfg.host = Some("db".into());
+    cfg.dbname = Some("mlboard".into());
+    cfg.user = Some("mlboard".into());
+    cfg.password = Some("mlboard".into());
+    let pool = cfg.create_pool(NoTls)?;
+    Ok(pool)
 }
-
-// #[async_trait]
-// impl Query for Client
-// {
-//     async fn query(&self, sql: &str, args: &[&(dyn ToSql + Sync)]) -> Result<Vec<T>, Error>
-//         where T: From<Row>
-//     {
-//         let res = self
-//             .query(&sql[..], args)
-//             .await?
-//             .into_iter()
-//             .map(T::from)
-//             .collect();
-//         Ok(res)
-//     }
-// }

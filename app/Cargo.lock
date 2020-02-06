@@ -271,7 +271,6 @@ dependencies = [
  "failure 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "maplit 1.0.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "mockall 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "postgres 0.17.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde 1.0.104 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_json 1.0.44 (registry+https://github.com/rust-lang/crates.io-index)",
  "tokio 0.2.11 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -1356,19 +1355,6 @@ version = "0.1.0-alpha.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
-name = "postgres"
-version = "0.17.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-dependencies = [
- "bytes 0.5.3 (registry+https://github.com/rust-lang/crates.io-index)",
- "fallible-iterator 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "futures 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "log 0.4.8 (registry+https://github.com/rust-lang/crates.io-index)",
- "tokio 0.2.11 (registry+https://github.com/rust-lang/crates.io-index)",
- "tokio-postgres 0.5.2 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
 name = "postgres-protocol"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2200,7 +2186,6 @@ dependencies = [
 "checksum pin-project-internal 0.4.8 (registry+https://github.com/rust-lang/crates.io-index)" = "385322a45f2ecf3410c68d2a549a4a2685e8051d0f278e39743ff4e451cb9b3f"
 "checksum pin-project-lite 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)" = "f0af6cbca0e6e3ce8692ee19fb8d734b641899e07b68eb73e9bbbd32f1703991"
 "checksum pin-utils 0.1.0-alpha.4 (registry+https://github.com/rust-lang/crates.io-index)" = "5894c618ce612a3fa23881b152b608bafb8c56cfc22f434a3ba3120b40f7b587"
-"checksum postgres 0.17.0 (registry+https://github.com/rust-lang/crates.io-index)" = "96dd5c8eddec65a5497798ebde2e5c74a93ef8b66782c1b09eeab9bb8538aebc"
 "checksum postgres-protocol 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)" = "a30f0e172ae0fb0653dbf777ad10a74b8e58d6de95a892f2e1d3e94a9df9a844"
 "checksum postgres-types 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "eab1dd99401779ab03bc3872f196fb02c420e76f416c850be494a6f2d67287ad"
 "checksum ppv-lite86 0.2.6 (registry+https://github.com/rust-lang/crates.io-index)" = "74490b50b9fbe561ac330df47c08f3f33073d2d00c150f719147d7c54522fa1b"
