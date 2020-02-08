@@ -26,28 +26,28 @@ jobs:
       - run:
           name: Build Images
           command: |
-            docker-compose -f docker-compose-build.yml build --parallel
+            docker-compose -f docker-compose.yml -f docker-compose.build.yml build --parallel
 
       - run:
           name: Test Migration
           command: |
-            docker-compose run --rm migration alembic upgrade head
-            docker-compose run --rm migration alembic downgrade base
+            docker-compose -f docker-compose.yml run --rm migration alembic upgrade head
+            docker-compose -f docker-compose.yml run --rm migration alembic downgrade base
 
       - run:
           name: Test App
           command: |
-            docker-compose run --rm api cargo test
+            docker-compose -f docker-compose.yml run --rm api cargo test
 
       - run:
           name: Type Check Board 
           command: |
-            docker-compose run --rm board yarn tsc
+            docker-compose -f docker-compose.yml run --rm board yarn tsc
 
       - run:
           name: Lint Board 
           command: |
-            docker-compose run --rm board yarn lint
+            docker-compose -f docker-compose.yml run --rm board yarn lint
 
 
   deploy:
@@ -75,7 +75,7 @@ jobs:
       - run:
           name: Build Production Images
           command: |
-            docker-compose -f docker-compose-build.yml build --parallel
+            docker-compose -f docker-compose.yml -f docker-compose.build.yml build --parallel
 
       - run:
           name: Docker Login
@@ -85,7 +85,7 @@ jobs:
       - run:
           name: Push Images
           command: |
-            docker-compose -f docker-compose-build.yml push
+            docker-compose -f docker-compose.yml -f docker-compose.build.yml push
 
 
 workflows:
