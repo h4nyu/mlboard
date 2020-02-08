@@ -5,7 +5,6 @@ use failure::Error;
 use serde_json::Value;
 use std::collections::HashMap;
 use uuid::Uuid;
-//
 pub async fn register_trace<R>(repo: &R, workspace_id: &Uuid, name: &str) -> Result<Uuid, Error>
 where
     R: TraceRepository,
@@ -97,3 +96,5 @@ where
     WorkspaceRepository::delete(repo, workspace_id).await?;
     Ok(workspace_id.to_owned())
 }
+
+
