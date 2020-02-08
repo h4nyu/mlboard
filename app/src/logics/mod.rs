@@ -33,7 +33,8 @@ mod tests {
                 ts: Utc::now(),
             })
             .collect();
-        let res = reduce_points(&points[..], 2);
-        assert_eq!(res.len(), 3);
+        let size = 2;
+        let res = reduce_points(&points[..], size);
+        assert_eq!(res.len(), size);
     }
 }
