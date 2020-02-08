@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+  api:
+    volumes: 
+      - ./app:/srv
+
+  migration:
+    volumes:
+      - ./migration:/srv
+
+  board: &default-node
+    volumes:
+      - ./board:/srv
+
+  web:
+    volumes:
+      - ./web/nginx.prod.conf:/etc/nginx/nginx.conf
+
+  storybook:
+    image: "h4nyu/mlboard_board:${TAG}"
+    volumes:
+      - ./board:/srv
+    command: yarn storybook
+    ports:
+      - "${STORYBOOK_PORT}:9001"
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: ${SUBNET}
+

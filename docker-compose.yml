@@ -8,25 +8,18 @@ services:
 
   api: &default-app
     image: "h4nyu/mlboard_app:${TAG}"
-    volumes: 
-      - ./app:/srv
-      - ./store:/store
     command: cargo run --release
     depends_on:
       - db
       - migration
 
   migration:
-    volumes:
-      - ./migration:/srv
     image: "h4nyu/mlboard_migration:${TAG}"
     depends_on:
       - db
 
   board: &default-node
     image: "h4nyu/mlboard_board:${TAG}"
-    volumes:
-      - ./board:/srv
     command: yarn watch
 
   web:
@@ -39,14 +32,6 @@ services:
     depends_on:
       - api
       - board
-
-  storybook:
-    image: "h4nyu/mlboard_board:${TAG}"
-    volumes:
-      - ./board:/srv
-    command: yarn storybook
-    ports:
-      - "${STORYBOOK_PORT}:9001"
 
 networks:
   default:
