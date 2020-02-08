@@ -1,17 +1,16 @@
+use crate::infra::database::create_connection_pool;
 use crate::usecase as uc;
 use actix_web::middleware::Logger;
-use crate::infra::database::{create_connection_pool};
-use actix_web::{error,web, App, HttpResponse, HttpServer};
+use actix_web::{error, web, App, HttpResponse, HttpServer};
 use chrono::prelude::{DateTime, Utc};
+use deadpool_postgres::Pool;
+use env_logger;
 use failure::Error;
 use serde::{Deserialize, Serialize};
-use deadpool_postgres::{ Pool};
-use std::collections::HashMap;
-use uuid::Uuid;
 use serde_json::Value;
-use env_logger;
+use std::collections::HashMap;
 use std::future::Future;
-
+use uuid::Uuid;
 
 pub async fn run() -> std::io::Result<()> {
     std::env::set_var("RUST_LOG", "actix_web=info");
@@ -38,9 +37,9 @@ pub async fn run() -> std::io::Result<()> {
 //
 //
 pub async fn wrap<O, T>(ft: O) -> Result<HttpResponse, error::Error>
-where O: Future<Output=Result<T, Error>>,
-      T: Serialize
-
+where
+    O: Future<Output = Result<T, Error>>,
+    T: Serialize,
 {
     match ft.await {
         Ok(x) => Ok(HttpResponse::Ok().json(x)),
@@ -66,30 +65,27 @@ async fn get_point_by_range(
             &payload.trace_id,
             &payload.from_date,
             &payload.to_date,
-        ).await
-    }).await
+        )
+        .await
+    })
+    .await
 }
 
-async fn get_trace_all(
-    db_pool: web::Data<Pool>,
-) -> Result<HttpResponse, error::Error> {
+async fn get_trace_all(db_pool: web::Data<Pool>) -> Result<HttpResponse, error::Error> {
     wrap(async {
         let client = db_pool.get().await?;
         uc::get_trace_all(&client).await
-    }).await
+    })
+    .await
 }
 //
-async fn get_workspace_all(
-    db_pool: web::Data<Pool>,
-    ) -> Result<HttpResponse, error::Error> {
+async fn get_workspace_all(db_pool: web::Data<Pool>) -> Result<HttpResponse, error::Error> {
     wrap(async {
         let repo = db_pool.get().await?;
         uc::get_workspace_all(&repo).await
-        
-    }).await
+    })
+    .await
 }
-
-
 
 #[derive(Deserialize)]
 struct RegisterWorkspace {
@@ -102,12 +98,9 @@ async fn register_workspace(
 ) -> Result<HttpResponse, error::Error> {
     wrap(async {
         let repo = db_pool.get().await?;
-        uc::register_workspace(
-            &repo,
-            &payload.name,
-            &payload.params,
-        ).await
-    }).await
+        uc::register_workspace(&repo, &payload.name, &payload.params).await
+    })
+    .await
 }
 
 #[derive(Deserialize)]
@@ -121,14 +114,10 @@ async fn register_trace(
 ) -> Result<HttpResponse, error::Error> {
     wrap(async {
         let repo = db_pool.get().await?;
-        uc::register_trace(
-            &repo,
-            &payload.workspace_id,
-            &payload.name,
-        ).await
-    }).await
+        uc::register_trace(&repo, &payload.workspace_id, &payload.name).await
+    })
+    .await
 }
-
 
 #[derive(Deserialize)]
 struct WorkspaceDelete {
@@ -137,11 +126,12 @@ struct WorkspaceDelete {
 async fn delete_workspace(
     payload: web::Query<WorkspaceDelete>,
     db_pool: web::Data<Pool>,
-    ) -> Result<HttpResponse, error::Error> {
+) -> Result<HttpResponse, error::Error> {
     wrap(async {
         let repo = db_pool.get().await?;
         uc::delete_workspace(&repo, &payload.id).await
-    }).await
+    })
+    .await
 }
 //
 #[derive(Deserialize)]
@@ -155,10 +145,7 @@ async fn add_scalars(
 ) -> Result<HttpResponse, error::Error> {
     wrap(async {
         let repo = db_pool.get().await?;
-        uc::add_scalars(
-            &repo,
-            &payload.values,
-            &payload.ts
-        ).await
-    }).await
+        uc::add_scalars(&repo, &payload.values, &payload.ts).await
+    })
+    .await
 }

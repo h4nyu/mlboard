@@ -4,12 +4,12 @@ mod workspace;
 
 use crate::domain::entities::*;
 use crate::domain::*;
+use async_trait::async_trait;
 use chrono::prelude::{DateTime, Utc};
+use deadpool_postgres::{Client, Config, Pool};
 use failure::Error;
 use tokio_postgres::{NoTls, Row};
 use uuid::Uuid;
-use async_trait::async_trait;
-use deadpool_postgres::{Client, Pool, Config};
 
 pub fn create_connection_pool() -> Result<Pool, Error> {
     let mut cfg = Config::default();
