@@ -96,7 +96,7 @@ export default class Transition extends React.Component<IProps>{
         x: x,
         y: y.length > 1 ? smooth(y, transition.smoothWeight) : y,
         mode: transition.isScatter ? "markers" : "markers+lines",
-        type: "scatter",
+        type: "scattergl",
         marker: {
           size: 5,
         },
@@ -238,17 +238,11 @@ export default class Transition extends React.Component<IProps>{
         </CotrolArea>
         <Close className="delete" onClick={() => onClose(transition.id)}/>
         <PlotArea>
-          <AutoSizer>
-            {({ height, width }) => {
-              return (
-                <Plot
-                  data={plotData}
-                  layout={{...plotLayout, height: height, width: width}}
-                  onRelayout={handleRelayout}
-                />
-              );
-            }}
-          </AutoSizer>
+          <Plot
+            data={plotData}
+            layout={plotLayout}
+            onRelayout={handleRelayout}
+          />
         </PlotArea>
       </Layout>
     );
