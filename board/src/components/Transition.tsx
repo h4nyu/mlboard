@@ -6,7 +6,7 @@ import {format} from 'd3';
 import {smooth} from '~/logics/converters';
 import { AutoSizer } from 'react-virtualized';
 import Slider from '~/components/Slider';
-import Plot from '~/components/Plot';
+import Chart from '~/components/Chart';
 import {max, range, min, last}  from 'lodash';
 import Check from '~/components/Check';
 import {ITransition, IPoint, ITrace, IWorkspace } from '~/models/interfaces';
@@ -24,7 +24,7 @@ const Layout = styled.div`
 `;
 const PlotArea = styled.div`
   grid-area: plot;
-  height: 150px;
+  height: 200px;
   padding: 0.5em;
 `;
 
@@ -78,30 +78,57 @@ export interface IProps {
   onIsScatterChange: (id: string) => void;
 }
 export default class Transition extends React.Component<IProps>{
-  getPlotData = (values: number[]) => {
+  getChartConfig = () => {
     const { transition, segments } = this.props;
     let points = segments.get(transition.id);
     if(points === undefined){
-      return [] as any;
+      return {} as any;
     }
-    let x = [];
-    if(transition.isDatetime){
-      x = points.map(p => formatDatetime(p.ts));
-    }else{
-      x = range(points.length);
-    }
-    const y = values;
-    return [
-      {
-        x: x,
-        y: y.length > 1 ? smooth(y, transition.smoothWeight) : y,
-        mode: transition.isScatter ? "markers" : "markers+lines",
-        type: "scattergl",
-        marker: {
-          size: 5,
-        },
+    // let x = [];
+    // if(transition.isDatetime){
+    //   x = points.map(p => formatDatetime(p.ts));
+    // }else{
+    //   x = range(points.length);
+    // }
+    //
+    const values = smooth(points.map(p => p.value), transition.smoothWeight);
+    return {
+      type: transition.isScatter ? "scatter" :"line",
+      hover: {
+        animationDuration: 0 // duration of animations when hovering an item
       },
-    ] as any;
+      responsiveAnimationDuration: 0,
+      events: ['mousedown', 'mouseup'], // this is important!
+      onMouseDown: console.log,
+      data: {
+        datasets:[
+          {
+            label: '# of Votes',
+            fill: false,
+            borderWidth: 1,
+
+            data: points.map((x: IPoint, i:number) => {
+              return {
+                y: values[i],
+                x: transition.isDatetime ? x.ts : i,
+              };
+            })
+          }
+        ]
+      },
+      options: {
+        scales: {
+          xAxes: [{
+            type: transition.isDatetime ? 'time' : "linear",
+            max: transition.isDatetime ? transition.toDate : null,
+            min: transition.isDatetime ? transition.fromDate : null,
+          }],
+          yAxes: [{
+            type: transition.isLog ? 'logarithmic' : "linear",
+          }],
+        }
+      }
+    }
   }
   formatValue = (value: number): string => {
     return format('~s')(value);
@@ -187,8 +214,8 @@ export default class Transition extends React.Component<IProps>{
 
   render = () => {
     const values = this.getValues();
-    const plotData = this.getPlotData(values);
-    const plotLayout = this.getPlotLayout(values);
+    const cartConfig = this.getChartConfig();
+    console.log(cartConfig);
     const title = this.getTitle();
     const maxValue = this.getMax(values);
     const minValue = this.getMin(values);
@@ -238,19 +265,12 @@ export default class Transition extends React.Component<IProps>{
         </CotrolArea>
         <Close className="delete" onClick={() => onClose(transition.id)}/>
         <PlotArea>
-          <AutoSizer>
-            {({ height, width }) => {
-              return (
-                <Plot
-                  data={plotData}
-                  layout={{...plotLayout, height: height, width: width}}
-                  onRelayout={handleRelayout}
-                />
-              );
-            }}
-          </AutoSizer>
+          <Chart
+            config={cartConfig}
+          />
         </PlotArea>
       </Layout>
     );
   }
 }
+
