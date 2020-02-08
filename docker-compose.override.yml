@@ -4,6 +4,8 @@ services:
   api:
     volumes: 
       - ./app:/srv
+    ports:
+      - "${DB_PORT}:5432"
 
   migration:
     volumes:
@@ -16,6 +18,9 @@ services:
   web:
     volumes:
       - ./web/nginx.prod.conf:/etc/nginx/nginx.conf
+
+    ports:
+      - "${WEB_PORT}:80"
 
   storybook:
     image: "h4nyu/mlboard_board:${TAG}"
