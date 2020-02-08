@@ -13,6 +13,6 @@ CMD cargo run
 
 
 
-FROM scratch AS prod
+FROM debian:buster-slim AS prod
 COPY --from=dev /usr/local/cargo/bin/app /usr/local/bin/app
 CMD ["app"]

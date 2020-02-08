@@ -162,9 +162,3 @@ async fn add_scalars(
         ).await
     }).await
 }
-
-
-
-#[cfg(test)]
-mod tests {
-}
