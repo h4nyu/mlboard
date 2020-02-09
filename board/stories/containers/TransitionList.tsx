@@ -4,6 +4,7 @@ import Component from '~/containers/TransitionList';
 import { Map } from 'immutable';
 import Mock from 'stories/Mock';
 import {transition} from 'tests/mocks/models';
+import { action } from '@storybook/addon-actions';
 
 
 storiesOf('TransitionList', module)
@@ -15,6 +16,7 @@ storiesOf('TransitionList', module)
     return (
       <Component 
         transitions={rows}
+        onAddClick={action("onAddClick")}
         Child={(props) => <Mock name={transition.id} />}
       />
     );

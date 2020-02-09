@@ -1,30 +1,32 @@
 import moment, {Moment} from 'moment';
-import { Map } from 'immutable';
+import { Map, Set } from 'immutable';
 import React from 'react';
 import styled from 'styled-components';
-import {format} from 'd3';
 import {smooth} from '~/logics/converters';
 import { AutoSizer } from 'react-virtualized';
 import Slider from '~/components/Slider';
+import {range} from 'lodash';
 import Plot from '~/components/Plot';
-import {max, range, min, last}  from 'lodash';
 import Check from '~/components/Check';
-import {ITransition, IPoint, ITrace, IWorkspace } from '~/models/interfaces';
+import {ITransition, ITrace, IWorkspace, ISegment } from '~/models/interfaces';
 
 
-const Layout = styled.div`
+const Layout = styled.div<{isSelected: boolean}>`
   display: grid;
   grid-template-areas:
-    "title statistics control close"
-    "plot plot plot plot";
+    "control close"
+    "plot plot";
   padding: 0.5em;
   margin: 0.25em;
   grid-template-columns: 1fr auto auto auto;
   grid-template-rows: auto 1fr;
+  border-left: 5px solid;
+  border-color: ${props => props.isSelected ? "gray" : "white"};
 `;
+
 const PlotArea = styled.div`
   grid-area: plot;
-  height: 150px;
+  height: 200px;
   padding: 0.5em;
 `;
 
@@ -43,96 +45,86 @@ const Item = styled.div`
   align-items: center;
 `;
 
-const Title = styled.span`
-  grid-area: title;
-  font-weight: bold;
-`;
 
-const Statistic = styled.span`
-`;
-
-const StatisticsArea = styled.div`
-  grid-area: statistics;
-  display: flex;
-  flex-direction: row;
-`;
 
 const CotrolArea = styled.div`
   grid-area: control;
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
 `;
 const formatDatetime = (value: Moment) => {
   return value.local().format("YYYY-MM-DD HH:mm:ss.SSS");
 };
 export interface IProps {
+  currentId: string;
   transition: ITransition;
+  relations: Set<[string, string, string]>;
   traces: Map<string, ITrace>;
-  segments: Map<string,IPoint[]>;
+  segments: Map<string,ISegment>;
   workspaces: Map<string,IWorkspace>;
+  onClick: (transitionId: string) => void;
   onWeightChange: (id: string, value: number) => void;
   onRangeChange: (id: string, fromDate: Moment, toDate: Moment) => void;
   onClose: (id: string) => void;
   onIsLogChange: (id: string) => void;
   onIsDatetimeChange: (id: string) => void;
-  onIsScatterChange: (id: string) => void;
 }
 export default class Transition extends React.Component<IProps>{
-  getPlotData = (values: number[]) => {
-    const { transition, segments } = this.props;
-    let points = segments.get(transition.id);
-    if(points === undefined){
-      return [] as any;
-    }
-    let x = [];
-    if(transition.isDatetime){
-      x = points.map(p => formatDatetime(p.ts));
-    }else{
-      x = range(points.length);
-    }
-    const y = values;
-    return [
-      {
-        x: x,
-        y: y.length > 1 ? smooth(y, transition.smoothWeight) : y,
-        mode: transition.isScatter ? "markers" : "markers+lines",
-        type: "scattergl",
-        marker: {
-          size: 5,
-        },
-      },
-    ] as any;
-  }
-  formatValue = (value: number): string => {
-    return format('~s')(value);
-  }
-  getValues = () => {
-    const { transition, segments } = this.props;
-    let points = segments.get(transition.id);
-    if(points === undefined){return [];}
-    const values = points.map((x: IPoint) => x.value);
-    return values;
-  }
-  getCount = (values: number[]): number => {
-    return values.length;
-  }
+  getPlotData = () => {
+    const { transition, relations, segments, traces } = this.props;
+    return relations
+      .filter(x => x[0] == transition.id)
+      .map((rel) => {
+        let segment = segments.get(rel[2]);
+        let trace = traces.get(rel[1]);
+        if (segment === undefined || trace === undefined) {
+          return  {};
+        }
 
-  getMax = (values: number[]): number|undefined => {
-    return max(values);
-  }
-  getMin = (values: number[]): number|undefined => {
-    return min(values);
-  }
+        const points = segment.points;
+        let xValues = [];
+        if(transition.isDatetime){
+          xValues = points.map(p => formatDatetime(p.ts));
+        }else{
+          xValues = range(points.length);
+        }
 
-  getPlotLayout = (values: number[]) => {
+        let yValues = points.map(p => p.value);
+
+        // show legends when data is empty 
+        // https://github.com/plotly/plotly.js/issues/2861
+        xValues = xValues.length > 0 ? xValues : [null];
+        yValues = yValues.length > 0 ? yValues : [0];
+
+        return {
+          name: trace.name,
+          x: xValues,
+          y: yValues.length > 1 ? smooth(yValues, transition.smoothWeight):yValues,
+          mode: "markers" ,
+          type: "scattergl",
+          line: {
+            width: 1,
+          },
+          opacity: 0.3,
+          marker: {
+            size: 6,
+          },
+        };
+      }).toJS();
+  }
+  getPlotLayout = () => {
     const { transition } = this.props;
-    const lastValue = values.length > 0 ? last(values) : 0;
     return {
       margin: {
         r: 5,
         t: 5,
         b: 30,
         l: 80,
+      },
+      showlegend: true,
+      legend: {
+        orientation: "h",
       },
       xaxis: {
         range:[transition.fromDate, transition.toDate].map(formatDatetime),
@@ -144,30 +136,7 @@ export default class Transition extends React.Component<IProps>{
         fixedrange: true,
       },
       showTips: false,
-      shapes: [
-        {
-          type: 'line',
-          xref: 'paper',
-          x0: 0,
-          x1: 1,
-          y0: lastValue,
-          y1: lastValue,
-          line:{
-            color: 'orange',
-            width: 1,
-          }
-        },
-
-      ],
     } as any; 
-  }
-  getTitle = (): string => {
-    const {transition, traces, workspaces} = this.props;
-    const trace = traces.get(transition.traceId);
-    if(trace === undefined){ return ""; }
-    const workspace = workspaces.get(trace.workspaceId);
-    if(workspace === undefined){ return trace.name; }
-    return `${workspace.name}/${trace.name}`;
   }
 
   handleRelayout = (e: any) => {
@@ -186,33 +155,24 @@ export default class Transition extends React.Component<IProps>{
   }
 
   render = () => {
-    const values = this.getValues();
-    const plotData = this.getPlotData(values);
-    const plotLayout = this.getPlotLayout(values);
-    const title = this.getTitle();
-    const maxValue = this.getMax(values);
-    const minValue = this.getMin(values);
-    const countValue = this.getCount(values);
-    const {handleRelayout, formatValue} = this;
+    const plotData = this.getPlotData();
+    const plotLayout = this.getPlotLayout();
+    const {handleRelayout} = this;
     const {
-      transition, onClose, 
-      onIsScatterChange, onIsLogChange, 
-      onIsDatetimeChange, onWeightChange 
+      currentId,
+      transition, 
+      onClose, 
+      onIsLogChange, 
+      onIsDatetimeChange, 
+      onWeightChange,
+      onClick,
     } = this.props;
     return (
-      <Layout className="card">
-        <Title> {title} </Title>
-        <StatisticsArea>
-          <Item>
-            {maxValue ? <Statistic>Max: {formatValue(maxValue)}</Statistic> : null}
-          </Item>
-          <Item>
-            {minValue ? <Statistic>Min: {formatValue(minValue)}</Statistic> : null}
-          </Item>
-          <Item>
-            <Statistic>Count: {formatValue(countValue)}</Statistic>
-          </Item>
-        </StatisticsArea>
+      <Layout 
+        className="card" 
+        isSelected={currentId===transition.id} 
+        onClick={() => onClick(transition.id)}
+      >
         <CotrolArea>
           <Item>
             <Slider
@@ -230,9 +190,6 @@ export default class Transition extends React.Component<IProps>{
             <Check value={transition.isLog} onClick={() => onIsLogChange(transition.id)}> Log </Check>
           </Item>
           <Item>
-            <Check value={transition.isScatter} onClick={() => onIsScatterChange(transition.id)}> Scatter </Check>
-          </Item>
-          <Item>
             <Check value={transition.isDatetime} onClick={() => onIsDatetimeChange(transition.id)}> Date </Check>
           </Item>
         </CotrolArea>
@@ -244,6 +201,7 @@ export default class Transition extends React.Component<IProps>{
                 <Plot
                   data={plotData}
                   layout={{...plotLayout, height: height, width: width}}
+                  config={{displayModeBar:false}}
                   onRelayout={handleRelayout}
                 />
               );

@@ -11,10 +11,10 @@ pub fn reduce_points(points: &[SlimPoint], size: usize) -> Vec<SlimPoint> {
 
     let mut res: Vec<SlimPoint> = vec![];
     for i in 0..size {
-        let window_last = &points[(i + 1) * window_size - 1];
+        let p = &points[(i + 1) * window_size - 1];
         res.push(SlimPoint {
-            value: window_last.value.to_owned(),
-            ts: window_last.ts.to_owned(),
+            value: p.value.to_owned(),
+            ts: p.ts.to_owned(),
         });
     }
     res

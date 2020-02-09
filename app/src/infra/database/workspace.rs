@@ -16,7 +16,7 @@ impl From<Row> for Workspace {
 impl WorkspaceRepository for Client {
     async fn get_all(&self) -> Result<Vec<Workspace>, Error> {
         let res = self
-            .query_opt("SELECT * FROM workspaces", &[])
+            .query("SELECT * FROM workspaces", &[])
             .await?
             .into_iter()
             .map(Workspace::from)
