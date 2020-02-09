@@ -1,34 +1,34 @@
 import React from 'react';
-const Plotly = require('plotly.js/dist/plotly-gl2d.min.js');
+const Plotly = require('plotly.js/dist/plotly-gl2d.min.js'); // eslint-disable-line
 interface IProps {
   data: any;
   layout: any;
   config?: any;
   onRelayout: (payload: any) => void;
 }
-type State = {
-  ref: React.RefObject<HTMLDivElement>
+interface State {
+  ref: React.RefObject<HTMLDivElement>;
 }
 export default class ChartComponent extends React.Component<IProps, State>{
   constructor(props: IProps) {
-    super(props)
-    this.state = {ref:React.createRef<HTMLDivElement>()}
+    super(props);
+    this.state = {ref:React.createRef<HTMLDivElement>()};
   }
   componentDidMount = () => {
     if(this.state.ref.current){
       Plotly.newPlot(this.state.ref.current, this.props.data, this.props.layout).then(
-        (e:any) => {
+        (e: any) => {
           e.on("plotly_relayout", this.props.onRelayout);
           e.on('plotly_click', function(){
-          console.log(e)
-          })
+            console.log(e);
+          });
         }
       );
     }
   }
-  static getDerivedStateFromProps(props:IProps, state:State){
+  static getDerivedStateFromProps(props: IProps, state: State){
     if(state.ref.current){
-      Plotly.react(state.ref.current, props.data, props.layout, props.config)
+      Plotly.react(state.ref.current, props.data, props.layout, props.config);
     }
     return state;
   }
@@ -42,6 +42,6 @@ export default class ChartComponent extends React.Component<IProps, State>{
   render = () => {
     return (
       <div ref={this.state.ref}/>
-    )
+    );
   }
 }

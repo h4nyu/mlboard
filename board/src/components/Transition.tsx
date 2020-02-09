@@ -2,14 +2,12 @@ import moment, {Moment} from 'moment';
 import { Map, Set } from 'immutable';
 import React from 'react';
 import styled from 'styled-components';
-import {format} from 'd3';
 import {smooth} from '~/logics/converters';
 import { AutoSizer } from 'react-virtualized';
 import Slider from '~/components/Slider';
 import Plot from '~/components/Plot';
-import {max, range, min, last}  from 'lodash';
 import Check from '~/components/Check';
-import {ITransition, IPoint, ITrace, IWorkspace, ISegment } from '~/models/interfaces';
+import {ITransition, ITrace, IWorkspace, ISegment } from '~/models/interfaces';
 
 
 const Layout = styled.div<{isSelected: boolean}>`
@@ -46,10 +44,6 @@ const Item = styled.div`
   align-items: center;
 `;
 
-const Title = styled.span`
-  grid-area: title;
-  font-weight: bold;
-`;
 
 
 const CotrolArea = styled.div`
@@ -68,7 +62,7 @@ export interface IProps {
   traces: Map<string, ITrace>;
   segments: Map<string,ISegment>;
   workspaces: Map<string,IWorkspace>;
-  onClick: (transitionId:string) => void;
+  onClick: (transitionId: string) => void;
   onWeightChange: (id: string, value: number) => void;
   onRangeChange: (id: string, fromDate: Moment, toDate: Moment) => void;
   onClose: (id: string) => void;
@@ -84,7 +78,7 @@ export default class Transition extends React.Component<IProps>{
         let segment = segments.get(rel[2]);
         let trace = traces.get(rel[1]);
         if (segment === undefined || trace === undefined) {
-          return  {}
+          return  {};
         }
 
         const points = segment.points;
@@ -115,11 +109,8 @@ export default class Transition extends React.Component<IProps>{
           marker: {
             size: 6,
           },
-        }
-      }).toJS()
-  }
-  formatValue = (value: number): string => {
-    return format('~s')(value);
+        };
+      }).toJS();
   }
   getPlotLayout = () => {
     const { transition } = this.props;
@@ -165,7 +156,7 @@ export default class Transition extends React.Component<IProps>{
   render = () => {
     const plotData = this.getPlotData();
     const plotLayout = this.getPlotLayout();
-    const {handleRelayout, formatValue} = this;
+    const {handleRelayout} = this;
     const {
       currentId,
       transition, 
@@ -203,7 +194,7 @@ export default class Transition extends React.Component<IProps>{
         </CotrolArea>
         <Close className="delete" onClick={() => onClose(transition.id)}/>
         <PlotArea>
-           <AutoSizer>
+          <AutoSizer>
             {({ height, width }) => {
               return (
                 <Plot

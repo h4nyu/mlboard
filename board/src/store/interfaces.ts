@@ -1,5 +1,5 @@
 import {Moment} from 'moment';
-import { ITrace, IPoint, ITransition, IWorkspace, ISegment } from '~/models/interfaces';
+import { ITrace, ITransition, IWorkspace, ISegment } from '~/models/interfaces';
 import { Map,Set } from 'immutable';
 
 export interface IModelStore<T> {

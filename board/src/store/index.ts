@@ -1,7 +1,6 @@
 import { 
   ISegment,
   ITrace, 
-  IPoint, 
   ITransition, 
   IWorkspace 
 } from '~/models/interfaces';

@@ -2,11 +2,11 @@ import moment,{Moment} from 'moment';
 import { action, observable, computed } from 'mobx';
 import { IPointApi, ITraceApi, IWorkspaceApi } from '~/api/interfaces';
 import { IRoot } from './interfaces';
-import { IPoint, ITrace, IWorkspace, ISegment } from '~/models/interfaces'; 
+import { ISegment } from '~/models/interfaces'; 
 import _ from 'lodash';
 import uuid from 'uuid';
 
-import { Map, Set } from "immutable";
+import { Set } from "immutable";
 
 export default class TransitionUsecase{
   private pointApi: IPointApi
@@ -69,7 +69,7 @@ export default class TransitionUsecase{
 
   fetchWorkspaces = async () => {
     await this.root.loadingStore.dispatch(async () => {
-      const rows = await this.workspaceApi.all()
+      const rows = await this.workspaceApi.all();
       if(rows === undefined) {return;}
       rows.forEach(x => this.root.workspaceStore.upsert(x.id, x));
     });
@@ -121,7 +121,7 @@ export default class TransitionUsecase{
       toDate: moment(),
     };
     this.root.transitionStore.upsert(transition.id, transition);
-    this.select(transition.id)
+    this.select(transition.id);
   }
 
   @action setTraceKeyword = (keyword: string) => {
@@ -150,12 +150,12 @@ export default class TransitionUsecase{
       .flatMap(rel => {
         return this.root.segmentStore.rows.filter(x => x.id === rel[2]).toList();
       })
-      .map(async (x:ISegment) => {
+      .map(async (x: ISegment) => {
         await this.root.loadingStore.dispatch(async () => {
           const res =await this.pointApi.rangeBy(x.traceId, fromDate, toDate);
-          if(res === undefined) {return};
+          if(res === undefined) {return;};
           this.root.segmentStore.upsert(x.id, { ...x, fromDate, toDate, points:res});
-        })
+        });
       }).toJS();
     await Promise.all(futs);
   }
@@ -182,7 +182,7 @@ export default class TransitionUsecase{
 
   @action deleteTransition = (id: string) => {
     this.relations.filter(x => x[0] === id)
-      .forEach(x => this.root.segmentStore.delete(x[2]))
+      .forEach(x => this.root.segmentStore.delete(x[2]));
     this.root.transitionStore.delete(id);
     this.relations = this.relations.filter(x => x[0] !== id);
     console.log(this.root.segmentStore.rows);
@@ -191,7 +191,7 @@ export default class TransitionUsecase{
 
   deleteWorkspace = async (id: string) => {
     await this.root.loadingStore.dispatch(async () => {
-      await this.workspaceApi.delete(id)
+      await this.workspaceApi.delete(id);
       const traceIds = this.root.traceStore.rows.filter(x => x.workspaceId === id).map(x => x.id);
       traceIds.forEach(x => {
         this.root.traceStore.delete(x);
