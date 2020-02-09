@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import {smooth} from '~/logics/converters';
 import { AutoSizer } from 'react-virtualized';
 import Slider from '~/components/Slider';
+import {range} from 'lodash';
 import Plot from '~/components/Plot';
 import Check from '~/components/Check';
 import {ITransition, ITrace, IWorkspace, ISegment } from '~/models/interfaces';
