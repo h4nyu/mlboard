@@ -35,7 +35,6 @@ export interface ITransitionUsecase {
   updateSmoothWeight: (id: string, value: number) => void;
   toggleIsLog: (id: string) => void;
   toggleIsDatetime: (id: string) => void;
-  toggleIsScatter: (id: string) => void;
 }
 
 export interface IRoot {

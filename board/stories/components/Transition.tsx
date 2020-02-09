@@ -48,7 +48,6 @@ storiesOf('Transition', module)
         transition={{
           ...transition,
           isDatetime: boolean('isDatetime', false),
-          isScatter: boolean('isScatter', false),
           isLog: boolean('isLog', false),
           smoothWeight: number('smoothWeight', 0.5),
         }}
@@ -60,7 +59,6 @@ storiesOf('Transition', module)
         onClose={action('onClose')}
         onIsLogChange={action('onIsLogChange')}
         onIsDatetimeChange={action('onIsDatetimeChange')}
-        onIsScatterChange={action('onIsScatterChange')}
       />
     );
   })
@@ -73,7 +71,6 @@ storiesOf('Transition', module)
         transition={{
           ...transition,
           isDatetime: boolean('isDatetime', false),
-          isScatter: boolean('isScatter', false),
           isLog: boolean('isLog', false),
           smoothWeight: number('smoothWeight', 0.5),
         }}
@@ -85,7 +82,6 @@ storiesOf('Transition', module)
         onClose={action('onClose')}
         onIsLogChange={action('onIsLogChange')}
         onIsDatetimeChange={action('onIsDatetimeChange')}
-        onIsScatterChange={action('onIsScatterChange')}
       />
     );
   })

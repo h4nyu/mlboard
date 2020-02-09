@@ -90,7 +90,6 @@ export default class TransitionUsecase{
       traceId: traceId,
       smoothWeight: 0.0,
       isLog: false,
-      isScatter:false,
       isDatetime:true,
       fromDate: lastDate.clone().add(-10, 'minutes'),
       toDate: lastDate.clone().add(1, 'minutes'),
@@ -146,16 +145,6 @@ export default class TransitionUsecase{
       .forEach(x => {
         this.updateRange(x.id, fromDate, toDate);
       });
-  }
-
-  @action toggleIsScatter = (id: string) => {
-    const row = this.root.transitionStore.rows.get(id);
-    if(row){
-      this.root.transitionStore.upsert(id, {
-        ...row,
-        isScatter:!row.isScatter,
-      });
-    }
   }
 
   @action toggleIsDatetime = (id: string) => {

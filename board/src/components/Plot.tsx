@@ -1,8 +1,9 @@
 import React from 'react';
-const Plotly = require('plotly.js/dist/plotly-basic.min.js');
+const Plotly = require('plotly.js/dist/plotly-gl2d.min.js');
 interface IProps {
   data: any;
   layout: any;
+  config?: any;
   onRelayout: (payload: any) => void;
 }
 type State = {
@@ -14,7 +15,6 @@ export default class ChartComponent extends React.Component<IProps, State>{
     this.state = {ref:React.createRef<HTMLDivElement>()}
   }
   componentDidMount = () => {
-    // this.setState({current: this.myRef.current})
     if(this.state.ref.current){
       Plotly.newPlot(this.state.ref.current, this.props.data, this.props.layout).then(
         (e:any) => {
@@ -25,32 +25,17 @@ export default class ChartComponent extends React.Component<IProps, State>{
         }
       );
     }
-
-    // if (this.state.current){
-    //   console.log("aaaaaaaaaaaaaaaa")
-    //   console.log(a)
-    //   console.log("aaaaaaaaaaaaaaaa")
-    // }
   }
   static getDerivedStateFromProps(props:IProps, state:State){
-    console.log(props);
     if(state.ref.current){
-      Plotly.react(state.ref.current, props.data, props.layout)
+      Plotly.react(state.ref.current, props.data, props.layout, props.config)
     }
-    // if(state.chart){
-    //   state.chart.config = props.config;
-    //   state.chart.data = props.config.data;
-    //   state.chart.options = props.config.options;
-    //   state.chart.update({
-    //     duration:0,
-    //   });
-    // }
     return state;
   }
   componentWillUnmount = () => {
-    // if(this.myRef.current){
-    //   Plotly.purge(this.myRef.current);
-    // }
+    if(this.state.ref.current){
+      Plotly.purge(this.state.ref.current);
+    }
   }
 
 

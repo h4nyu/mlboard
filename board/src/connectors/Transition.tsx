@@ -19,7 +19,6 @@ const Component = (props: IProps) => (
     onClose={transitionUsecase.delete}
     onIsLogChange={transitionUsecase.toggleIsLog}
     onIsDatetimeChange={transitionUsecase.toggleIsDatetime}
-    onIsScatterChange={transitionUsecase.toggleIsScatter}
   />
 );
 export default observer(Component);

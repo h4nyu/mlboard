@@ -75,7 +75,6 @@ export interface IProps {
   onClose: (id: string) => void;
   onIsLogChange: (id: string) => void;
   onIsDatetimeChange: (id: string) => void;
-  onIsScatterChange: (id: string) => void;
 }
 export default class Transition extends React.Component<IProps>{
   getPlotData = (values: number[]) => {
@@ -94,11 +93,16 @@ export default class Transition extends React.Component<IProps>{
     return [
       {
         x: x,
-        y: y.length > 1 ? smooth(y, transition.smoothWeight) : y,
-        mode: transition.isScatter ? "markers" : "markers+lines",
+        y: y.length > 1 ? smooth(y, transition.smoothWeight): y,
+        mode: "markers" ,
         type: "scattergl",
+        line: {
+          width: 1,
+        },
+        opacity: 0.3,
         marker: {
-          size: 5,
+          size: 6,
+          color:'black',
         },
       },
     ] as any;
@@ -144,21 +148,6 @@ export default class Transition extends React.Component<IProps>{
         fixedrange: true,
       },
       showTips: false,
-      shapes: [
-        {
-          type: 'line',
-          xref: 'paper',
-          x0: 0,
-          x1: 1,
-          y0: lastValue,
-          y1: lastValue,
-          line:{
-            color: 'orange',
-            width: 1,
-          }
-        },
-
-      ],
     } as any; 
   }
   getTitle = (): string => {
@@ -195,9 +184,11 @@ export default class Transition extends React.Component<IProps>{
     const countValue = this.getCount(values);
     const {handleRelayout, formatValue} = this;
     const {
-      transition, onClose, 
-      onIsScatterChange, onIsLogChange, 
-      onIsDatetimeChange, onWeightChange 
+      transition, 
+      onClose, 
+      onIsLogChange, 
+      onIsDatetimeChange, 
+      onWeightChange 
     } = this.props;
     return (
       <Layout className="card">
@@ -230,19 +221,23 @@ export default class Transition extends React.Component<IProps>{
             <Check value={transition.isLog} onClick={() => onIsLogChange(transition.id)}> Log </Check>
           </Item>
           <Item>
-            <Check value={transition.isScatter} onClick={() => onIsScatterChange(transition.id)}> Scatter </Check>
-          </Item>
-          <Item>
             <Check value={transition.isDatetime} onClick={() => onIsDatetimeChange(transition.id)}> Date </Check>
           </Item>
         </CotrolArea>
         <Close className="delete" onClick={() => onClose(transition.id)}/>
         <PlotArea>
-          <Plot
-            data={plotData}
-            layout={plotLayout}
-            onRelayout={handleRelayout}
-          />
+           <AutoSizer>
+            {({ height, width }) => {
+              return (
+                <Plot
+                  data={plotData}
+                  layout={{...plotLayout, height: height, width: width}}
+                  config={{displayModeBar:false}}
+                  onRelayout={handleRelayout}
+                />
+              );
+            }}
+          </AutoSizer>
         </PlotArea>
       </Layout>
     );

@@ -11665,6 +11665,11 @@ plotly.js-dist@^1.50.1:
   resolved "https://registry.yarnpkg.com/plotly.js-dist/-/plotly.js-dist-1.50.1.tgz#dcd32c95999449fd17c68289d000ba968d235907"
   integrity sha512-awCT4yves5png8uoZk5LklJDzulBVHimTqyGF9BhgphfnznYVDWbbklxvUIzwWaE1f2S2XNUgNRN5UthDKmgEg==
 
+plotly.js-gl2d-dist@^1.52.2:
+  version "1.52.2"
+  resolved "https://registry.yarnpkg.com/plotly.js-gl2d-dist/-/plotly.js-gl2d-dist-1.52.2.tgz#412cbace0bd408bb24776cdd88fc48be8ba1e666"
+  integrity sha512-fozxXunTO5hoKEo407SFYUBGYa9n2xMV9e8dik4Nw17ulHyXdjA3NllX5SgHUvyfl5US+phZWeti7T6c6I+ueQ==
+
 plotly.js@^1.48.3:
   version "1.49.4"
   resolved "https://registry.yarnpkg.com/plotly.js/-/plotly.js-1.49.4.tgz#4b287f25f09597d4bc51f3ef4dbd12cca658540c"
