@@ -1,14 +1,13 @@
 use uuid::Uuid;
 pub mod entities;
 use crate::domain::entities::*;
+use async_trait::async_trait;
 use chrono::prelude::{DateTime, Utc};
 use failure::Error;
 use serde_json::Value;
-use async_trait::async_trait;
-
 
 #[async_trait]
-pub trait WorkspaceRepository{
+pub trait WorkspaceRepository {
     async fn get_all(&self) -> Result<Vec<Workspace>, Error>;
     async fn get(&self, name: &str) -> Result<Option<Workspace>, Error>;
     async fn update(&self, id: &Uuid, name: &str, config: &Value) -> Result<Uuid, Error>;
@@ -26,10 +25,14 @@ pub trait TraceRepository {
     async fn delete(&self, ids: &[&Uuid]) -> Result<(), Error>;
 }
 
-
 #[async_trait]
 pub trait PointRepository {
-    async fn get_by_range( &self, trace_id: &Uuid, from_date: &DateTime<Utc>, to_date: &DateTime<Utc>,) -> Result<Vec<SlimPoint>, Error>;
+    async fn get_by_range(
+        &self,
+        trace_id: &Uuid,
+        from_date: &DateTime<Utc>,
+        to_date: &DateTime<Utc>,
+    ) -> Result<Vec<SlimPoint>, Error>;
     async fn bulk_insert(&self, rows: &[&Point]) -> Result<usize, Error>;
-    async fn delete( &self, trace_ids: &[&Uuid]) -> Result<(), Error>;
+    async fn delete(&self, trace_ids: &[&Uuid]) -> Result<(), Error>;
 }
