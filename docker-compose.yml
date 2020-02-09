@@ -6,7 +6,6 @@ services:
 
   api: &default-app
     image: "h4nyu/mlboard_app:${TAG}"
-    command: cargo run --release
     depends_on:
       - db
       - migration
