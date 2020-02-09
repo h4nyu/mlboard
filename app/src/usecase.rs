@@ -1,5 +1,6 @@
 use crate::domain::entities::*;
 use crate::domain::*;
+use crate::logics::reduce_points;
 use chrono::prelude::{DateTime, Utc};
 use failure::Error;
 use serde_json::Value;
@@ -58,7 +59,8 @@ pub async fn get_point_by_range<R>(
 where
     R: PointRepository,
 {
-    PointRepository::get_by_range(repo,trace_id, from_date, to_date).await
+    let points = PointRepository::get_by_range(repo, trace_id, from_date, to_date).await?;
+    Ok(reduce_points(&points, 1000))
 }
 
 pub async fn add_scalars<R>(
@@ -96,5 +98,3 @@ where
     WorkspaceRepository::delete(repo, workspace_id).await?;
     Ok(workspace_id.to_owned())
 }
-
-

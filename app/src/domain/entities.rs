@@ -39,7 +39,7 @@ impl Point {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct SlimPoint {
     pub ts: DateTime<Utc>,
     pub value: f64,
