@@ -30,7 +30,7 @@ def upgrade():
                 trace_id uuid NOT NULL
             );
         CREATE INDEX on points (trace_id);
-        SELECT create_hypertable('points', 'ts', chunk_time_interval => interval '1 hour');
+        SELECT create_hypertable('points', 'ts', chunk_time_interval => interval '2 day');
 
         CREATE TABLE traces
             (
