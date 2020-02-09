@@ -1,16 +1,21 @@
-import {Moment} from 'moment';
+import moment,{Moment} from 'moment';
 import { action, observable, computed } from 'mobx';
 import { IPointApi, ITraceApi, IWorkspaceApi } from '~/api/interfaces';
 import { IRoot } from './interfaces';
-import { IPoint, ITrace, IWorkspace } from '~/models/interfaces'; 
+import { IPoint, ITrace, IWorkspace, ISegment } from '~/models/interfaces'; 
 import _ from 'lodash';
+import uuid from 'uuid';
+
+import { Map, Set } from "immutable";
 
 export default class TransitionUsecase{
   private pointApi: IPointApi
   private traceApi: ITraceApi
   private workspaceApi: IWorkspaceApi;
   private root: IRoot
-  @observable traceKeyword: string = ""
+  @observable traceKeyword: string = "";
+  @observable currentId: string = "";
+  @observable relations: Set<[string, string, string]> = Set();
 
   constructor(
     root: IRoot,
@@ -24,8 +29,7 @@ export default class TransitionUsecase{
     this.workspaceApi = workspaceApi;
   }
 
-  @computed get workspaces() {
-    const keywords = this.traceKeyword.split(',').map(x => x.trim());
+  @computed get workspaces() { const keywords = this.traceKeyword.split(',').map(x => x.trim());
     const workspaces = this.root.workspaceStore.rows.sortBy(x => - x.createdAt);
     if(this.traceKeyword.length === 0){
       return workspaces;
@@ -64,42 +68,60 @@ export default class TransitionUsecase{
   }
 
   fetchWorkspaces = async () => {
-    const rows = await this.root.loadingStore.dispatch<Promise<IWorkspace[]>>(
-      () => this.workspaceApi.all()
-    );
-    if(rows === undefined) {return;}
-    rows.forEach(x => this.root.workspaceStore.upsert(x.id, x));
+    await this.root.loadingStore.dispatch(async () => {
+      const rows = await this.workspaceApi.all()
+      if(rows === undefined) {return;}
+      rows.forEach(x => this.root.workspaceStore.upsert(x.id, x));
+    });
   }
 
   fetchTraces = async () => {
-    const rows = await this.root.loadingStore.dispatch<Promise<ITrace[]>>(
-      () => this.traceApi.all()
-    );
-    if(rows === undefined) {return;}
-    rows.forEach(x => this.root.traceStore.upsert(x.id, x));
+    await this.root.loadingStore.dispatch(async () => {
+      const rows = await this.traceApi.all();
+      if(rows === undefined) {return;}
+      rows.forEach(x => this.root.traceStore.upsert(x.id, x));
+    });
   }
 
-  @action add = async (
-    traceId: string,
-  ) => {
-    const trace = this.root.traceStore.rows.get(traceId);
-    if(trace === undefined){return;}
-    const lastDate = trace.updatedAt.clone();
+  @action select = (transitionId: string) => {
+    this.currentId = transitionId;
+  }
+
+  @action addTrace = async (traceId: string) => {
+    const transition = this.root.transitionStore.rows.get(this.currentId);
+    if (transition === undefined){return;}
+    const segmentCount = this.relations.filter(x => (x[0] === this.currentId && x[1] === traceId)).size;
+    if (segmentCount > 0 ) {return;}
+
+    await this.root.loadingStore.dispatch(async () => {
+      const points = await this
+        .pointApi
+        .rangeBy(traceId, transition.fromDate, transition.toDate);
+      if (points === undefined) return;
+      const segment = {
+        id: uuid(),
+        traceId: traceId,
+        points: points,
+        fromDate: transition.fromDate,
+        toDate: transition.toDate
+      };
+      this.root.segmentStore.upsert(segment.id, segment);
+      this.relations = this.relations.add([this.currentId, traceId, segment.id]);
+    });
+  }
+
+  @action add = async () => {
     const transition = {
-      id: traceId,
-      traceId: traceId,
+      id: uuid(),
+      traceId: uuid(),
       smoothWeight: 0.0,
       isLog: false,
       isDatetime:true,
-      fromDate: lastDate.clone().add(-10, 'minutes'),
-      toDate: lastDate.clone().add(1, 'minutes'),
+      fromDate: moment().add(-1, "months"),
+      toDate: moment(),
     };
-    const points = await this.root.loadingStore.dispatch<Promise<IPoint[]>>(
-      () => this.pointApi.rangeBy(traceId, transition.fromDate, transition.toDate)
-    );
-    if(points === undefined){return;}
     this.root.transitionStore.upsert(transition.id, transition);
-    this.root.segmentStore.upsert(transition.id, points);
+    this.select(transition.id)
   }
 
   @action setTraceKeyword = (keyword: string) => {
@@ -115,7 +137,6 @@ export default class TransitionUsecase{
     });
   }
 
-
   @action updateRange = async (id: string, fromDate: Moment, toDate: Moment) => {
     const transition = this.root.transitionStore.rows.get(id);
     if(transition === undefined){return;}
@@ -124,27 +145,19 @@ export default class TransitionUsecase{
       fromDate,
       toDate,
     });
-    const points = await this.root.loadingStore.dispatch<Promise<IPoint[]>>(
-      () => this.pointApi.rangeBy(transition.traceId, fromDate, toDate)
-    );
-    if(points === undefined){return;}
-    this.root.segmentStore.upsert(id, points);
-  }
 
-  @action updateRangeInWorkspace = async (id: string, fromDate: Moment, toDate: Moment) => {
-    const transition = this.root.transitionStore.rows.get(id);
-    if(transition === undefined){return;}
-    const trace = this.root.traceStore.rows.get(transition.traceId);
-    if(trace === undefined){return;}
-    const traceIds = this.root.traceStore.rows
-      .filter(x => x.workspaceId == trace.workspaceId)
-      .map(x => x.id)
-      .toSet();
-    this.root.transitionStore.rows
-      .filter(x => traceIds.includes(x.traceId))
-      .forEach(x => {
-        this.updateRange(x.id, fromDate, toDate);
-      });
+    const futs = this.relations
+      .flatMap(rel => {
+        return this.root.segmentStore.rows.filter(x => x.id === rel[2]).toList();
+      })
+      .map(async (x:ISegment) => {
+        await this.root.loadingStore.dispatch(async () => {
+          const res =await this.pointApi.rangeBy(x.traceId, fromDate, toDate);
+          if(res === undefined) {return};
+          this.root.segmentStore.upsert(x.id, { ...x, fromDate, toDate, points:res});
+        })
+      }).toJS();
+    await Promise.all(futs);
   }
 
   @action toggleIsDatetime = (id: string) => {
@@ -167,22 +180,25 @@ export default class TransitionUsecase{
     }
   }
 
-  @action delete = (id: string) => {
-    this.root.segmentStore.delete(id);
+  @action deleteTransition = (id: string) => {
+    this.relations.filter(x => x[0] === id)
+      .forEach(x => this.root.segmentStore.delete(x[2]))
     this.root.transitionStore.delete(id);
+    this.relations = this.relations.filter(x => x[0] !== id);
+    console.log(this.root.segmentStore.rows);
+    console.log(this.relations);
   }
 
   deleteWorkspace = async (id: string) => {
-    await this.root.loadingStore.dispatch<Promise<void>>(
-      () => this.workspaceApi.delete(id)
-    );
-    const traceIds = this.root.traceStore.rows.filter(x => x.workspaceId === id).map(x => x.id);
-    traceIds.forEach(x => {
-      this.root.traceStore.delete(x);
-      this.root.transitionStore.delete(x);
+    await this.root.loadingStore.dispatch(async () => {
+      await this.workspaceApi.delete(id)
+      const traceIds = this.root.traceStore.rows.filter(x => x.workspaceId === id).map(x => x.id);
+      traceIds.forEach(x => {
+        this.root.traceStore.delete(x);
+        this.root.transitionStore.delete(x);
+      });
+      this.root.workspaceStore.delete(id);
     });
-
-    this.root.workspaceStore.delete(id);
   }
 }
 

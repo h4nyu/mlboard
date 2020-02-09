@@ -10,13 +10,16 @@ export interface IProps{
 }
 const Component = (props: IProps) => (
   <Transition
+    currentId={transitionUsecase.currentId}
     transition={props.transition}
+    relations={transitionUsecase.relations}
     segments={segmentStore.rows}
     workspaces={workspaceStore.rows}
     traces={traceStore.rows}
+    onClick={transitionUsecase.select}
     onWeightChange={transitionUsecase.updateSmoothWeight}
-    onRangeChange={transitionUsecase.updateRangeInWorkspace}
-    onClose={transitionUsecase.delete}
+    onRangeChange={transitionUsecase.updateRange}
+    onClose={transitionUsecase.deleteTransition}
     onIsLogChange={transitionUsecase.toggleIsLog}
     onIsDatetimeChange={transitionUsecase.toggleIsDatetime}
   />

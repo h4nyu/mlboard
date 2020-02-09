@@ -11,7 +11,7 @@ export interface IProps{
 const Component = (props: IProps) => (
   <TraceListItem
     trace={props.trace}
-    onSelect={transitionUsecase.add}
+    onSelect={transitionUsecase.addTrace}
   />
 );
 export default observer(Component);

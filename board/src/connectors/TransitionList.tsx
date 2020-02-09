@@ -4,12 +4,13 @@ import TransitionList from '~/containers/TransitionList';
 import Transition from "~/connectors/Transition";
 import store from "~/store";
 
-const {transitionStore} = store;
+const {transitionStore, transitionUsecase} = store;
 
 
 const Component = () => (
   <TransitionList
     transitions={transitionStore.rows}
+    onAddClick={transitionUsecase.add}
     Child={Transition}
   />
 );

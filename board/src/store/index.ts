@@ -1,4 +1,10 @@
-import { ITrace, IPoint, ITransition, IWorkspace } from '~/models/interfaces';
+import { 
+  ISegment,
+  ITrace, 
+  IPoint, 
+  ITransition, 
+  IWorkspace 
+} from '~/models/interfaces';
 import LoadingStore from './LoadingStore';
 import AppStore from './AppStore';
 import ModelStore from './ModelStore';
@@ -19,7 +25,7 @@ export class RootStore {
   loadingStore: ILoadingStore;
   appStore: IAppStore;
   traceStore: IModelStore<ITrace>;
-  segmentStore: IModelStore<IPoint[]>;
+  segmentStore: IModelStore<ISegment>;
   transitionStore: IModelStore<ITransition>;
   workspaceStore: IModelStore<IWorkspace>;
   transitionUsecase: ITransitionUsecase;
@@ -29,7 +35,7 @@ export class RootStore {
     const pointApi = new PointApi();
     const workspaceApi = new WorkspaceApi();
 
-    this.segmentStore = new ModelStore<IPoint[]>();
+    this.segmentStore = new ModelStore<ISegment>();
     this.traceStore = new ModelStore<ITrace>();
     this.transitionStore = new ModelStore<ITransition>();
     this.workspaceStore = new ModelStore<IWorkspace>();

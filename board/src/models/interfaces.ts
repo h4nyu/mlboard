@@ -22,10 +22,17 @@ export interface ITrace {
 
 export interface ITransition {
   id: string;
-  traceId: string;
   smoothWeight: number;
   isLog: boolean;
   isDatetime: boolean;
+  fromDate: Moment;
+  toDate: Moment;
+}
+
+export interface ISegment {
+  id: string;
+  traceId: string;
+  points: IPoint[];
   fromDate: Moment;
   toDate: Moment;
 }

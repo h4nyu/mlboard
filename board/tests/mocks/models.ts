@@ -4,7 +4,6 @@ import moment from 'moment';
 
 export  const transition:ITransition = {
   id:uuid(),
-  traceId:uuid(),
   smoothWeight: 1.0,
   isLog: false,
   isDatetime: false,
