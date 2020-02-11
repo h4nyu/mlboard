@@ -10,20 +10,27 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::HashMap;
 use std::future::Future;
+use std::clone::Clone;
 use uuid::Uuid;
 use lapin::{
     options::*, types::FieldTable, BasicProperties, Connection,
-    ConnectionProperties
+    ConnectionProperties, Channel
 };
 
-pub async fn run() -> std::io::Result<()> {
+pub async fn run() -> Result<(), Error> {
     std::env::set_var("RUST_LOG", "actix_web=info");
     env_logger::init();
 
-    HttpServer::new(|| {
-        let pool = create_connection_pool().unwrap();
+    let conn = Connection::connect("amqp://mq:5672/%2f", ConnectionProperties::default()).await?;
+
+    let pool = create_connection_pool().unwrap();
+    let channel = conn.create_channel().await.unwrap();
+    channel.queue_declare("add_scalars", QueueDeclareOptions::default(), FieldTable::default()).await?;
+
+    HttpServer::new(move || {
         App::new()
-            .data(pool)
+            .data(pool.clone())
+            .data(channel.clone())
             .wrap(Logger::default())
             .wrap(Logger::new("%a %{User-Agent}i"))
             .service(web::resource("/trace/all").route(web::get().to(get_trace_all)))
@@ -36,7 +43,8 @@ pub async fn run() -> std::io::Result<()> {
     })
     .bind("0.0.0.0:5000")?
     .run()
-    .await
+    .await.unwrap();
+    Ok(())
 }
 //
 //
@@ -129,16 +137,13 @@ pub struct WorkspaceDelete {
 }
 async fn delete_workspace(
     payload: web::Query<WorkspaceDelete>,
-    db_pool: web::Data<Pool>,
+    channel: web::Data<Channel>,
 ) -> Result<HttpResponse, error::Error> {
     wrap(async {
-        let repo = db_pool.get().await?;
-        let conn = Connection::connect("amqp://mq:5672/%2f", ConnectionProperties::default()).await?;
-        conn.create_channel()
-            .await?
+        channel
             .basic_publish(
                 "",
-                "my_first_queue",
+                "delete_workspace",
                 BasicPublishOptions::default(),
                 serde_json::to_vec(&WorkspaceDelete{id:payload.id})?,
                 BasicProperties::default(),
@@ -149,18 +154,26 @@ async fn delete_workspace(
     .await
 }
 //
-#[derive(Deserialize)]
-struct PointAddScalars {
-    ts: DateTime<Utc>,
-    values: HashMap<Uuid, f64>,
+#[derive(Deserialize, Serialize, Debug)]
+pub struct PointAddScalars {
+    pub ts: DateTime<Utc>,
+    pub values: HashMap<Uuid, f64>,
 }
 async fn add_scalars(
     payload: web::Json<PointAddScalars>,
-    db_pool: web::Data<Pool>,
+    channel: web::Data<Channel>,
 ) -> Result<HttpResponse, error::Error> {
     wrap(async {
-        let repo = db_pool.get().await?;
-        uc::add_scalars(&repo, &payload.values, &payload.ts).await
+            channel.basic_publish(
+                "",
+                "add_scalars",
+                BasicPublishOptions::default(),
+                serde_json::to_vec(&PointAddScalars{ts:payload.ts, values:payload.values.to_owned()})?,
+                BasicProperties::default(),
+            )
+            .await?;
+        Ok(())
+        // uc::add_scalars(&repo, &payload.values, &payload.ts).await
     })
     .await
 }

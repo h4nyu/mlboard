@@ -69,7 +69,7 @@ pub async fn add_scalars<R>(
     ts: &DateTime<Utc>,
 ) -> Result<(), Error>
 where
-    R: PointRepository + TraceRepository,
+    R: PointRepository,
 {
     let mut points: Vec<Point> = vec![];
     let mut trace_ids: Vec<&Uuid> = vec![];
@@ -81,9 +81,7 @@ where
         points.push(p);
         trace_ids.push(k);
     }
-
     repo.bulk_insert(&points.iter().collect::<Vec<_>>()).await?;
-    repo.update_last_ts(&trace_ids, ts).await?;
     Ok(())
 }
 
