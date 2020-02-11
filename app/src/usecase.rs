@@ -83,7 +83,6 @@ where
     }
 
     repo.bulk_insert(&points.iter().collect::<Vec<_>>()).await?;
-    repo.update_last_ts(&trace_ids, ts).await?;
     Ok(())
 }
 

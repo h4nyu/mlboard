@@ -128,8 +128,11 @@ async fn delete_workspace(
     db_pool: web::Data<Pool>,
 ) -> Result<HttpResponse, error::Error> {
     wrap(async {
-        let repo = db_pool.get().await?;
-        uc::delete_workspace(&repo, &payload.id).await
+        tokio::spawn(async move {
+            let repo = db_pool.get().await?;
+            uc::delete_workspace(&repo, &payload.id).await
+        });
+        Ok(())
     })
     .await
 }
@@ -144,8 +147,11 @@ async fn add_scalars(
     db_pool: web::Data<Pool>,
 ) -> Result<HttpResponse, error::Error> {
     wrap(async {
-        let repo = db_pool.get().await?;
-        uc::add_scalars(&repo, &payload.values, &payload.ts).await
+        tokio::spawn(async move {
+            let repo = db_pool.get().await?;
+            uc::add_scalars(&repo, &payload.values, &payload.ts).await
+        });
+        Ok(())
     })
     .await
 }
