@@ -4,11 +4,12 @@ import { Map } from "immutable";
 export default class ModelStore<T> {
   @observable rows: Map<string, T> = Map({});
 
-  @action delete = (id: string) => {
-    this.rows = this.rows.delete(id);
+  @action delete = (ids: string[]) => {
+    this.rows = this.rows.deleteAll(ids);
   }
 
-  @action upsert = (id: string, row: T) => {
-    this.rows = this.rows.set(id, row);
+  @action upsert = (rows: {[key: string]: T}) => {
+    this.rows = this.rows.merge(Map(rows));
   }
 }
+

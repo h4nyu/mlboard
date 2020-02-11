@@ -4,8 +4,8 @@ import { Map,Set } from 'immutable';
 
 export interface IModelStore<T> {
   rows: Map<string, T>;
-  upsert: (key: string, value: T) => void;
-  delete: (key: string) => void;
+  upsert: (rows: {[key: string]: T}) => void;
+  delete: (keys: string[]) => void;
 }
 
 export interface IAppStore {
