@@ -4,9 +4,8 @@ WORKDIR /srv
 COPY . .
 COPY ./cacert.crt /usr/local/share/ca-certificates
 
-ARG RUNTIME_DEPS="inotify-tools"
 RUN apt-get update \
-    && apt-get install -y ${RUNTIME_DEPS} \
+    && apt-get install -y inotify-tools pkg-config libssl-dev \
     && update-ca-certificates \
     && rustup component add rustfmt \
     && cargo build --all --tests \

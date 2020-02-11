@@ -11,6 +11,10 @@ use serde_json::Value;
 use std::collections::HashMap;
 use std::future::Future;
 use uuid::Uuid;
+use lapin::{
+    options::*, types::FieldTable, BasicProperties, Connection,
+    ConnectionProperties
+};
 
 pub async fn run() -> std::io::Result<()> {
     std::env::set_var("RUST_LOG", "actix_web=info");
@@ -119,9 +123,9 @@ async fn register_trace(
     .await
 }
 
-#[derive(Deserialize)]
-struct WorkspaceDelete {
-    id: Uuid,
+#[derive(Deserialize, Serialize, Debug)]
+pub struct WorkspaceDelete {
+    pub id: Uuid,
 }
 async fn delete_workspace(
     payload: web::Query<WorkspaceDelete>,
@@ -129,7 +133,18 @@ async fn delete_workspace(
 ) -> Result<HttpResponse, error::Error> {
     wrap(async {
         let repo = db_pool.get().await?;
-        uc::delete_workspace(&repo, &payload.id).await
+        let conn = Connection::connect("amqp://mq:5672/%2f", ConnectionProperties::default()).await?;
+        conn.create_channel()
+            .await?
+            .basic_publish(
+                "",
+                "my_first_queue",
+                BasicPublishOptions::default(),
+                serde_json::to_vec(&WorkspaceDelete{id:payload.id})?,
+                BasicProperties::default(),
+            )
+            .await?;
+        Ok(())
     })
     .await
 }
