@@ -36,3 +36,7 @@ pub trait PointRepository {
     async fn bulk_insert(&self, rows: &[&Point]) -> Result<usize, Error>;
     async fn delete(&self, trace_ids: &[&Uuid]) -> Result<(), Error>;
 }
+
+pub trait Get {
+}
+

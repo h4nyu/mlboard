@@ -4,6 +4,8 @@ services:
   api:
     volumes: 
       - ./app:/srv
+    security_opt:
+      - seccomp:unconfined
     ports:
       - "${DB_PORT}:5432"
 

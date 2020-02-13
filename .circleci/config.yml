@@ -37,7 +37,8 @@ jobs:
       - run:
           name: Test App
           command: |
-            docker-compose -f docker-compose.yml run --rm api cargo test
+            docker-compose -f docker-compose.yml run --rm api cargo tarpaulin
+
 
       - run:
           name: Type Check Board 

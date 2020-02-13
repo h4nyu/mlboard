@@ -72,14 +72,13 @@ where
     R: PointRepository + TraceRepository,
 {
     let mut points: Vec<Point> = vec![];
-    let mut trace_ids: Vec<&Uuid> = vec![];
-
     for (k, v) in values.iter() {
-        let mut p = Point::new();
-        p.value = v.to_owned();
-        p.trace_id = k.to_owned();
+        let p = Point {
+            value: v.to_owned(),
+            trace_id:k.to_owned(),
+            ts: ts.to_owned(),
+        };
         points.push(p);
-        trace_ids.push(k);
     }
 
     repo.bulk_insert(&points.iter().collect::<Vec<_>>()).await?;
