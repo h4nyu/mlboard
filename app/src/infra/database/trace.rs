@@ -12,6 +12,7 @@ impl From<Row> for Trace {
     }
 }
 
+
 #[async_trait]
 impl TraceRepository for Client {
     async fn get_all(&self) -> Result<Vec<Trace>, Error> {

@@ -6,6 +6,9 @@ use failure::Error;
 use serde_json::Value;
 use std::collections::HashMap;
 use uuid::Uuid;
+use std::future::Future;
+
+
 pub async fn register_trace<R>(repo: &R, workspace_id: &Uuid, name: &str) -> Result<Uuid, Error>
 where
     R: TraceRepository,
@@ -80,9 +83,7 @@ where
         };
         points.push(p);
     }
-
-    repo.bulk_insert(&points.iter().collect::<Vec<_>>()).await?;
-    Ok(())
+    repo.bulk_insert(&points.iter().collect::<Vec<_>>()).await?; Ok(())
 }
 
 pub async fn delete_workspace<R>(repo: &R, workspace_id: &Uuid) -> Result<Uuid, Error>
@@ -95,4 +96,40 @@ where
     TraceRepository::delete(repo, &trace_ids).await?;
     WorkspaceRepository::delete(repo, workspace_id).await?;
     Ok(workspace_id.to_owned())
+}
+
+
+pub async fn service_a() {
+}
+pub struct Conn {}
+
+pub async fn service_b(conn: &Conn) {
+}
+
+pub async fn service_ab<'a, A, B, C, D>(
+    a: A,
+    b: C,
+)
+where A: FnOnce() -> B,
+      B: Future<Output=()>,
+      D: Future<Output=()>,
+      C: FnOnce() -> D,
+{
+    a().await;
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    struct Mock;
+
+    #[tokio::test]
+    async fn test_delete_workspace() -> Result<(), Error> {
+        let conn = Conn{};
+        let b =  || async {service_b(&conn).await};
+        service_ab(service_a, b);
+        // let intermediate = compose!(add, multiply, divide);
+        Ok(())
+    }
 }

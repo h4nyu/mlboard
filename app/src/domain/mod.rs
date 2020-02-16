@@ -6,6 +6,8 @@ use chrono::prelude::{DateTime, Utc};
 use failure::Error;
 use serde_json::Value;
 
+
+
 #[async_trait]
 pub trait WorkspaceRepository {
     async fn get_all(&self) -> Result<Vec<Workspace>, Error>;
@@ -36,7 +38,3 @@ pub trait PointRepository {
     async fn bulk_insert(&self, rows: &[&Point]) -> Result<usize, Error>;
     async fn delete(&self, trace_ids: &[&Uuid]) -> Result<(), Error>;
 }
-
-pub trait Get {
-}
-

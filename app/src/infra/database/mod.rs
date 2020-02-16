@@ -20,3 +20,4 @@ pub fn create_connection_pool() -> Result<Pool, Error> {
     let pool = cfg.create_pool(NoTls)?;
     Ok(pool)
 }
+
