@@ -64,7 +64,7 @@ export interface IProps {
   segments: Map<string,ISegment>;
   workspaces: Map<string,IWorkspace>;
   onClick: (transitionId: string) => void;
-  onLegendCLick: (transitionId:string, traceId:string) => void;
+  onLegendCLick: (transitionId: string, traceId: string) => void;
   onWeightChange: (id: string, value: number) => void;
   onRangeChange: (id: string, fromDate: Moment, toDate: Moment) => void;
   onClose: (id: string) => void;
@@ -155,7 +155,7 @@ export default class Transition extends React.Component<IProps>{
       }
     }
   }
-  handleLegendClick = (e:any) => {
+  handleLegendClick = (e: any) => {
     const traceId = e.data[0].traceId;
     const transitionId = this.props.transition.id;
     this.props.onLegendCLick(transitionId, traceId);

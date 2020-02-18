@@ -137,7 +137,7 @@ export default class TransitionUsecase{
     this.traceKeyword = keyword;
   }
 
-  @action deleteTrace = (transitionId:string, traceId:string) => {
+  @action deleteTrace = (transitionId: string, traceId: string) => {
     const segmentIds = this.relations
       .filter(x => (x.transitionId === transitionId && x.traceId === traceId))
       .map(x => x.segmentId).toJS();
