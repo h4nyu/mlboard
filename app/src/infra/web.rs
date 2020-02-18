@@ -19,6 +19,7 @@ pub async fn run() -> std::io::Result<()> {
     HttpServer::new(|| {
         let pool = create_connection_pool().unwrap();
         App::new()
+            .data(web::JsonConfig::default().limit(4096000))
             .data(pool)
             .wrap(Logger::default())
             .wrap(Logger::new("%a %{User-Agent}i"))
@@ -34,8 +35,8 @@ pub async fn run() -> std::io::Result<()> {
     .run()
     .await
 }
-//
-//
+
+
 pub async fn wrap<O, T>(ft: O) -> Result<HttpResponse, error::Error>
 where
     O: Future<Output = Result<T, Error>>,

@@ -51,7 +51,7 @@ const CotrolArea = styled.div`
   grid-area: control;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-end;
 `;
 const formatDatetime = (value: Moment) => {
   return value.local().format("YYYY-MM-DD HH:mm:ss.SSS");
@@ -59,11 +59,12 @@ const formatDatetime = (value: Moment) => {
 export interface IProps {
   currentId: string;
   transition: ITransition;
-  relations: Set<[string, string, string]>;
+  relations: Set<{transitionId: string; traceId: string; segmentId: string}>;
   traces: Map<string, ITrace>;
   segments: Map<string,ISegment>;
   workspaces: Map<string,IWorkspace>;
   onClick: (transitionId: string) => void;
+  onLegendCLick: (transitionId: string, traceId: string) => void;
   onWeightChange: (id: string, value: number) => void;
   onRangeChange: (id: string, fromDate: Moment, toDate: Moment) => void;
   onClose: (id: string) => void;
@@ -74,10 +75,10 @@ export default class Transition extends React.Component<IProps>{
   getPlotData = () => {
     const { transition, relations, segments, traces } = this.props;
     return relations
-      .filter(x => x[0] == transition.id)
+      .filter(x => x.transitionId == transition.id)
       .map((rel) => {
-        let segment = segments.get(rel[2]);
-        let trace = traces.get(rel[1]);
+        let segment = segments.get(rel.segmentId);
+        let trace = traces.get(rel.traceId);
         if (segment === undefined || trace === undefined) {
           return  {};
         }
@@ -99,6 +100,7 @@ export default class Transition extends React.Component<IProps>{
 
         return {
           name: trace.name,
+          traceId: trace.id,
           x: xValues,
           y: yValues.length > 1 ? smooth(yValues, transition.smoothWeight):yValues,
           mode: "markers" ,
@@ -153,11 +155,16 @@ export default class Transition extends React.Component<IProps>{
       }
     }
   }
+  handleLegendClick = (e: any) => {
+    const traceId = e.data[0].traceId;
+    const transitionId = this.props.transition.id;
+    this.props.onLegendCLick(transitionId, traceId);
+  }
 
   render = () => {
     const plotData = this.getPlotData();
     const plotLayout = this.getPlotLayout();
-    const {handleRelayout} = this;
+    const {handleRelayout, handleLegendClick} = this;
     const {
       currentId,
       transition, 
@@ -203,6 +210,7 @@ export default class Transition extends React.Component<IProps>{
                   layout={{...plotLayout, height: height, width: width}}
                   config={{displayModeBar:false}}
                   onRelayout={handleRelayout}
+                  onLegendCLick={handleLegendClick}
                 />
               );
             }}

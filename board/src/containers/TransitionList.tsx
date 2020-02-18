@@ -11,6 +11,8 @@ const Layout = styled.div`
   overflow-y: scroll;
 `;
 
+const AddIcon = () => (<i className="fas fa-plus"></i>);
+
 interface IProps {
   transitions: Map<string, ITransition>;
   onAddClick: () => void;
@@ -20,7 +22,9 @@ const Component = (props: IProps) => {
   const {transitions, Child, onAddClick} = props;
   return (
     <Layout>
-      <div className="button" onClick={()=> onAddClick()}>add</div>
+      <div className="button" onClick={()=> onAddClick()}>
+        <AddIcon/>
+      </div>
       {Array.from(transitions.values()).map(x => (
         <Child 
           key={x.id} 

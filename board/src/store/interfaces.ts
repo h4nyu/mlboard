@@ -23,7 +23,7 @@ export interface ILoadingStore {
 export interface ITransitionUsecase {
   traceKeyword: string;
   traces: Map<string, ITrace>;
-  relations: Set<[string, string, string]>;
+  relations: Set<{transitionId: string; traceId: string; segmentId: string}>;
   workspaces: Map<string, IWorkspace>;
   currentId: string;
 
@@ -33,6 +33,7 @@ export interface ITransitionUsecase {
   select: (transitionId: string) => void;
   deleteTransition: (id: string) => void;
   deleteWorkspace: (workspaceId: string) => void;
+  deleteTrace: (transitionId: string, traceId: string) => void;
   setTraceKeyword: (keyword: string) => void;
   updateRange: (id: string,fromDate: Moment, toDate: Moment) => void;
   updateSmoothWeight: (id: string, value: number) => void;

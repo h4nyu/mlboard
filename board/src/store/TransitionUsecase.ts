@@ -15,7 +15,11 @@ export default class TransitionUsecase{
   private root: IRoot
   @observable traceKeyword: string = "";
   @observable currentId: string = "";
-  @observable relations: Set<[string, string, string]> = Set();
+  @observable relations: Set<{
+    transitionId: string;
+    traceId: string;
+    segmentId: string;
+  }> = Set();
 
   constructor(
     root: IRoot,
@@ -27,6 +31,7 @@ export default class TransitionUsecase{
     this.pointApi = pointApi;
     this.traceApi = traceApi;
     this.workspaceApi = workspaceApi;
+    this.add();
   }
 
   @computed get workspaces() { const keywords = this.traceKeyword.split(',').map(x => x.trim());
@@ -90,7 +95,7 @@ export default class TransitionUsecase{
   @action addTrace = async (traceId: string) => {
     const transition = this.root.transitionStore.rows.get(this.currentId);
     if (transition === undefined){return;}
-    const segmentCount = this.relations.filter(x => (x[0] === this.currentId && x[1] === traceId)).size;
+    const segmentCount = this.relations.filter(x => (x.transitionId === this.currentId && x.traceId === traceId)).size;
     if (segmentCount > 0 ) {return;}
 
     await this.root.loadingStore.dispatch(async () => {
@@ -106,7 +111,11 @@ export default class TransitionUsecase{
         toDate: transition.toDate
       };
       this.root.segmentStore.upsert({[segment.id]: segment});
-      this.relations = this.relations.add([this.currentId, traceId, segment.id]);
+      this.relations = this.relations.add({
+        transitionId: this.currentId,
+        traceId: traceId,
+        segmentId: segment.id
+      });
     });
   }
 
@@ -128,20 +137,29 @@ export default class TransitionUsecase{
     this.traceKeyword = keyword;
   }
 
+  @action deleteTrace = (transitionId: string, traceId: string) => {
+    const segmentIds = this.relations
+      .filter(x => (x.transitionId === transitionId && x.traceId === traceId))
+      .map(x => x.segmentId).toJS();
+    this.root.segmentStore.delete(segmentIds);
+    this.relations = this.relations.filter(x => !(x.transitionId === transitionId && x.traceId === traceId));
+  }
+
   @action updateSmoothWeight = (id: string, value: number) => {
     const transition = this.root.transitionStore.rows.get(id);
     if(transition === undefined){return;}
     this.root.transitionStore.upsert({ [id]: { ...transition, smoothWeight:value, }});
   }
 
-  @action updateRange = async (id: string, fromDate: Moment, toDate: Moment) => {
-    const transition = this.root.transitionStore.rows.get(id);
+  @action updateRange = async (transitionId: string, fromDate: Moment, toDate: Moment) => {
+    const transition = this.root.transitionStore.rows.get(transitionId);
     if(transition === undefined){return;}
-    this.root.transitionStore.upsert({[id]: { ...transition, fromDate, toDate,}});
+    this.root.transitionStore.upsert({[transitionId]: { ...transition, fromDate, toDate,}});
 
     const futs = this.relations
+      .filter(x => x.transitionId === transitionId)
       .flatMap(rel => {
-        return this.root.segmentStore.rows.filter(x => x.id === rel[2]).toList();
+        return this.root.segmentStore.rows.filter(x => x.id === rel.segmentId).toList();
       })
       .map(async (x: ISegment) => {
         await this.root.loadingStore.dispatch(async () => {
@@ -173,10 +191,10 @@ export default class TransitionUsecase{
   }
 
   @action deleteTransition = (id: string) => {
-    const segmentIds = this.relations.filter(x => x[0] === id).map(x => x[2]).toJS();
+    const segmentIds = this.relations.filter(x => x.transitionId === id).map(x => x.segmentId).toJS();
     this.root.segmentStore.delete(segmentIds);
     this.root.transitionStore.delete([id]);
-    this.relations = this.relations.filter(x => x[0] !== id);
+    this.relations = this.relations.filter(x => x.transitionId !== id);
   }
 
   deleteWorkspace = async (id: string) => {

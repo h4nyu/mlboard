@@ -33,11 +33,31 @@ const workspaces = Map({
   }
 })
 
-const traces:Map<string,ITrace> = Map();
 storiesOf('Transition', module)
   .add('default', () => {
-    const segments:Map<string,ISegment> = Map();
-    const relations = Set();
+    const traces:Map<string,ITrace> = Map({
+      "t0": {
+        id: "t0",
+        name: "trace0",
+        workspaceId: workspace.id,
+        createdAt: moment(),
+        updatedAt: moment(),
+      }
+    });
+    const segments:Map<string,ISegment> = Map({
+      "s0": {
+        id: "s0",
+        traceId: "t0",
+        points: points,
+        fromDate: moment(),
+        toDate: moment(),
+      }
+    });
+    const relations = Set([{
+      transitionId: transition.id,
+      traceId: "t0",
+      segmentId: "s0"
+    }]);
     return (
       <Component 
         currentId={""}
@@ -52,6 +72,7 @@ storiesOf('Transition', module)
         segments={segments}
         traces={traces}
         onClick={action('onClick')}
+        onLegendCLick={action('onLegendCLick')}
         onWeightChange={action('onWeightChange')}
         onRangeChange={action('onRangeChange')}
         onClose={action('onClose')}

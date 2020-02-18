@@ -4,7 +4,8 @@ interface IProps {
   data: any;
   layout: any;
   config?: any;
-  onRelayout: (payload: any) => void;
+  onRelayout?: (payload: any) => void;
+  onLegendCLick?: (payload: any) => void;
 }
 interface State {
   ref: React.RefObject<HTMLDivElement>;
@@ -19,9 +20,7 @@ export default class ChartComponent extends React.Component<IProps, State>{
       Plotly.newPlot(this.state.ref.current, this.props.data, this.props.layout).then(
         (e: any) => {
           e.on("plotly_relayout", this.props.onRelayout);
-          e.on('plotly_click', function(){
-            console.log(e);
-          });
+          e.on("plotly_legendclick", this.props.onLegendCLick);
         }
       );
     }
