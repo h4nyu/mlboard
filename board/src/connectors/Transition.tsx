@@ -17,6 +17,7 @@ const Component = (props: IProps) => (
     workspaces={workspaceStore.rows}
     traces={traceStore.rows}
     onClick={transitionUsecase.select}
+    onLegendCLick={transitionUsecase.deleteTrace}
     onWeightChange={transitionUsecase.updateSmoothWeight}
     onRangeChange={transitionUsecase.updateRange}
     onClose={transitionUsecase.deleteTransition}

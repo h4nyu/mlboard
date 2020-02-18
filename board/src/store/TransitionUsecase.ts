@@ -31,6 +31,7 @@ export default class TransitionUsecase{
     this.pointApi = pointApi;
     this.traceApi = traceApi;
     this.workspaceApi = workspaceApi;
+    this.add();
   }
 
   @computed get workspaces() { const keywords = this.traceKeyword.split(',').map(x => x.trim());
@@ -134,6 +135,14 @@ export default class TransitionUsecase{
 
   @action setTraceKeyword = (keyword: string) => {
     this.traceKeyword = keyword;
+  }
+
+  @action deleteTrace = (transitionId:string, traceId:string) => {
+    const segmentIds = this.relations
+      .filter(x => (x.transitionId === transitionId && x.traceId === traceId))
+      .map(x => x.segmentId).toJS();
+    this.root.segmentStore.delete(segmentIds);
+    this.relations = this.relations.filter(x => !(x.transitionId === transitionId && x.traceId === traceId));
   }
 
   @action updateSmoothWeight = (id: string, value: number) => {
