@@ -23,7 +23,7 @@ export interface ILoadingStore {
 export interface ITransitionUsecase {
   traceKeyword: string;
   traces: Map<string, ITrace>;
-  relations: Set<[string, string, string]>;
+  relations: Set<{transitionId: string; traceId: string; segmentId: string}>;
   workspaces: Map<string, IWorkspace>;
   currentId: string;
 

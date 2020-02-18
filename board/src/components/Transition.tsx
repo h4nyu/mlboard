@@ -59,7 +59,7 @@ const formatDatetime = (value: Moment) => {
 export interface IProps {
   currentId: string;
   transition: ITransition;
-  relations: Set<[string, string, string]>;
+  relations: Set<{transitionId: string; traceId: string; segmentId: string}>;
   traces: Map<string, ITrace>;
   segments: Map<string,ISegment>;
   workspaces: Map<string,IWorkspace>;
@@ -74,10 +74,10 @@ export default class Transition extends React.Component<IProps>{
   getPlotData = () => {
     const { transition, relations, segments, traces } = this.props;
     return relations
-      .filter(x => x[0] == transition.id)
+      .filter(x => x.transitionId == transition.id)
       .map((rel) => {
-        let segment = segments.get(rel[2]);
-        let trace = traces.get(rel[1]);
+        let segment = segments.get(rel.segmentId);
+        let trace = traces.get(rel.traceId);
         if (segment === undefined || trace === undefined) {
           return  {};
         }
