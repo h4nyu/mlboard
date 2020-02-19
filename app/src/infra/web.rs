@@ -36,7 +36,6 @@ pub async fn run() -> std::io::Result<()> {
     .await
 }
 
-
 pub async fn wrap<O, T>(ft: O) -> Result<HttpResponse, error::Error>
 where
     O: Future<Output = Result<T, Error>>,

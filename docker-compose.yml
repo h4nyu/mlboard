@@ -6,6 +6,8 @@ services:
 
   api: &default-app
     image: "h4nyu/mlboard_app:${TAG}"
+    security_opt:
+      - seccomp:unconfined
     depends_on:
       - db
       - migration
