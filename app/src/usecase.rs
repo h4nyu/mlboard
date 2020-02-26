@@ -90,6 +90,7 @@ where
         let mut p = Point::new();
         p.value = v.to_owned();
         p.trace_id = k.to_owned();
+        p.ts = msg.ts.to_owned();
         points.push(p);
         trace_ids.push(k);
     }
