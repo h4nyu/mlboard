@@ -18,8 +18,10 @@ async fn demo(
     let conn = pool.get().await?;
     let workspace_id = register_workspace(
         &conn,
-        workspace_name,
-        &json!({"A": 1, "B":"text", "C": 0.1}),
+        &RegisterWorkspace{
+            name: workspace_name.to_owned(),
+            params: json!({"A": 1, "B":"text", "C": 0.1})
+        }
     )
     .await?;
 
@@ -32,7 +34,8 @@ async fn demo(
     for i in 0..*point_count {
         let values: HashMap<Uuid, f64> =
             trace_ids.iter().map(|x| (x.to_owned(), i as f64)).collect();
-        add_scalars(&conn, &values, &Utc::now()).await?;
+
+        add_scalars(&conn, &AddScalars{ values:values, ts: Utc::now() }).await?;
     }
     println!("end {}", workspace_name);
     Ok(())
