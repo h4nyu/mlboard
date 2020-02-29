@@ -29,12 +29,6 @@ jobs:
             docker-compose -f docker-compose.yml -f docker-compose.build.yml build --parallel
 
       - run:
-          name: Test Migration
-          command: |
-            docker-compose -f docker-compose.yml run --rm migration alembic upgrade head
-            docker-compose -f docker-compose.yml run --rm migration alembic downgrade base
-
-      - run:
           name: Test App
           command: |
             docker-compose -f docker-compose.yml run --rm api cargo test

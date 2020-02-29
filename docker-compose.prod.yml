@@ -11,11 +11,6 @@ services:
   api: &default-app
     image: h4nyu/mlboard_app
     depends_on:
-      - migration
-
-  migration:
-    image: h4nyu/mlboard_migration
-    depends_on:
       - db
 
   board: &default-node

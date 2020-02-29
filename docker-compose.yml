@@ -8,12 +8,6 @@ services:
     image: "h4nyu/mlboard_app:${TAG}"
     depends_on:
       - db
-      - migration
-
-  migration:
-    image: "h4nyu/mlboard_migration:${TAG}"
-    depends_on:
-      - db
 
   board: &default-node
     image: "h4nyu/mlboard_board:${TAG}"

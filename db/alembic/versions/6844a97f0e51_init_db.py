@@ -1,8 +1,8 @@
-"""init tables
+"""init db
 
-Revision ID: 83ff7579dbed
-Revises:
-Create Date: 2018-12-29 16:25:57.277243
+Revision ID: 6844a97f0e51
+Revises: 
+Create Date: 2020-02-29 02:44:16.353030
 
 """
 from alembic import op
@@ -11,18 +11,16 @@ from sqlalchemy.sql import text
 
 
 # revision identifiers, used by Alembic.
-revision = '83ff7579dbed'
+revision = '6844a97f0e51'
 down_revision = None
 branch_labels = None
 depends_on = None
-
 
 def upgrade():
     conn = op.get_bind()
     conn.execute(text(
         """
         CREATE EXTENSION "uuid-ossp";
-
         CREATE TABLE points
             (
                 ts timestamp with time zone NOT NULL DEFAULT clock_timestamp(),
@@ -31,7 +29,6 @@ def upgrade():
             );
         CREATE INDEX on points (trace_id);
         SELECT create_hypertable('points', 'ts', chunk_time_interval => interval '2 day');
-
         CREATE TABLE traces
             (
                 id uuid NOT NULL PRIMARY KEY,

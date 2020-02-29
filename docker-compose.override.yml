@@ -7,13 +7,14 @@ services:
     ports:
       - "${DB_PORT}:5432"
 
-  migration:
-    volumes:
-      - ./migration:/srv
-
   board: &default-node
     volumes:
       - ./board:/srv
+
+  db:
+    volumes:
+      - ./db:/srv
+      - ./db/upgrade.sh:/docker-entrypoint-initdb.d/upgrade.sh
 
   web:
     volumes:
