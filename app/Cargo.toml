@@ -18,11 +18,3 @@ failure = "0.1.6"
 env_logger = "0.7.1"
 async-trait = "0.1.24"
 futures = "0.3"
-
-
-[dev-dependencies]
-criterion = "0.3"
-
-[[bench]]
-name = "bench"
-harness = false
