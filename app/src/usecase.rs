@@ -1,25 +1,74 @@
-use crate::domain::entities::*;
-use crate::domain::*;
+use crate::entities::*;
 use crate::logics::reduce_points;
-use chrono::prelude::{DateTime, Utc};
 use failure::Error;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::HashMap;
 use uuid::Uuid;
-pub async fn register_trace<R>(repo: &R, workspace_id: &Uuid, name: &str) -> Result<Uuid, Error>
-where
-    R: TraceRepository,
-{
-    let id = match repo.get(name, workspace_id).await? {
-        Some(x) => x.id,
-        None => {
-            let new_trace = Trace::new(name, workspace_id);
-            repo.insert(&new_trace).await?;
-            new_trace.id
-        }
-    };
-    Ok(id)
+use async_trait::async_trait;
+use chrono::prelude::{DateTime, Utc};
+
+#[async_trait]
+pub trait WorkspaceRepository {
+    async fn get_all(&self) -> Result<Vec<Workspace>, Error>;
+    async fn get(&self, name: &str) -> Result<Option<Workspace>, Error>;
+    async fn update(&self, id: &Uuid, name: &str, config: &Value) -> Result<Uuid, Error>;
+    async fn insert(&self, row: &Workspace) -> Result<Uuid, Error>;
+    async fn delete(&self, id: &Uuid) -> Result<Uuid, Error>;
+}
+
+#[async_trait]
+pub trait TraceRepository {
+    async fn get_all(&self) -> Result<Vec<Trace>, Error>;
+    async fn get(&self, name: &str, workspace_id: &Uuid) -> Result<Option<Trace>, Error>;
+    async fn get_by_workspace_id(&self, workspace_id: &Uuid) -> Result<Vec<Trace>, Error>;
+    async fn insert(&self, row: &Trace) -> Result<Uuid, Error>;
+    async fn update_last_ts(&self, ids: &[&Uuid], updated_at: &DateTime<Utc>) -> Result<(), Error>;
+    async fn delete(&self, ids: &[&Uuid]) -> Result<(), Error>;
+}
+
+#[async_trait]
+pub trait PointRepository {
+    async fn get_by_range(
+        &self,
+        trace_id: &Uuid,
+        from_date: &DateTime<Utc>,
+        to_date: &DateTime<Utc>,
+    ) -> Result<Vec<SlimPoint>, Error>;
+    async fn bulk_insert(&self, rows: &[&Point]) -> Result<usize, Error>;
+    async fn delete(&self, trace_ids: &[&Uuid]) -> Result<(), Error>;
+}
+
+// --------------------------------------
+pub struct Context<'a> {
+    pub trace_repo: &'a (dyn TraceRepository + Sync),
+    pub workspace_repo: &'a (dyn WorkspaceRepository + Sync),
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct CreateTraceMsg {
+    pub name: String,
+    pub workspace_id: Uuid,
+}
+#[async_trait]
+pub trait CreateTrace {
+    async fn create_trace(&self, msg: &CreateTraceMsg) -> Result<Uuid, Error>;
+}
+#[async_trait]
+impl <'a> CreateTrace for Context<'a>{
+    async fn create_trace(&self, msg: &CreateTraceMsg) -> Result<Uuid, Error>{
+        let trace_id = match self.trace_repo.get(&msg.name, &msg.workspace_id).await? {
+            Some(x) => x.id,
+            None => {
+                let mut trace:Trace = Default::default();
+                trace.name = msg.name.to_owned();
+                trace.workspace_id = msg.workspace_id.to_owned();
+                self.trace_repo.insert(&trace).await?;
+                trace.id
+            }
+        };
+        Ok(trace_id)
+    }
 }
 
 #[derive(Deserialize, Serialize)]
@@ -114,4 +163,9 @@ where
     TraceRepository::delete(repo, &trace_ids).await?;
     WorkspaceRepository::delete(repo, &msg.id).await?;
     Ok(msg.id)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
 }

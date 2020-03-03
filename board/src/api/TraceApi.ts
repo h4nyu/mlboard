@@ -14,7 +14,7 @@ interface ITraceRes {
 
 export default class TraceApi {
   all = async (): Promise<ITrace[]> => {
-    const res = await axios.get(`api/trace/all`);
+    const res = await axios.get(`/api/trace/all`);
     const resData = res.data as ITraceRes[];
     const rows: ITrace[] = resData.map(x => ({
       id: x.id,

@@ -5,6 +5,7 @@ authors = ["dev"]
 edition = "2018"
 
 [dependencies]
+actix-files = "0.2.1"
 actix-rt = "1.0.0"
 actix-web = "2.0"
 tokio = { version = "0.2", features = ["full"] }
@@ -18,11 +19,3 @@ failure = "0.1.6"
 env_logger = "0.7.1"
 async-trait = "0.1.24"
 futures = "0.3"
-
-
-[dev-dependencies]
-criterion = "0.3"
-
-[[bench]]
-name = "bench"
-harness = false

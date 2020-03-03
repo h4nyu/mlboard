@@ -12,7 +12,7 @@ interface IPointRes {
 
 export default class PointApi {
   rangeBy = async (traceId: string, fromDate: Moment, toDate: Moment): Promise<IPoint[]> => {
-    const res = await axios.get(`api/point/range-by`, {
+    const res = await axios.get(`/api/point/range-by`, {
       params: {
         trace_id: traceId,
         from_date: fromDate.toISOString(),

@@ -1,5 +1,6 @@
 use super::*;
 use serde_json::Value;
+use crate::usecase::{WorkspaceRepository};
 
 impl From<Row> for Workspace {
     fn from(row: Row) -> Self {
@@ -10,6 +11,10 @@ impl From<Row> for Workspace {
             created_at: row.get("created_at"),
         }
     }
+}
+
+pub trait FilterBy<T, U> {
+    fn filter(&mut self) -> Result<Vec<U>, Error>;
 }
 
 #[async_trait]

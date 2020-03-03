@@ -1,4 +1,5 @@
 use super::*;
+use crate::usecase::{PointRepository};
 
 impl From<Row> for Point {
     fn from(row: Row) -> Self {

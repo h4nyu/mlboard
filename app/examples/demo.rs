@@ -1,4 +1,4 @@
-use app::infra::database::create_connection_pool;
+use app::database::create_connection_pool;
 use app::usecase::*;
 use chrono::prelude::Utc;
 use deadpool_postgres::Pool;
