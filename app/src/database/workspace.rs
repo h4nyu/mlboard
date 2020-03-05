@@ -1,6 +1,6 @@
 use super::*;
+use crate::usecase::WorkspaceRepository;
 use serde_json::Value;
-use crate::usecase::{WorkspaceRepository};
 
 impl From<Row> for Workspace {
     fn from(row: Row) -> Self {

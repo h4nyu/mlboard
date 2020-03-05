@@ -1,12 +1,12 @@
 use crate::entities::*;
 use crate::logics::reduce_points;
+use async_trait::async_trait;
+use chrono::prelude::{DateTime, Utc};
 use failure::Error;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::HashMap;
 use uuid::Uuid;
-use async_trait::async_trait;
-use chrono::prelude::{DateTime, Utc};
 
 #[async_trait]
 pub trait WorkspaceRepository {
@@ -39,133 +39,158 @@ pub trait PointRepository {
     async fn delete(&self, trace_ids: &[&Uuid]) -> Result<(), Error>;
 }
 
-// --------------------------------------
-pub struct Context<'a> {
-    pub trace_repo: &'a (dyn TraceRepository + Sync),
-    pub workspace_repo: &'a (dyn WorkspaceRepository + Sync),
+#[async_trait]
+pub trait Service<T> {
+    type Output: Serialize;
+    async fn call(&self, dependencies: &T) -> Result<Self::Output, Error>;
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct CreateTraceMsg {
+pub struct CreateTrace {
     pub name: String,
     pub workspace_id: Uuid,
 }
+
 #[async_trait]
-pub trait CreateTrace {
-    async fn create_trace(&self, msg: &CreateTraceMsg) -> Result<Uuid, Error>;
-}
-#[async_trait]
-impl <'a> CreateTrace for Context<'a>{
-    async fn create_trace(&self, msg: &CreateTraceMsg) -> Result<Uuid, Error>{
-        let trace_id = match self.trace_repo.get(&msg.name, &msg.workspace_id).await? {
+impl<T> Service<T> for CreateTrace
+where
+    T: TraceRepository + Sync,
+{
+    type Output = Uuid;
+    async fn call(&self, repo: &T) -> Result<Self::Output, Error> {
+        let trace_id = match TraceRepository::get(repo, &self.name, &self.workspace_id).await? {
             Some(x) => x.id,
             None => {
-                let mut trace:Trace = Default::default();
-                trace.name = msg.name.to_owned();
-                trace.workspace_id = msg.workspace_id.to_owned();
-                self.trace_repo.insert(&trace).await?;
+                let mut trace: Trace = Default::default();
+                trace.name = self.name.to_owned();
+                trace.workspace_id = self.workspace_id.to_owned();
+                TraceRepository::insert(repo, &trace).await?;
                 trace.id
             }
         };
         Ok(trace_id)
     }
 }
-
+//
 #[derive(Deserialize, Serialize)]
-pub struct RegisterWorkspace {
+pub struct CreateWorkspace {
     pub name: String,
     pub params: Value,
 }
 
-pub async fn register_workspace<R>(repo: &R, msg: &RegisterWorkspace) -> Result<Uuid, Error>
+#[async_trait]
+impl<T> Service<T> for CreateWorkspace
 where
-    R: WorkspaceRepository,
+    T: WorkspaceRepository + Sync,
 {
-    let id = match repo.get(&msg.name).await? {
-        Some(x) => repo.update(&x.id, &msg.name, &msg.params).await?,
-        None => {
-            let new_workspace = Workspace::new(&msg.name, &msg.params);
-            repo.insert(&new_workspace).await?
-        }
-    };
-
-    Ok(id)
+    type Output = Uuid;
+    async fn call(&self, repo: &T) -> Result<Self::Output, Error> {
+        let id = match repo.get(&self.name).await? {
+            Some(x) => repo.update(&x.id, &self.name, &self.params).await?,
+            None => {
+                let new_workspace = Workspace::new(&self.name, &self.params);
+                WorkspaceRepository::insert(repo, &new_workspace).await?
+            }
+        };
+        Ok(id)
+    }
 }
-
-pub async fn get_trace_all<R>(repo: &R) -> Result<Vec<Trace>, Error>
+//
+//
+#[derive(Deserialize, Serialize)]
+pub struct GetTraceAll {}
+#[async_trait]
+impl<T> Service<T> for GetTraceAll
 where
-    R: TraceRepository,
+    T: TraceRepository + Sync,
 {
-    TraceRepository::get_all(repo).await
+    type Output = Vec<Trace>;
+    async fn call(&self, repo: &T) -> Result<Self::Output, Error> {
+        TraceRepository::get_all(repo).await
+    }
 }
-
-pub async fn get_workspace_all<R>(repo: &R) -> Result<Vec<Workspace>, Error>
+//
+#[derive(Deserialize, Serialize)]
+pub struct GetWorkspaceAll {}
+#[async_trait]
+impl<T> Service<T> for GetWorkspaceAll
 where
-    R: WorkspaceRepository,
+    T: WorkspaceRepository + Sync,
 {
-    repo.get_all().await
+    type Output = Vec<Workspace>;
+    async fn call(&self, repo: &T) -> Result<Self::Output, Error> {
+        WorkspaceRepository::get_all(repo).await
+    }
 }
 
 #[derive(Deserialize, Serialize)]
-pub struct GetPointRangeBy {
+pub struct GetPoints {
     pub trace_id: Uuid,
     pub from_date: DateTime<Utc>,
     pub to_date: DateTime<Utc>,
 }
-
-pub async fn get_point_by_range<R>(repo: &R, msg: &GetPointRangeBy) -> Result<Vec<SlimPoint>, Error>
+#[async_trait]
+impl<T> Service<T> for GetPoints
 where
-    R: PointRepository,
+    T: PointRepository + Sync,
 {
-    let points =
-        PointRepository::get_by_range(repo, &msg.trace_id, &msg.from_date, &msg.to_date).await?;
-    Ok(reduce_points(&points, 1000))
+    type Output = Vec<SlimPoint>;
+    async fn call(&self, repo: &T) -> Result<Self::Output, Error> {
+        let points =
+            PointRepository::get_by_range(repo, &self.trace_id, &self.from_date, &self.to_date)
+                .await?;
+        Ok(reduce_points(&points, 1000))
+    }
 }
-
+//
 #[derive(Deserialize, Serialize)]
 pub struct AddScalars {
     pub ts: DateTime<Utc>,
     pub values: HashMap<Uuid, f64>,
 }
-
-pub async fn add_scalars<R>(repo: &R, msg: &AddScalars) -> Result<(), Error>
+//
+#[async_trait]
+impl<T> Service<T> for AddScalars
 where
-    R: PointRepository + TraceRepository,
+    T: TraceRepository + PointRepository + Sync,
 {
-    let mut points: Vec<Point> = vec![];
-    let mut trace_ids: Vec<&Uuid> = vec![];
+    type Output = ();
+    async fn call(&self, repo: &T) -> Result<Self::Output, Error> {
+        let mut points: Vec<Point> = vec![];
+        let mut trace_ids: Vec<&Uuid> = vec![];
 
-    for (k, v) in msg.values.iter() {
-        let mut p = Point::new();
-        p.value = v.to_owned();
-        p.trace_id = k.to_owned();
-        p.ts = msg.ts.to_owned();
-        points.push(p);
-        trace_ids.push(k);
+        for (k, v) in self.values.iter() {
+            let mut p = Point::new();
+            p.value = v.to_owned();
+            p.trace_id = k.to_owned();
+            p.ts = self.ts.to_owned();
+            points.push(p);
+            trace_ids.push(k);
+        }
+
+        repo.bulk_insert(&points.iter().collect::<Vec<_>>()).await?;
+        repo.update_last_ts(&trace_ids, &self.ts).await?;
+        Ok(())
     }
-
-    repo.bulk_insert(&points.iter().collect::<Vec<_>>()).await?;
-    repo.update_last_ts(&trace_ids, &msg.ts).await?;
-    Ok(())
 }
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct DeleteWorkspace {
     id: Uuid,
 }
-pub async fn delete_workspace<R>(repo: &R, msg: &DeleteWorkspace) -> Result<Uuid, Error>
-where
-    R: PointRepository + TraceRepository + WorkspaceRepository,
-{
-    let traces = repo.get_by_workspace_id(&msg.id).await?;
-    let trace_ids: Vec<&Uuid> = traces.iter().map(|x| &x.id).collect();
-    PointRepository::delete(repo, &trace_ids).await?;
-    TraceRepository::delete(repo, &trace_ids).await?;
-    WorkspaceRepository::delete(repo, &msg.id).await?;
-    Ok(msg.id)
-}
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+#[async_trait]
+impl<T> Service<T> for DeleteWorkspace
+where
+    T: PointRepository + TraceRepository + WorkspaceRepository + Sync,
+{
+    type Output = Uuid;
+    async fn call(&self, repo: &T) -> Result<Self::Output, Error> {
+        let traces: Vec<Trace> = TraceRepository::get_by_workspace_id(repo, &self.id).await?;
+        let trace_ids: Vec<&Uuid> = traces.iter().map(|x| &x.id).collect();
+        PointRepository::delete(repo, &trace_ids).await?;
+        TraceRepository::delete(repo, &trace_ids).await?;
+        WorkspaceRepository::delete(repo, &self.id).await?;
+        Ok(self.id)
+    }
 }
