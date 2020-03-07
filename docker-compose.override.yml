@@ -4,7 +4,7 @@ services:
   api:
     volumes: 
       - ./app:/srv
-      - ./board/dist:/srv/static
+      - ./board/dist:/public
     ports:
       - "${WEB_PORT}:5000"
 

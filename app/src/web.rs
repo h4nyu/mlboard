@@ -20,7 +20,7 @@ pub async fn run() -> std::io::Result<()> {
             .data(pool)
             .wrap(Logger::default())
             .wrap(Logger::new("%a %{User-Agent}i"))
-            .service(fs::Files::new("/ui", "./static").index_file("index.html"))
+            .service(fs::Files::new("/ui", "/public").index_file("index.html"))
             .service(
                 web::resource("/api/trace/all").route(web::get().to(get_service::<GetTraceAll>)),
             )
