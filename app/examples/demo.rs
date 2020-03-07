@@ -1,4 +1,4 @@
-use app::infra::database::create_connection_pool;
+use app::database::create_connection_pool;
 use app::usecase::*;
 use chrono::prelude::Utc;
 use deadpool_postgres::Pool;
@@ -16,26 +16,33 @@ async fn demo(
 ) -> Result<(), Error> {
     println!("start {}", workspace_name);
     let conn = pool.get().await?;
-    let workspace_id = register_workspace(
-        &conn,
-        &RegisterWorkspace{
-            name: workspace_name.to_owned(),
-            params: json!({"A": 1, "B":"text", "C": 0.1})
-        }
-    )
+    let workspace_id = CreateWorkspace {
+        name: workspace_name.to_owned(),
+        params: json!({"A": 1, "B":"text", "C": 0.1}),
+    }
+    .call(&conn)
     .await?;
 
     let mut trace_ids: Vec<Uuid> = vec![];
     for i in 0..*trace_count {
-        let id = register_trace(&conn, &workspace_id, &format!("trace{}", i)).await?;
+        let id = CreateTrace {
+            workspace_id: workspace_id.to_owned(),
+            name: format!("trace{}", i).to_owned(),
+        }
+        .call(&conn)
+        .await?;
         trace_ids.push(id);
     }
 
     for i in 0..*point_count {
         let values: HashMap<Uuid, f64> =
             trace_ids.iter().map(|x| (x.to_owned(), i as f64)).collect();
-
-        add_scalars(&conn, &AddScalars{ values:values, ts: Utc::now() }).await?;
+        AddScalars {
+            ts: Utc::now(),
+            values: values,
+        }
+        .call(&conn)
+        .await?;
     }
     println!("end {}", workspace_name);
     Ok(())

@@ -1,4 +1,4 @@
-use crate::domain::entities::SlimPoint;
+use crate::entities::SlimPoint;
 
 pub fn reduce_points(points: &[SlimPoint], size: usize) -> Vec<SlimPoint> {
     if size == 0 {

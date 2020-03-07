@@ -2,8 +2,7 @@ mod point;
 mod trace;
 mod workspace;
 
-use crate::domain::entities::*;
-use crate::domain::*;
+use crate::entities::*;
 use async_trait::async_trait;
 use chrono::prelude::{DateTime, Utc};
 use deadpool_postgres::{Client, Config, Pool};

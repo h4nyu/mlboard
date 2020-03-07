@@ -63,12 +63,12 @@ pub struct Trace {
     pub updated_at: DateTime<Utc>,
 }
 
-impl Trace {
-    pub fn new(name: &str, workspace_id: &Uuid) -> Self {
+impl Default for Trace {
+    fn default() -> Self {
         Self {
             id: Uuid::new_v4(),
-            name: name.to_owned(),
-            workspace_id: workspace_id.to_owned(),
+            name: "".to_owned(),
+            workspace_id: Uuid::new_v4(),
             created_at: Utc::now(),
             updated_at: Utc::now(),
         }

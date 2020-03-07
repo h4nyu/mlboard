@@ -24,8 +24,3 @@ services:
       <<: *default-build
       context: ./board
       target: ${STAGE}
-
-  web:
-    build:
-      <<: *default-build
-      context: ./web

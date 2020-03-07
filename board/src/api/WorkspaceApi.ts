@@ -13,7 +13,7 @@ interface IWorkspaceRes {
 
 export default class WorkspaceApi {
   all = async (): Promise<IWorkspace[]> => {
-    const res = await axios.get(`api/workspace/all`);
+    const res = await axios.get(`/api/workspace/all`);
     const resData = res.data as IWorkspaceRes[];
     const rows: IWorkspace[] = resData.map(x => ({
       id: x.id,
@@ -25,7 +25,7 @@ export default class WorkspaceApi {
   };
 
   delete = async (id: string): Promise<void> => {
-    await axios.delete(`api/workspace`, {
+    await axios.delete(`/api/workspace`, {
       params: {
         id: id
       }

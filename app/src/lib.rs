@@ -1,5 +1,6 @@
 pub mod client;
-pub mod domain;
-pub mod infra;
+pub mod database;
+pub mod entities;
 pub mod logics;
 pub mod usecase;
+pub mod web;

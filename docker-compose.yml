@@ -7,7 +7,6 @@ services:
   api: &default-app
     image: "h4nyu/mlboard_app:${TAG}"
     depends_on:
-      - db
       - migration
 
   migration:
@@ -18,15 +17,6 @@ services:
   board: &default-node
     image: "h4nyu/mlboard_board:${TAG}"
     command: yarn watch
-
-  web:
-    image: "h4nyu/mlboard_web:${TAG}"
-    volumes:
-      - ./web/nginx.prod.conf:/etc/nginx/nginx.conf
-      - ./board/dist:/public/
-    depends_on:
-      - api
-      - board
 
 networks:
   default:

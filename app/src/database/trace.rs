@@ -1,4 +1,5 @@
 use super::*;
+use crate::usecase::TraceRepository;
 
 impl From<Row> for Trace {
     fn from(row: Row) -> Self {
