@@ -27,6 +27,11 @@ pub trait TraceRepository {
     async fn delete(&self, ids: &[&Uuid]) -> Result<(), Error>;
 }
 
+// pub struct Context {
+//     pub point_repo: & (dyn PointRepository + Sync),
+// }
+
+
 #[async_trait]
 pub trait PointRepository {
     async fn get_by_range(
