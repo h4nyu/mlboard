@@ -16,6 +16,7 @@ async fn demo(
 ) -> Result<(), Error> {
     println!("start {}", workspace_name);
     let conn = pool.get().await?;
+
     let workspace_id = CreateWorkspace {
         name: workspace_name.to_owned(),
         params: json!({"A": 1, "B":"text", "C": 0.1}),
@@ -24,6 +25,7 @@ async fn demo(
     .await?;
 
     let mut trace_ids: Vec<Uuid> = vec![];
+
     for i in 0..*trace_count {
         let id = CreateTrace {
             workspace_id: workspace_id.to_owned(),

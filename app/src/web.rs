@@ -52,6 +52,17 @@ pub async fn run() -> std::io::Result<()> {
     .run()
     .await
 }
+impl IContext for Client {
+    fn point_repo(&self) -> &(dyn PointRepository + Sync) {
+        self
+    }
+    fn trace_repo(&self) -> &(dyn TraceRepository + Sync) {
+        self
+    }
+    fn workspace_repo(&self) -> &(dyn WorkspaceRepository + Sync) {
+        self
+    }
+}
 
 async fn wrap<O, T>(ft: O) -> Result<HttpResponse, error::Error>
 where

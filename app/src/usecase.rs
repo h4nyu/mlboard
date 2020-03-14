@@ -39,6 +39,12 @@ pub trait PointRepository {
     async fn delete(&self, trace_ids: &[&Uuid]) -> Result<(), Error>;
 }
 
+pub trait IContext {
+    fn point_repo(&self) -> &(dyn PointRepository + Sync);
+    fn trace_repo(&self) -> &(dyn TraceRepository + Sync);
+    fn workspace_repo(&self) -> &(dyn WorkspaceRepository + Sync);
+}
+
 #[async_trait]
 pub trait Service<T> {
     type Output: Serialize;
@@ -54,17 +60,17 @@ pub struct CreateTrace {
 #[async_trait]
 impl<T> Service<T> for CreateTrace
 where
-    T: TraceRepository + Sync,
+    T: IContext + Sync,
 {
     type Output = Uuid;
-    async fn call(&self, repo: &T) -> Result<Self::Output, Error> {
-        let trace_id = match TraceRepository::get(repo, &self.name, &self.workspace_id).await? {
+    async fn call(&self, ctx: &T) -> Result<Self::Output, Error> {
+        let trace_id = match ctx.trace_repo().get(&self.name, &self.workspace_id).await? {
             Some(x) => x.id,
             None => {
                 let mut trace: Trace = Default::default();
                 trace.name = self.name.to_owned();
                 trace.workspace_id = self.workspace_id.to_owned();
-                TraceRepository::insert(repo, &trace).await?;
+                ctx.trace_repo().insert(&trace).await?;
                 trace.id
             }
         };
@@ -81,15 +87,19 @@ pub struct CreateWorkspace {
 #[async_trait]
 impl<T> Service<T> for CreateWorkspace
 where
-    T: WorkspaceRepository + Sync,
+    T: IContext + Sync,
 {
     type Output = Uuid;
-    async fn call(&self, repo: &T) -> Result<Self::Output, Error> {
-        let id = match repo.get(&self.name).await? {
-            Some(x) => repo.update(&x.id, &self.name, &self.params).await?,
+    async fn call(&self, ctx: &T) -> Result<Self::Output, Error> {
+        let id = match ctx.workspace_repo().get(&self.name).await? {
+            Some(x) => {
+                ctx.workspace_repo()
+                    .update(&x.id, &self.name, &self.params)
+                    .await?
+            }
             None => {
                 let new_workspace = Workspace::new(&self.name, &self.params);
-                WorkspaceRepository::insert(repo, &new_workspace).await?
+                ctx.workspace_repo().insert(&new_workspace).await?
             }
         };
         Ok(id)
@@ -102,11 +112,11 @@ pub struct GetTraceAll {}
 #[async_trait]
 impl<T> Service<T> for GetTraceAll
 where
-    T: TraceRepository + Sync,
+    T: IContext + Sync,
 {
     type Output = Vec<Trace>;
-    async fn call(&self, repo: &T) -> Result<Self::Output, Error> {
-        TraceRepository::get_all(repo).await
+    async fn call(&self, ctx: &T) -> Result<Self::Output, Error> {
+        ctx.trace_repo().get_all().await
     }
 }
 //
@@ -115,11 +125,11 @@ pub struct GetWorkspaceAll {}
 #[async_trait]
 impl<T> Service<T> for GetWorkspaceAll
 where
-    T: WorkspaceRepository + Sync,
+    T: IContext + Sync,
 {
     type Output = Vec<Workspace>;
-    async fn call(&self, repo: &T) -> Result<Self::Output, Error> {
-        WorkspaceRepository::get_all(repo).await
+    async fn call(&self, ctx: &T) -> Result<Self::Output, Error> {
+        ctx.workspace_repo().get_all().await
     }
 }
 
@@ -132,13 +142,14 @@ pub struct GetPoints {
 #[async_trait]
 impl<T> Service<T> for GetPoints
 where
-    T: PointRepository + Sync,
+    T: IContext + Sync,
 {
     type Output = Vec<SlimPoint>;
-    async fn call(&self, repo: &T) -> Result<Self::Output, Error> {
-        let points =
-            PointRepository::get_by_range(repo, &self.trace_id, &self.from_date, &self.to_date)
-                .await?;
+    async fn call(&self, ctx: &T) -> Result<Self::Output, Error> {
+        let points = ctx
+            .point_repo()
+            .get_by_range(&self.trace_id, &self.from_date, &self.to_date)
+            .await?;
         Ok(reduce_points(&points, 1000))
     }
 }
@@ -152,10 +163,10 @@ pub struct AddScalars {
 #[async_trait]
 impl<T> Service<T> for AddScalars
 where
-    T: TraceRepository + PointRepository + Sync,
+    T: IContext + Sync,
 {
     type Output = ();
-    async fn call(&self, repo: &T) -> Result<Self::Output, Error> {
+    async fn call(&self, ctx: &T) -> Result<Self::Output, Error> {
         let mut points: Vec<Point> = vec![];
         let mut trace_ids: Vec<&Uuid> = vec![];
 
@@ -167,9 +178,12 @@ where
             points.push(p);
             trace_ids.push(k);
         }
-
-        repo.bulk_insert(&points.iter().collect::<Vec<_>>()).await?;
-        repo.update_last_ts(&trace_ids, &self.ts).await?;
+        ctx.point_repo()
+            .bulk_insert(&points.iter().collect::<Vec<_>>())
+            .await?;
+        ctx.trace_repo()
+            .update_last_ts(&trace_ids, &self.ts)
+            .await?;
         Ok(())
     }
 }
@@ -182,15 +196,39 @@ pub struct DeleteWorkspace {
 #[async_trait]
 impl<T> Service<T> for DeleteWorkspace
 where
-    T: PointRepository + TraceRepository + WorkspaceRepository + Sync,
+    T: IContext + Sync,
 {
     type Output = Uuid;
-    async fn call(&self, repo: &T) -> Result<Self::Output, Error> {
-        let traces: Vec<Trace> = TraceRepository::get_by_workspace_id(repo, &self.id).await?;
-        let trace_ids: Vec<&Uuid> = traces.iter().map(|x| &x.id).collect();
-        PointRepository::delete(repo, &trace_ids).await?;
-        TraceRepository::delete(repo, &trace_ids).await?;
-        WorkspaceRepository::delete(repo, &self.id).await?;
+    async fn call(&self, ctx: &T) -> Result<Self::Output, Error> {
+        let traces = ctx.trace_repo().get_by_workspace_id(&self.id).await?;
+        let trace_ids: Vec<Uuid> = traces.iter().map(|x| x.id).collect();
+        DeleteTrace {
+            trace_ids: trace_ids,
+        }
+        .call(ctx)
+        .await?;
+        ctx.workspace_repo().delete(&self.id).await?;
         Ok(self.id)
+    }
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct DeleteTrace {
+    trace_ids: Vec<Uuid>,
+}
+#[async_trait]
+impl<T> Service<T> for DeleteTrace
+where
+    T: IContext + Sync,
+{
+    type Output = ();
+    async fn call(&self, ctx: &T) -> Result<Self::Output, Error> {
+        ctx.point_repo()
+            .delete(&self.trace_ids.iter().collect::<Vec<_>>())
+            .await?;
+        ctx.trace_repo()
+            .delete(&self.trace_ids.iter().collect::<Vec<_>>())
+            .await?;
+        Ok(())
     }
 }
