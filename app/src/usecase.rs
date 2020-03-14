@@ -232,13 +232,3 @@ where
         Ok(())
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[tokio::test]
-    async fn test_build_insert() -> Result<(), Error> {
-        Ok(())
-    }
-}
