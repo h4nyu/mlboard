@@ -1,14 +1,12 @@
 mod point;
 mod trace;
-mod workspace;
 
 use crate::entities::*;
+use crate::usecase::*;
 use async_trait::async_trait;
-use chrono::prelude::{DateTime, Utc};
 use deadpool_postgres::{Client, Config, Pool};
 use failure::Error;
 use tokio_postgres::{NoTls, Row};
-use uuid::Uuid;
 
 pub fn create_connection_pool() -> Result<Pool, Error> {
     let mut cfg = Config::default();
