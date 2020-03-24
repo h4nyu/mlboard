@@ -17,6 +17,7 @@ storiesOf('Search', module)
       defaultValue={"aaa"}
       traces={traces}
       onInput={action('onInput')}
+      onSelect={action('onSelect')}
     />
   ))
   .add('default', () => (
@@ -25,6 +26,7 @@ storiesOf('Search', module)
         defaultValue={"aaa"}
         traces={traces}
         onInput={action('onInput')}
+        onSelect={action('onSelect')}
       />
       <div>aaa</div>
     </div>

@@ -19,6 +19,11 @@ const Brand = styled.span`
   color: white;
 `;
 
+const SearchArea = styled.div`
+  padding: 1em;
+  flex-grow: 2;
+`;
+
 const Btn = styled.div`
   margin: 0.5em;
 `;
@@ -27,14 +32,18 @@ const Btn = styled.div`
 
 interface IProps {
   onRefleshClick: () => void;
+  Search: React.ComponentType<{}>;
 }
 export default (props: IProps) => {
-  const {onRefleshClick} = props;
+  const {onRefleshClick, Search} = props;
   return (
     <Layout style={{zIndex: 30}}>
       <Brand> 
         MLBOARD
       </Brand>
+      <SearchArea>
+        <Search />
+      </SearchArea>
       <Btn className="button" onClick={onRefleshClick}>
         <span className="icon is-small">
           <i className="fas fa-sync-alt" />

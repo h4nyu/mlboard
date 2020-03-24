@@ -7,6 +7,7 @@ import LoadingStore from './LoadingStore';
 import AppStore from './AppStore';
 import ModelStore from './ModelStore';
 import TransitionUsecase from './TransitionUsecase';
+import SearchUsecase from './SearchUsecase';
 
 import WebApi from '~/api';
 
@@ -18,6 +19,7 @@ export class RootStore {
   segmentStore: ModelStore<Segment>;
   transitionStore: ModelStore<Transition>;
   transitionUsecase: TransitionUsecase;
+  searchUsecase : SearchUsecase;
 
   constructor() {
     this.api = new WebApi()
@@ -28,6 +30,7 @@ export class RootStore {
     this.loadingStore = new LoadingStore();
     this.appStore = new AppStore(this);
     this.transitionUsecase = new TransitionUsecase(this);
+    this.searchUsecase = new SearchUsecase(this);
   }
 }
 

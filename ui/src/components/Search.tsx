@@ -5,16 +5,22 @@ import {Trace} from '~/models'
 import { Map } from 'immutable';
 import styled from 'styled-components';
 
+const Layout = styled.div`
+  width: 100%;
+`;
 
 const AutoComplete = styled.div`
+  z-index: 30;
   position: absolute;
   width: 100%;
 `;
 
 const Item = styled.div`
+  width: 100%;
   hover: {
     background-color: #e9e9e9;
   }
+  cursor: pointer;
 `;
 
 type State = {
@@ -24,6 +30,7 @@ export interface IProps {
   defaultValue: string;
   traces:Map<string, Trace>;
   onInput: (value: string) => void;
+  onSelect: (traceId: string) => void;
 }
 export default class DatetimeInput extends React.Component<IProps, State> {
   constructor(props:IProps){
@@ -41,11 +48,11 @@ export default class DatetimeInput extends React.Component<IProps, State> {
     })
   }
   render = () => {
-    const {defaultValue, traces} = this.props;
+    const {defaultValue, traces, onSelect} = this.props;
     const {isActive} = this.state;
-    const {handleInput} = this;
+    const {handleInput, } = this;
     return (
-      <div
+      <Layout
         onMouseEnter={() => this.toggle()}
         onMouseLeave={() => this.toggle()}
       >
@@ -53,20 +60,18 @@ export default class DatetimeInput extends React.Component<IProps, State> {
           defaultValue={String(defaultValue)}
           onInput={(v) => handleInput(v)}
         />
-        {
-          isActive?(
-          <AutoComplete className="list is-hoverable">
-            {
+        <AutoComplete className="list is-hoverable">
+          {
+            isActive? (
               traces.toList().map(x => (
-                <Item className="list-item">
+                <Item className="list-item" onClick={() => onSelect(x.id)}>
                   {x.name}
                 </Item>
               ))
-            }
-          </AutoComplete>
-          ):null
-        }
-      </div>
+            ):null
+          }
+        </AutoComplete>
+      </Layout>
     );
   }
 };

@@ -59,15 +59,37 @@ pub struct IdKey {
     pub id: Uuid,
 }
 
+pub struct RangeKey {
+    pub id: Uuid,
+    pub from_date: DateTime<Utc>,
+    pub to_date: DateTime<Utc>,
+}
+
 pub trait Storage:
     Create<Trace>
     + Get<Trace, Key = NameKey>
     + Delete<Trace, Key = IdKey>
     + Contain<Trace, Key = NameKey>
     + Create<Point>
+    + Filter<SlimPoint, Key = RangeKey>
     + Delete<Point, Key = IdKey>
     + Sync
 {
+}
+
+#[async_trait]
+pub trait SearchPoints: HasStorage {
+    async fn search_points(&self, trace_id: &Uuid, from_date:&DateTime<Utc>, to_date:&DateTime<Utc>) -> Result<Vec<SlimPoint>, Error> {
+        let points: Vec<SlimPoint> = self
+            .storage()
+            .filter(&RangeKey {
+                id: trace_id.to_owned(),
+                from_date: from_date.to_owned(),
+                to_date: to_date.to_owned(),
+            })
+            .await?;
+        Ok(points)
+    }
 }
 
 #[async_trait]

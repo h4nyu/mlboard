@@ -11,6 +11,7 @@ use failure::Error;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::future::Future;
+use uuid::Uuid;
 
 pub async fn run() -> std::io::Result<()> {
     std::env::set_var("RUST_LOG", "actix_web=info");
@@ -24,6 +25,7 @@ pub async fn run() -> std::io::Result<()> {
             .wrap(Logger::new("%a %{User-Agent}i"))
             .service(fs::Files::new("/ui", "/public").index_file("index.html"))
             .service(web::resource("/api/v1/add_scalars").route(web::post().to(add_scalars)))
+            .service(web::resource("/api/v1/points").route(web::get().to(search_points)))
             .service(web::resource("/api/v1/traces").route(web::get().to(search_traces)))
             .service(web::resource("/api/v1/traces").route(web::delete().to(delete_trace)))
     })
@@ -56,6 +58,7 @@ impl CreateTrace for Context {}
 impl AddScalars for Context {}
 impl SearchTraces for Context {}
 impl DeleteTrace for Context {}
+impl SearchPoints for Context {}
 // ---------------context------------
 
 #[derive(Deserialize)]
@@ -71,6 +74,24 @@ async fn add_scalars(
         let db = db_pool.get().await?;
         let ctx = Context { storage: db };
         ctx.add_scalars(&payload.values, &payload.ts).await
+    })
+    .await
+}
+
+#[derive(Deserialize)]
+pub struct SearchPointsPayload {
+    trace_id: Uuid,
+    from_date: DateTime<Utc>,
+    to_date: DateTime<Utc>,
+}
+async fn search_points(
+    payload: web::Query<SearchPointsPayload>,
+    db_pool: web::Data<Pool>,
+) -> Result<HttpResponse, error::Error> {
+    wrap(async {
+        let db = db_pool.get().await?;
+        let ctx = Context { storage: db };
+        ctx.search_points(&payload.trace_id, &payload.from_date, &payload.to_date).await
     })
     .await
 }
