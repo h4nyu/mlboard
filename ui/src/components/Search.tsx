@@ -6,15 +6,15 @@ import { Map } from 'immutable';
 import styled from 'styled-components';
 
 
-const Item = styled.div`
-  display: flex;
+const AutoComplete = styled.div`
   position: absolute;
   width: 100%;
-  flex-direction: column;
-  grid-template-areas: "ta space up";
-  grid-template-columns: auto 1fr auto;
-  padding: 0.5em;
-  cursor: pointer;
+`;
+
+const Item = styled.div`
+  hover: {
+    background-color: #e9e9e9;
+  }
 `;
 
 type State = {
@@ -55,15 +55,15 @@ export default class DatetimeInput extends React.Component<IProps, State> {
         />
         {
           isActive?(
-          <Item className="card">
+          <AutoComplete className="list is-hoverable">
             {
               traces.toList().map(x => (
-                <div>
+                <Item className="list-item">
                   {x.name}
-                </div>
+                </Item>
               ))
             }
-          </Item>
+          </AutoComplete>
           ):null
         }
       </div>
