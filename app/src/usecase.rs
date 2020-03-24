@@ -61,11 +61,11 @@ pub struct IdKey {
 
 pub trait Storage:
     Create<Trace>
-    + Create<Point>
     + Get<Trace, Key = NameKey>
     + Delete<Trace, Key = IdKey>
-    + Delete<Point, Key = IdKey>
     + Contain<Trace, Key = NameKey>
+    + Create<Point>
+    + Delete<Point, Key = IdKey>
     + Sync
 {
 }

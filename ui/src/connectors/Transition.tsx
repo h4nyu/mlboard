@@ -1,20 +1,19 @@
 import { observer } from 'mobx-react';
 import React from "react";
-import { ITransition } from '~/models/interfaces'; 
-import Transition from '~/components/Transition';
+import { Transition } from '~/models'; 
+import TransitionComponent from '~/components/Transition';
 import store  from '~/store';
-const {traceStore, segmentStore, workspaceStore, transitionUsecase} = store;
+const {traceStore, segmentStore, transitionUsecase} = store;
 
 export interface IProps{
-  transition: ITransition;
+  transition: Transition;
 }
 const Component = (props: IProps) => (
-  <Transition
+  <TransitionComponent
     currentId={transitionUsecase.currentId}
     transition={props.transition}
     relations={transitionUsecase.relations}
     segments={segmentStore.rows}
-    workspaces={workspaceStore.rows}
     traces={traceStore.rows}
     onClick={transitionUsecase.select}
     onLegendCLick={transitionUsecase.deleteTrace}

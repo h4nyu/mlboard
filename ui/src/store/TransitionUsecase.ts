@@ -1,18 +1,14 @@
 import moment,{Moment} from 'moment';
 import { action, observable, computed } from 'mobx';
-import { IPointApi, ITraceApi, IWorkspaceApi } from '~/api/interfaces';
-import { IRoot } from './interfaces';
-import { ISegment } from '~/models/interfaces'; 
+import { Segment } from '~/models'; 
 import {some, keyBy} from 'lodash';
 import uuid from 'uuid';
+import {RootStore} from './index';
 
 import { Set } from "immutable";
 
 export default class TransitionUsecase{
-  private pointApi: IPointApi
-  private traceApi: ITraceApi
-  private workspaceApi: IWorkspaceApi;
-  private root: IRoot
+  private root: RootStore
   @observable traceKeyword: string = "";
   @observable currentId: string = "";
   @observable relations: Set<{
@@ -22,31 +18,9 @@ export default class TransitionUsecase{
   }> = Set();
 
   constructor(
-    root: IRoot,
-    pointApi: IPointApi,
-    traceApi: ITraceApi,
-    workspaceApi: IWorkspaceApi,
+    root: RootStore,
   ){
     this.root = root;
-    this.pointApi = pointApi;
-    this.traceApi = traceApi;
-    this.workspaceApi = workspaceApi;
-    this.add();
-  }
-
-  @computed get workspaces() { const keywords = this.traceKeyword.split(',').map(x => x.trim());
-    const workspaces = this.root.workspaceStore.rows.sortBy(x => - x.createdAt);
-    if(this.traceKeyword.length === 0){
-      return workspaces;
-    }
-
-    return workspaces.filter(x => {
-      const target = `
-        ${x.name}
-      `;
-      const res = some(keywords.map(y => target.includes(y.trim())));
-      return res;
-    });
   }
 
   @computed get traces() {
@@ -66,23 +40,14 @@ export default class TransitionUsecase{
 
   fetchAll = () => {
     this.fetchTraces();
-    this.fetchWorkspaces();
     this.root.transitionStore.rows.forEach(x => {
       this.updateRange(x.id, x.fromDate, x.toDate);
     });
   }
 
-  fetchWorkspaces = async () => {
-    await this.root.loadingStore.dispatch(async () => {
-      const rows = await this.workspaceApi.all();
-      if(rows === undefined) {return;}
-      this.root.workspaceStore.upsert(keyBy(rows, x=> x.id));
-    });
-  }
-
   fetchTraces = async () => {
     await this.root.loadingStore.dispatch(async () => {
-      const rows = await this.traceApi.all();
+      const rows = await this.root.api.traceApi.all();
       if(rows === undefined) {return;}
       this.root.traceStore.upsert(keyBy(rows, x => x.id));
     });
@@ -100,6 +65,8 @@ export default class TransitionUsecase{
 
     await this.root.loadingStore.dispatch(async () => {
       const points = await this
+        .root
+        .api
         .pointApi
         .rangeBy(traceId, transition.fromDate, transition.toDate);
       if (points === undefined) return;
@@ -161,9 +128,9 @@ export default class TransitionUsecase{
       .flatMap(rel => {
         return this.root.segmentStore.rows.filter(x => x.id === rel.segmentId).toList();
       })
-      .map(async (x: ISegment) => {
+      .map(async (x: Segment) => {
         await this.root.loadingStore.dispatch(async () => {
-          const res =await this.pointApi.rangeBy(x.traceId, fromDate, toDate);
+          const res =await this.root.api.pointApi.rangeBy(x.traceId, fromDate, toDate);
           if(res === undefined) {return;};
           this.root.segmentStore.upsert({
             [x.id]: { ...x, fromDate, toDate, points:res}
@@ -195,17 +162,6 @@ export default class TransitionUsecase{
     this.root.segmentStore.delete(segmentIds);
     this.root.transitionStore.delete([id]);
     this.relations = this.relations.filter(x => x.transitionId !== id);
-  }
-
-  deleteWorkspace = async (id: string) => {
-    await this.root.loadingStore.dispatch(async () => {
-      await this.workspaceApi.delete(id);
-      const traceIds = this.root.traceStore.rows.filter(x => x.workspaceId === id).map(x => x.id)
-        .toList()
-        .toJS();
-      this.root.traceStore.delete(traceIds);
-      this.root.workspaceStore.delete([id]);
-    });
   }
 }
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ITransition } from '~/models/interfaces'; 
+import { Transition } from '~/models'; 
 import styled from 'styled-components';
 import {IProps as IChildProps} from '~/connectors/Transition';
 import { Map } from 'immutable';
@@ -14,7 +14,7 @@ const Layout = styled.div`
 const AddIcon = () => (<i className="fas fa-plus"></i>);
 
 interface IProps {
-  transitions: Map<string, ITransition>;
+  transitions: Map<string, Transition>;
   onAddClick: () => void;
   Child: React.ComponentType<IChildProps>;
 }

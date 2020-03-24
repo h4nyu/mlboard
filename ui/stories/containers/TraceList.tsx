@@ -3,19 +3,17 @@ import { storiesOf } from '@storybook/react';
 import Component from '~/containers/TraceList';
 import { Map } from 'immutable';
 import Mock from 'stories/Mock';
-import {trace, workspace} from 'tests/mocks/models';
+import {trace} from 'tests/mocks/models';
 
 
 storiesOf('TraceList', module)
   .add('default', () => {
-    const workspaceMock = {...workspace, id:'a'};
     const traces = Map([
-      ["aaa", {...trace, id: 'aaa', workspaceId:'a'},],
+      ["aaa", {...trace, id: 'aaa'},],
       ["bbb", {...trace, id: 'bbb'},],
     ]);
     return (
       <Component 
-        workspace={workspaceMock}
         traces={traces}
         Child={(props) => <Mock/>}
       />

@@ -51,7 +51,7 @@ impl Contain<Trace> for Client {
     async fn contain(&self, key: &NameKey) -> Result<Vec<Trace>, Error> {
         let regex = format!("%{}%", &key.name);
         let res: Vec<Trace> = self
-            .query("DELETE FROM traces WHERE name LIKE $1", &[&regex])
+            .query("SELECT * FROM traces WHERE name LIKE $1", &[&regex])
             .await?
             .into_iter()
             .map(|x| x.into())

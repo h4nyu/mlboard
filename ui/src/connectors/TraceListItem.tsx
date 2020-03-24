@@ -1,12 +1,12 @@
 import { observer } from 'mobx-react';
 import React from "react";
-import { ITrace } from '~/models/interfaces'; 
+import { Trace } from '~/models'; 
 import TraceListItem from '~/components/TraceListItem';
 import store from '~/store';
 const { transitionUsecase } = store;
 
 export interface IProps{
-  trace: ITrace;
+  trace: Trace;
 }
 const Component = (props: IProps) => (
   <TraceListItem

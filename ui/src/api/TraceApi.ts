@@ -1,6 +1,6 @@
 import axios from 'axios';
 import moment from 'moment';
-import { ITrace } from "~/models/interfaces";
+import { Trace } from "~/models";
 
 
 interface ITraceRes {
@@ -11,12 +11,15 @@ interface ITraceRes {
   created_at: string;
 }
 
-
 export default class TraceApi {
-  all = async (): Promise<ITrace[]> => {
-    const res = await axios.get(`/api/trace/all`);
+  all = async (keyword: string=""): Promise<Trace[]> => {
+    const res = await axios.get(`/api/v1/traces`, {
+      params: {
+        keyword: keyword
+      }
+    });
     const resData = res.data as ITraceRes[];
-    const rows: ITrace[] = resData.map(x => ({
+    const rows: Trace[] = resData.map(x => ({
       id: x.id,
       name:x.name,
       workspaceId:x.workspace_id,

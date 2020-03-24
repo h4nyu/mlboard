@@ -1,5 +1,4 @@
 import React from 'react';
-import WorkspaceList from '~/connectors/WorkspaceList';
 import TransitionList from '~/connectors/TransitionList';
 import PageHeader from '~/connectors/PageHeader';
 import styled from 'styled-components';
@@ -35,9 +34,6 @@ export default class TracePage extends React.Component<{}> {
         <HeaderArea>
           <PageHeader/>
         </HeaderArea>
-        <WorkspaceArea>
-          <WorkspaceList/>
-        </WorkspaceArea>
         <TransitionArea>
           <TransitionList />
         </TransitionArea>

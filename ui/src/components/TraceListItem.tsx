@@ -1,5 +1,5 @@
 import React from 'react';
-import { ITrace } from '~/models/interfaces'; 
+import { Trace } from '~/models'; 
 import styled from 'styled-components';
 
 
@@ -30,7 +30,7 @@ const UpdatedAt = styled.div`
 
 
 interface IProps {
-  trace: ITrace;
+  trace: Trace;
   onSelect: (traceId: string) => void;
 }
 export default class TraceListItem extends React.Component<IProps> {

@@ -8,7 +8,7 @@ import Slider from '~/components/Slider';
 import {range} from 'lodash';
 import Plot from '~/components/Plot';
 import Check from '~/components/Check';
-import {ITransition, ITrace, IWorkspace, ISegment } from '~/models/interfaces';
+import {Transition, Trace, Segment } from '~/models';
 
 
 const Layout = styled.div<{isSelected: boolean}>`
@@ -58,11 +58,10 @@ const formatDatetime = (value: Moment) => {
 };
 export interface IProps {
   currentId: string;
-  transition: ITransition;
+  transition: Transition;
   relations: Set<{transitionId: string; traceId: string; segmentId: string}>;
-  traces: Map<string, ITrace>;
-  segments: Map<string,ISegment>;
-  workspaces: Map<string,IWorkspace>;
+  traces: Map<string, Trace>;
+  segments: Map<string, Segment>;
   onClick: (transitionId: string) => void;
   onLegendCLick: (transitionId: string, traceId: string) => void;
   onWeightChange: (id: string, value: number) => void;
@@ -71,7 +70,7 @@ export interface IProps {
   onIsLogChange: (id: string) => void;
   onIsDatetimeChange: (id: string) => void;
 }
-export default class Transition extends React.Component<IProps>{
+export default class TransitionComponent extends React.Component<IProps>{
   getPlotData = () => {
     const { transition, relations, segments, traces } = this.props;
     return relations

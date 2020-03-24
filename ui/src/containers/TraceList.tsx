@@ -1,6 +1,6 @@
 import { Map } from 'immutable';
 import React from 'react';
-import { ITrace, IWorkspace } from '~/models/interfaces'; 
+import { Trace } from '~/models'; 
 import styled from 'styled-components';
 
 const Layout = styled.div`
@@ -9,19 +9,17 @@ const Layout = styled.div`
 `;
 
 interface IProps {
-  workspace: IWorkspace;
-  traces: Map<string, ITrace>;
-  Child: React.ComponentType<{trace: ITrace}>;
+  traces: Map<string, Trace>;
+  Child: React.ComponentType<{trace: Trace}>;
 }
 const Component = (props: IProps) => {
   const {
-    traces, workspace, Child, 
+    traces, Child, 
   } = props;
-  const filteredTrace = traces.filter(x => x.workspaceId === workspace.id);
 
   return (
     <Layout className="card">
-      {filteredTrace.toList().map(x => <Child key={x.id} trace={x}/>)}
+      {traces.toList().map(x => <Child key={x.id} trace={x}/>)}
     </Layout>
   );
 };

@@ -1,53 +1,35 @@
 import { 
-  ISegment,
-  ITrace, 
-  ITransition, 
-  IWorkspace 
-} from '~/models/interfaces';
+  Segment,
+  Trace, 
+  Transition, 
+} from '~/models';
 import LoadingStore from './LoadingStore';
 import AppStore from './AppStore';
 import ModelStore from './ModelStore';
 import TransitionUsecase from './TransitionUsecase';
-import {
-  IRoot,
-  IAppStore,
-  ILoadingStore,
-  IModelStore,
-  ITransitionUsecase,
-} from './interfaces';
 
-import TraceApi from '~/api/TraceApi';
-import PointApi from '~/api/PointApi';
-import WorkspaceApi from '~/api/WorkspaceApi';
+import WebApi from '~/api';
 
 export class RootStore {
-  loadingStore: ILoadingStore;
-  appStore: IAppStore;
-  traceStore: IModelStore<ITrace>;
-  segmentStore: IModelStore<ISegment>;
-  transitionStore: IModelStore<ITransition>;
-  workspaceStore: IModelStore<IWorkspace>;
-  transitionUsecase: ITransitionUsecase;
+  api: WebApi
+  loadingStore: LoadingStore;
+  appStore: AppStore;
+  traceStore: ModelStore<Trace>;
+  segmentStore: ModelStore<Segment>;
+  transitionStore: ModelStore<Transition>;
+  transitionUsecase: TransitionUsecase;
 
   constructor() {
-    const traceApi = new TraceApi();
-    const pointApi = new PointApi();
-    const workspaceApi = new WorkspaceApi();
+    this.api = new WebApi()
 
-    this.segmentStore = new ModelStore<ISegment>();
-    this.traceStore = new ModelStore<ITrace>();
-    this.transitionStore = new ModelStore<ITransition>();
-    this.workspaceStore = new ModelStore<IWorkspace>();
+    this.segmentStore = new ModelStore<Segment>();
+    this.traceStore = new ModelStore<Trace>();
+    this.transitionStore = new ModelStore<Transition>();
     this.loadingStore = new LoadingStore();
     this.appStore = new AppStore(this);
-    this.transitionUsecase = new TransitionUsecase(
-      this,
-      pointApi,
-      traceApi,
-      workspaceApi,
-    );
+    this.transitionUsecase = new TransitionUsecase(this);
   }
 }
 
-const store: IRoot = new RootStore();
+const store = new RootStore();
 export default store;

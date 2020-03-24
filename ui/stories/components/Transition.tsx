@@ -1,13 +1,13 @@
 import React from 'react';
 import moment from 'moment';
 import { storiesOf } from '@storybook/react';
-import { ITransition } from '~/models/interfaces'; 
+import { Transition } from '~/models'; 
 import Component from '~/components/Transition';
-import {transition, trace, workspace } from 'tests/mocks/models';
+import {transition, trace } from 'tests/mocks/models';
 import { Map, Set } from 'immutable';
 import { boolean, number } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
-import { ITrace, ISegment } from '~/models/interfaces';
+import { Trace, Segment } from '~/models';
 
 const points = [
   {
@@ -27,24 +27,18 @@ const points = [
     ts: moment('2015-01-04'),
   },
 ];
-const workspaces = Map({
-  [workspace.id]:{
-    ...workspace,
-  }
-})
 
 storiesOf('Transition', module)
   .add('default', () => {
-    const traces:Map<string,ITrace> = Map({
+    const traces:Map<string,Trace> = Map({
       "t0": {
         id: "t0",
         name: "trace0",
-        workspaceId: workspace.id,
         createdAt: moment(),
         updatedAt: moment(),
       }
     });
-    const segments:Map<string,ISegment> = Map({
+    const segments:Map<string,Segment> = Map({
       "s0": {
         id: "s0",
         traceId: "t0",
@@ -68,7 +62,6 @@ storiesOf('Transition', module)
           smoothWeight: number('smoothWeight', 0.5),
         }}
         relations={relations}
-        workspaces={workspaces}
         segments={segments}
         traces={traces}
         onClick={action('onClick')}

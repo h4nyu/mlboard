@@ -1,12 +1,9 @@
-import {
-  IRoot,
-} from "./interfaces";
-
+import {RootStore } from './index'
 
 export default class AppStore {
-  private root: IRoot;
+  private root: RootStore;
   constructor(
-    root: IRoot,
+    root: RootStore,
   ){
     this.root = root;
   }

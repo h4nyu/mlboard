@@ -1,26 +1,18 @@
 import {Moment} from 'moment';
 
-export interface IPoint {
+export type Point = {
   value: number;
   ts: Moment;
 }
 
-export interface IWorkspace {
+export type Trace = {
   id: string;
   name: string;
-  params: {[key: string]: any};
-  createdAt: Moment;
-}
-
-export interface ITrace {
-  id: string;
-  name: string;
-  workspaceId: string;
   createdAt: Moment;
   updatedAt: Moment;
 }
 
-export interface ITransition {
+export type Transition = {
   id: string;
   smoothWeight: number;
   isLog: boolean;
@@ -29,10 +21,10 @@ export interface ITransition {
   toDate: Moment;
 }
 
-export interface ISegment {
+export type Segment = {
   id: string;
   traceId: string;
-  points: IPoint[];
+  points: Point[];
   fromDate: Moment;
   toDate: Moment;
 }
