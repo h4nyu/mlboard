@@ -31,6 +31,16 @@ impl Create<Point> for Client {
     }
 }
 
+#[async_trait]
+impl Delete<Point> for Client {
+    type Key = IdKey;
+    async fn delete(&self, key: &IdKey) -> Result<(), Error> {
+        self.execute("DELETE FROM points WHERE trace_id = $1", &[&key.id])
+            .await?;
+        Ok(())
+    }
+}
+
 // #[async_trait]
 // impl PointRepository for Client {
 //     async fn get_by_range(

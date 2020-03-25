@@ -4,7 +4,7 @@ services:
   db:
     image: "h4nyu/mlboard_db:${TAG}"
 
-  api: &default-app
+  app: &default-app
     image: "h4nyu/mlboard_app:${TAG}"
     depends_on:
       - migration
@@ -14,8 +14,8 @@ services:
     depends_on:
       - db
 
-  board: &default-node
-    image: "h4nyu/mlboard_board:${TAG}"
+  ui: &default-node
+    image: "h4nyu/mlboard_ui:${TAG}"
     command: yarn watch
 
 networks:

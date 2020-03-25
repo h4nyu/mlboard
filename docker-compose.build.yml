@@ -19,8 +19,8 @@ services:
       <<: *default-build
       context: ./migration
 
-  board:
+  ui:
     build:
       <<: *default-build
-      context: ./board
+      context: ./ui
       target: ${STAGE}

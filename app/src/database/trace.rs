@@ -35,6 +35,31 @@ impl Get<Trace> for Client {
     }
 }
 
+#[async_trait]
+impl Delete<Trace> for Client {
+    type Key = IdKey;
+    async fn delete(&self, key: &IdKey) -> Result<(), Error> {
+        self.execute("DELETE FROM traces WHERE id = $1", &[&key.id])
+            .await?;
+        Ok(())
+    }
+}
+
+#[async_trait]
+impl Contain<Trace> for Client {
+    type Key = NameKey;
+    async fn contain(&self, key: &NameKey) -> Result<Vec<Trace>, Error> {
+        let regex = format!("%{}%", &key.name);
+        let res: Vec<Trace> = self
+            .query("DELETE FROM traces WHERE name LIKE $1", &[&regex])
+            .await?
+            .into_iter()
+            .map(|x| x.into())
+            .collect();
+        Ok(res)
+    }
+}
+
 // #[async_trait]
 // impl TraceRepository for Client {
 //     async fn get_all(&self) -> Result<Vec<Trace>, Error> {
