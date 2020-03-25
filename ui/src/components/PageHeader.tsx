@@ -3,9 +3,8 @@ import React from 'react';
 import appStyle from '~/styles/app.scss';
 
 
-
 const Layout = styled.div`
-  background-color: ${appStyle.primary}
+  background-color: ${appStyle.primary};
   height: 52px;
   display: flex;
   flex-direction: row;

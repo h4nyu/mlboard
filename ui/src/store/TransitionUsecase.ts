@@ -2,7 +2,7 @@ import moment,{Moment} from 'moment';
 import { action, observable, computed } from 'mobx';
 import {Transition } from '~/models';
 import {some, keyBy} from 'lodash';
-import uuid from 'uuid';
+import {v4 as uuid} from 'uuid';
 import {RootStore} from './index';
 
 import { Set } from "immutable";
@@ -55,11 +55,10 @@ export default class TransitionUsecase{
   @action updateRange = async (transitionId: string, fromDate: Moment, toDate: Moment) => {
     const transition = this.root.transitionStore.rows.get(transitionId);
     if(transition === undefined){return;}
-    this.root.transitionStore.upsert({[transitionId]: { ...transition, fromDate, toDate}});
     await this.root.loadingStore.dispatch(async () => {
-      const points = await this.root.api.pointApi.rangeBy(transition.traceId, transition.fromDate, transition.toDate);
+      const points = await this.root.api.pointApi.rangeBy(transition.traceId, fromDate, toDate);
       if(points === undefined) {return;};
-      this.root.transitionStore.upsert({[transitionId]: { ...transition, fromDate, toDate, points:points}});
+      this.root.transitionStore.upsert({[transitionId]: { ...transition, fromDate, toDate, points:[...points]}});
     });
   }
 

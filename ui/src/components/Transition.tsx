@@ -73,13 +73,13 @@ export interface IProps {
 export default (props: IProps) => {
   const getTitle = () => {
     const { transition, traces } = props;
-    let trace = traces.get(transition.traceId);
+    const trace = traces.get(transition.traceId);
     return trace? trace.name : "";
   };
 
   const getPlotData = () => {
     const { transition, traces } = props;
-    let trace = traces.get(transition.traceId);
+    const trace = traces.get(transition.traceId);
 
     if (trace === undefined) {
       return  [{}];

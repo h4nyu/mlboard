@@ -12,7 +12,7 @@ interface ITraceRes {
 }
 
 export default class TraceApi {
-  all = async (keyword: string=""): Promise<Trace[]> => {
+  all = async (keyword=""): Promise<Trace[]> => {
     const res = await axios.get(`/api/v1/traces`, {
       params: {
         keyword: keyword

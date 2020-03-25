@@ -8,7 +8,7 @@ import { Set } from "immutable";
 
 export default class SearchUsecase{
   private root: RootStore
-  @observable keyword: string = "";
+  @observable keyword = "";
 
   constructor(
     root: RootStore,
@@ -18,7 +18,7 @@ export default class SearchUsecase{
   @computed get traces(){
     return this.root.traceStore.rows.filter(
       x => x.name.includes(this.keyword)
-    )
+    );
   }
 
   fetchTraces = async () => {
