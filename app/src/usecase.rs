@@ -1,5 +1,6 @@
 use crate::entities::*;
 use crate::error::ErrorKind;
+use crate::logics::reduce_points;
 use async_trait::async_trait;
 use chrono::prelude::{DateTime, Utc};
 use failure::Error;
@@ -79,7 +80,12 @@ pub trait Storage:
 
 #[async_trait]
 pub trait SearchPoints: HasStorage {
-    async fn search_points(&self, trace_id: &Uuid, from_date:&DateTime<Utc>, to_date:&DateTime<Utc>) -> Result<Vec<SlimPoint>, Error> {
+    async fn search_points(
+        &self,
+        trace_id: &Uuid,
+        from_date: &DateTime<Utc>,
+        to_date: &DateTime<Utc>,
+    ) -> Result<Vec<SlimPoint>, Error> {
         let points: Vec<SlimPoint> = self
             .storage()
             .filter(&RangeKey {
@@ -88,7 +94,7 @@ pub trait SearchPoints: HasStorage {
                 to_date: to_date.to_owned(),
             })
             .await?;
-        Ok(points)
+        Ok(reduce_points(&points, 1000))
     }
 }
 

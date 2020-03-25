@@ -91,7 +91,8 @@ async fn search_points(
     wrap(async {
         let db = db_pool.get().await?;
         let ctx = Context { storage: db };
-        ctx.search_points(&payload.trace_id, &payload.from_date, &payload.to_date).await
+        ctx.search_points(&payload.trace_id, &payload.from_date, &payload.to_date)
+            .await
     })
     .await
 }
