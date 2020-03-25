@@ -8,7 +8,7 @@ services:
         - http_proxy
         - https_proxy
 
-  api:
+  app:
     build : 
       <<: *default-build
       context: ./app
@@ -19,8 +19,8 @@ services:
       <<: *default-build
       context: ./migration
 
-  board:
+  ui:
     build:
       <<: *default-build
-      context: ./board
+      context: ./ui
       target: ${STAGE}

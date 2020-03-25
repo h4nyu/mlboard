@@ -36,10 +36,9 @@ def upgrade():
             (
                 id uuid NOT NULL PRIMARY KEY,
                 name text NOT NULL,
-                workspace_id uuid NOT NULL,
                 created_at timestamp with time zone NOT NULL,
                 updated_at timestamp with time zone NOT NULL,
-                UNIQUE (name, workspace_id)
+                UNIQUE (name)
             );
         CREATE TABLE workspaces
             (

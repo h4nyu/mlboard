@@ -3,16 +3,19 @@ use crate::usecase::*;
 use actix_files as fs;
 use actix_web::middleware::Logger;
 use actix_web::{error, web, App, HttpResponse, HttpServer};
+use async_trait::async_trait;
+use chrono::prelude::{DateTime, Utc};
 use deadpool_postgres::{Client, Pool};
 use env_logger;
 use failure::Error;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use std::future::Future;
+use uuid::Uuid;
 
 pub async fn run() -> std::io::Result<()> {
     std::env::set_var("RUST_LOG", "actix_web=info");
     env_logger::init();
-
     HttpServer::new(|| {
         let pool = create_connection_pool().unwrap();
         App::new()
@@ -21,49 +24,15 @@ pub async fn run() -> std::io::Result<()> {
             .wrap(Logger::default())
             .wrap(Logger::new("%a %{User-Agent}i"))
             .service(fs::Files::new("/ui", "/public").index_file("index.html"))
-            .service(
-                web::resource("/api/trace/all").route(web::get().to(get_service::<GetTraceAll>)),
-            )
-            .service(
-                web::resource("/api/trace/register")
-                    .route(web::post().to(post_service::<CreateTrace>)),
-            )
-            .service(
-                web::resource("/api/workspace")
-                    .route(web::delete().to(get_service::<DeleteWorkspace>)),
-            )
-            .service(
-                web::resource("/api/workspace/all")
-                    .route(web::get().to(get_service::<GetWorkspaceAll>)),
-            )
-            .service(
-                web::resource("/api/workspace/register")
-                    .route(web::post().to(post_service::<CreateWorkspace>)),
-            )
-            .service(
-                web::resource("/api/point/range-by").route(web::get().to(get_service::<GetPoints>)),
-            )
-            .service(
-                web::resource("/api/point/add-scalars")
-                    .route(web::post().to(post_service::<AddScalars>)),
-            )
+            .service(web::resource("/api/v1/add-scalars").route(web::post().to(add_scalars)))
+            .service(web::resource("/api/v1/points").route(web::get().to(search_points)))
+            .service(web::resource("/api/v1/traces").route(web::get().to(search_traces)))
+            .service(web::resource("/api/v1/traces").route(web::delete().to(delete_trace)))
     })
     .bind("0.0.0.0:5000")?
     .run()
     .await
 }
-impl IContext for Client {
-    fn point_repo(&self) -> &(dyn PointRepository + Sync) {
-        self
-    }
-    fn trace_repo(&self) -> &(dyn TraceRepository + Sync) {
-        self
-    }
-    fn workspace_repo(&self) -> &(dyn WorkspaceRepository + Sync) {
-        self
-    }
-}
-
 async fn wrap<O, T>(ft: O) -> Result<HttpResponse, error::Error>
 where
     O: Future<Output = Result<T, Error>>,
@@ -74,30 +43,87 @@ where
         Err(e) => Err(error::ErrorInternalServerError(e)),
     }
 }
-async fn post_service<T>(
-    payload: web::Json<T>,
+
+// ---------------context------------
+pub struct Context {
+    pub storage: Client,
+}
+#[async_trait]
+impl HasStorage for Context {
+    fn storage(&self) -> &(dyn Storage) {
+        &self.storage
+    }
+}
+impl CreateTrace for Context {}
+impl AddScalars for Context {}
+impl SearchTraces for Context {}
+impl DeleteTrace for Context {}
+impl SearchPoints for Context {}
+// ---------------context------------
+
+#[derive(Deserialize)]
+pub struct AddScalarsPayload {
+    values: HashMap<String, f64>,
+    ts: DateTime<Utc>,
+}
+async fn add_scalars(
+    payload: web::Json<AddScalarsPayload>,
     db_pool: web::Data<Pool>,
-) -> Result<HttpResponse, error::Error>
-where
-    T: Service<Client>,
-{
+) -> Result<HttpResponse, error::Error> {
     wrap(async {
-        let client = db_pool.get().await?;
-        payload.call(&client).await
+        let db = db_pool.get().await?;
+        let ctx = Context { storage: db };
+        ctx.add_scalars(&payload.values, &payload.ts).await
     })
     .await
 }
 
-async fn get_service<T>(
-    payload: web::Query<T>,
+#[derive(Deserialize)]
+pub struct SearchPointsPayload {
+    trace_id: Uuid,
+    from_date: DateTime<Utc>,
+    to_date: DateTime<Utc>,
+}
+async fn search_points(
+    payload: web::Query<SearchPointsPayload>,
     db_pool: web::Data<Pool>,
-) -> Result<HttpResponse, error::Error>
-where
-    T: Service<Client>,
-{
+) -> Result<HttpResponse, error::Error> {
     wrap(async {
-        let client = db_pool.get().await?;
-        payload.call(&client).await
+        let db = db_pool.get().await?;
+        let ctx = Context { storage: db };
+        ctx.search_points(&payload.trace_id, &payload.from_date, &payload.to_date).await
+    })
+    .await
+}
+
+#[derive(Deserialize)]
+pub struct SearchTracePayload {
+    keyword: String,
+}
+async fn search_traces(
+    payload: web::Query<SearchTracePayload>,
+    db_pool: web::Data<Pool>,
+) -> Result<HttpResponse, error::Error> {
+    wrap(async {
+        let db = db_pool.get().await?;
+        let ctx = Context { storage: db };
+        ctx.search_traces(&payload.keyword).await
+    })
+    .await
+}
+
+#[derive(Deserialize)]
+pub struct DeleteTracePayload {
+    name: String,
+}
+async fn delete_trace(
+    payload: web::Json<DeleteTracePayload>,
+    db_pool: web::Data<Pool>,
+) -> Result<HttpResponse, error::Error> {
+    wrap(async {
+        let db = db_pool.get().await?;
+        let ctx = Context { storage: db };
+        ctx.delete_trace(&payload.name).await
     })
     .await
 }

@@ -1,10 +1,10 @@
 version: '3.7'
 
 services:
-  api:
+  app:
     volumes: 
       - ./app:/srv
-      - ./board/dist:/public
+      - ./ui/dist:/public
     ports:
       - "${WEB_PORT}:5000"
 
@@ -12,14 +12,14 @@ services:
     volumes:
       - ./migration:/srv
 
-  board: &default-node
+  ui: &default-node
     volumes:
-      - ./board:/srv
+      - ./ui:/srv
 
   storybook:
-    image: "h4nyu/mlboard_board:${TAG}"
+    image: "h4nyu/mlboard_ui:${TAG}"
     volumes:
-      - ./board:/srv
+      - ./ui:/srv
     command: yarn storybook
     ports:
       - "${STORYBOOK_PORT}:9001"

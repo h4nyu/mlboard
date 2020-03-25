@@ -37,17 +37,17 @@ jobs:
       - run:
           name: Test App
           command: |
-            docker-compose -f docker-compose.yml run --rm api cargo test
+            docker-compose -f docker-compose.yml run --rm app cargo test
 
       - run:
           name: Type Check Board 
           command: |
-            docker-compose -f docker-compose.yml run --rm board yarn tsc
+            docker-compose -f docker-compose.yml run --rm ui yarn tsc
 
       - run:
           name: Lint Board 
           command: |
-            docker-compose -f docker-compose.yml run --rm board yarn lint
+            docker-compose -f docker-compose.yml run --rm ui yarn lint
 
 
   deploy:

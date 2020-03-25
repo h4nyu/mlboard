@@ -1,234 +1,183 @@
 use crate::entities::*;
-use crate::logics::reduce_points;
+use crate::error::ErrorKind;
 use async_trait::async_trait;
 use chrono::prelude::{DateTime, Utc};
 use failure::Error;
-use serde::{Deserialize, Serialize};
-use serde_json::Value;
 use std::collections::HashMap;
 use uuid::Uuid;
 
 #[async_trait]
-pub trait WorkspaceRepository {
-    async fn get_all(&self) -> Result<Vec<Workspace>, Error>;
-    async fn get(&self, name: &str) -> Result<Option<Workspace>, Error>;
-    async fn update(&self, id: &Uuid, name: &str, config: &Value) -> Result<Uuid, Error>;
-    async fn insert(&self, row: &Workspace) -> Result<Uuid, Error>;
-    async fn delete(&self, id: &Uuid) -> Result<Uuid, Error>;
+pub trait Filter<T> {
+    type Key;
+    async fn filter(&self, key: &Self::Key) -> Result<Vec<T>, Error>;
 }
 
 #[async_trait]
-pub trait TraceRepository {
-    async fn get_all(&self) -> Result<Vec<Trace>, Error>;
-    async fn get(&self, name: &str, workspace_id: &Uuid) -> Result<Option<Trace>, Error>;
-    async fn get_by_workspace_id(&self, workspace_id: &Uuid) -> Result<Vec<Trace>, Error>;
-    async fn insert(&self, row: &Trace) -> Result<Uuid, Error>;
-    async fn update_last_ts(&self, ids: &[&Uuid], updated_at: &DateTime<Utc>) -> Result<(), Error>;
-    async fn delete(&self, ids: &[&Uuid]) -> Result<(), Error>;
+pub trait Contain<T> {
+    type Key;
+    async fn contain(&self, key: &Self::Key) -> Result<Vec<T>, Error>;
 }
 
 #[async_trait]
-pub trait PointRepository {
-    async fn get_by_range(
-        &self,
-        trace_id: &Uuid,
-        from_date: &DateTime<Utc>,
-        to_date: &DateTime<Utc>,
-    ) -> Result<Vec<SlimPoint>, Error>;
-    async fn bulk_insert(&self, rows: &[&Point]) -> Result<usize, Error>;
-    async fn delete(&self, trace_ids: &[&Uuid]) -> Result<(), Error>;
-}
-
-pub trait IContext {
-    fn point_repo(&self) -> &(dyn PointRepository + Sync);
-    fn trace_repo(&self) -> &(dyn TraceRepository + Sync);
-    fn workspace_repo(&self) -> &(dyn WorkspaceRepository + Sync);
+pub trait Get<T> {
+    type Key;
+    async fn get(&self, key: &Self::Key) -> Result<Option<T>, Error>;
 }
 
 #[async_trait]
-pub trait Service<T> {
-    type Output: Serialize;
-    async fn call(&self, dependencies: &T) -> Result<Self::Output, Error>;
+pub trait Create<T> {
+    async fn create(&self, row: &T) -> Result<(), Error>;
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct CreateTrace {
+#[async_trait]
+pub trait BulkInsert<T> {
+    async fn bulk_insert(&self, row: &[&T]) -> Result<(), Error>;
+}
+
+#[async_trait]
+pub trait Update<T> {
+    async fn create(&self, row: &T) -> Result<(), Error>;
+}
+
+#[async_trait]
+pub trait Delete<T> {
+    type Key;
+    async fn delete(&self, key: &Self::Key) -> Result<(), Error>;
+}
+
+#[async_trait]
+pub trait TraceUsecase {
+    async fn get_all(&self, keyword: &str) -> Result<Vec<Trace>, Error>;
+    async fn add_scalars(&self, keyword: &str) -> Result<Vec<Trace>, Error>;
+}
+
+pub struct NameKey {
     pub name: String,
-    pub workspace_id: Uuid,
+}
+
+pub struct IdKey {
+    pub id: Uuid,
+}
+
+pub struct RangeKey {
+    pub id: Uuid,
+    pub from_date: DateTime<Utc>,
+    pub to_date: DateTime<Utc>,
+}
+
+pub trait Storage:
+    Create<Trace>
+    + Get<Trace, Key = NameKey>
+    + Delete<Trace, Key = IdKey>
+    + Contain<Trace, Key = NameKey>
+    + Create<Point>
+    + Filter<SlimPoint, Key = RangeKey>
+    + Delete<Point, Key = IdKey>
+    + Sync
+{
 }
 
 #[async_trait]
-impl<T> Service<T> for CreateTrace
-where
-    T: IContext + Sync,
-{
-    type Output = Uuid;
-    async fn call(&self, ctx: &T) -> Result<Self::Output, Error> {
-        let trace_id = match ctx.trace_repo().get(&self.name, &self.workspace_id).await? {
-            Some(x) => x.id,
-            None => {
-                let mut trace: Trace = Default::default();
-                trace.name = self.name.to_owned();
-                trace.workspace_id = self.workspace_id.to_owned();
-                ctx.trace_repo().insert(&trace).await?;
-                trace.id
-            }
-        };
-        Ok(trace_id)
+pub trait SearchPoints: HasStorage {
+    async fn search_points(&self, trace_id: &Uuid, from_date:&DateTime<Utc>, to_date:&DateTime<Utc>) -> Result<Vec<SlimPoint>, Error> {
+        let points: Vec<SlimPoint> = self
+            .storage()
+            .filter(&RangeKey {
+                id: trace_id.to_owned(),
+                from_date: from_date.to_owned(),
+                to_date: to_date.to_owned(),
+            })
+            .await?;
+        Ok(points)
     }
 }
-//
-#[derive(Deserialize, Serialize)]
-pub struct CreateWorkspace {
-    pub name: String,
-    pub params: Value,
+
+#[async_trait]
+pub trait SearchTraces: HasStorage {
+    async fn search_traces(&self, keyword: &str) -> Result<Vec<Trace>, Error> {
+        let name = keyword.trim();
+        let traces: Vec<Trace> = self
+            .storage()
+            .contain(&NameKey {
+                name: name.to_owned(),
+            })
+            .await?;
+        Ok(traces)
+    }
 }
 
 #[async_trait]
-impl<T> Service<T> for CreateWorkspace
-where
-    T: IContext + Sync,
-{
-    type Output = Uuid;
-    async fn call(&self, ctx: &T) -> Result<Self::Output, Error> {
-        let id = match ctx.workspace_repo().get(&self.name).await? {
-            Some(x) => {
-                ctx.workspace_repo()
-                    .update(&x.id, &self.name, &self.params)
-                    .await?
-            }
+pub trait CreateTrace: HasStorage {
+    async fn create_trace(&self, name: &str) -> Result<Uuid, Error> {
+        let id = match self
+            .storage()
+            .get(&NameKey {
+                name: name.to_owned(),
+            })
+            .await?
+        {
+            Some(x) => x.id,
             None => {
-                let new_workspace = Workspace::new(&self.name, &self.params);
-                ctx.workspace_repo().insert(&new_workspace).await?
+                let mut new_row: Trace = Default::default();
+                new_row.name = name.to_owned();
+                self.storage().create(&new_row).await?;
+                new_row.id
             }
         };
         Ok(id)
     }
 }
-//
-//
-#[derive(Deserialize, Serialize)]
-pub struct GetTraceAll {}
-#[async_trait]
-impl<T> Service<T> for GetTraceAll
-where
-    T: IContext + Sync,
-{
-    type Output = Vec<Trace>;
-    async fn call(&self, ctx: &T) -> Result<Self::Output, Error> {
-        ctx.trace_repo().get_all().await
-    }
-}
-//
-#[derive(Deserialize, Serialize)]
-pub struct GetWorkspaceAll {}
-#[async_trait]
-impl<T> Service<T> for GetWorkspaceAll
-where
-    T: IContext + Sync,
-{
-    type Output = Vec<Workspace>;
-    async fn call(&self, ctx: &T) -> Result<Self::Output, Error> {
-        ctx.workspace_repo().get_all().await
-    }
+
+pub trait HasStorage {
+    fn storage(&self) -> &(dyn Storage);
 }
 
-#[derive(Deserialize, Serialize)]
-pub struct GetPoints {
-    pub trace_id: Uuid,
-    pub from_date: DateTime<Utc>,
-    pub to_date: DateTime<Utc>,
-}
 #[async_trait]
-impl<T> Service<T> for GetPoints
-where
-    T: IContext + Sync,
-{
-    type Output = Vec<SlimPoint>;
-    async fn call(&self, ctx: &T) -> Result<Self::Output, Error> {
-        let points = ctx
-            .point_repo()
-            .get_by_range(&self.trace_id, &self.from_date, &self.to_date)
-            .await?;
-        Ok(reduce_points(&points, 1000))
-    }
-}
-//
-#[derive(Deserialize, Serialize)]
-pub struct AddScalars {
-    pub ts: DateTime<Utc>,
-    pub values: HashMap<Uuid, f64>,
-}
-//
-#[async_trait]
-impl<T> Service<T> for AddScalars
-where
-    T: IContext + Sync,
-{
-    type Output = ();
-    async fn call(&self, ctx: &T) -> Result<Self::Output, Error> {
-        let mut points: Vec<Point> = vec![];
-        let mut trace_ids: Vec<&Uuid> = vec![];
-
-        for (k, v) in self.values.iter() {
-            let mut p = Point::new();
-            p.value = v.to_owned();
-            p.trace_id = k.to_owned();
-            p.ts = self.ts.to_owned();
-            points.push(p);
-            trace_ids.push(k);
+pub trait AddScalars: CreateTrace {
+    async fn add_scalars(
+        &self,
+        values: &HashMap<String, f64>,
+        ts: &DateTime<Utc>,
+    ) -> Result<(), Error> {
+        for (k, v) in values {
+            let trace_id = self.create_trace(k).await?;
+            let point = Point {
+                trace_id: trace_id,
+                ts: ts.to_owned(),
+                value: v.to_owned(),
+            };
+            self.storage().create(&point).await?;
         }
-        ctx.point_repo()
-            .bulk_insert(&points.iter().collect::<Vec<_>>())
-            .await?;
-        ctx.trace_repo()
-            .update_last_ts(&trace_ids, &self.ts)
-            .await?;
         Ok(())
     }
 }
 
-#[derive(Serialize, Deserialize)]
-pub struct DeleteWorkspace {
-    id: Uuid,
-}
-
 #[async_trait]
-impl<T> Service<T> for DeleteWorkspace
-where
-    T: IContext + Sync,
-{
-    type Output = Uuid;
-    async fn call(&self, ctx: &T) -> Result<Self::Output, Error> {
-        let traces = ctx.trace_repo().get_by_workspace_id(&self.id).await?;
-        let trace_ids: Vec<Uuid> = traces.iter().map(|x| x.id).collect();
-        DeleteTrace {
-            trace_ids: trace_ids,
-        }
-        .call(ctx)
+pub trait DeleteTrace: HasStorage {
+    async fn delete_trace(&self, name: &str) -> Result<(), Error> {
+        let trace_id = self
+            .storage()
+            .get(&NameKey {
+                name: name.to_owned(),
+            })
+            .await?
+            .ok_or(ErrorKind::TraceNotFound)?
+            .id;
+        Delete::<Trace>::delete(
+            self.storage(),
+            &IdKey {
+                id: trace_id.to_owned(),
+            },
+        )
         .await?;
-        ctx.workspace_repo().delete(&self.id).await?;
-        Ok(self.id)
-    }
-}
+        Delete::<Point>::delete(
+            self.storage(),
+            &IdKey {
+                id: trace_id.to_owned(),
+            },
+        )
+        .await?;
 
-#[derive(Serialize, Deserialize)]
-pub struct DeleteTrace {
-    trace_ids: Vec<Uuid>,
-}
-#[async_trait]
-impl<T> Service<T> for DeleteTrace
-where
-    T: IContext + Sync,
-{
-    type Output = ();
-    async fn call(&self, ctx: &T) -> Result<Self::Output, Error> {
-        ctx.point_repo()
-            .delete(&self.trace_ids.iter().collect::<Vec<_>>())
-            .await?;
-        ctx.trace_repo()
-            .delete(&self.trace_ids.iter().collect::<Vec<_>>())
-            .await?;
         Ok(())
     }
 }
