@@ -17,7 +17,7 @@ services:
       - ./ui:/srv
 
   storybook:
-    image: "h4nyu/mlboard_board:${TAG}"
+    image: "h4nyu/mlboard_ui:${TAG}"
     volumes:
       - ./ui:/srv
     command: yarn storybook
