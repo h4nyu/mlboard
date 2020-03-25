@@ -16,9 +16,9 @@ export default class SearchUsecase{
     this.root = root;
   }
   @computed get traces(){
-    return this.root.traceStore.rows.filter(
-      x => x.name.includes(this.keyword)
-    );
+    return this.root.traceStore.rows
+      .filter(x => x.name.includes(this.keyword))
+      .sortBy(x => x.name);
   }
 
   fetchTraces = async () => {
