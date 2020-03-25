@@ -58,7 +58,7 @@ export default class TransitionUsecase{
     await this.root.loadingStore.dispatch(async () => {
       const points = await this.root.api.pointApi.rangeBy(transition.traceId, fromDate, toDate);
       if(points === undefined) {return;};
-      this.root.transitionStore.upsert({[transitionId]: { ...transition, fromDate, toDate, points:[...points]}});
+      this.root.transitionStore.upsert({[transitionId]: { ...transition, fromDate, toDate, points:points}});
     });
   }
 
