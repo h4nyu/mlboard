@@ -5,6 +5,7 @@ import {Trace} from '~/models';
 import { Map } from 'immutable';
 import styled from 'styled-components';
 
+
 const Layout = styled.div`
   width: 100%;
   position: relative;
@@ -14,6 +15,8 @@ const AutoComplete = styled.div`
   z-index: 30;
   position: absolute;
   width: 100%;
+  overflow-y: auto;
+  height:30em;
 `;
 
 const Item = styled.div`
@@ -68,17 +71,19 @@ export default class DatetimeInput extends React.Component<IProps, State> {
           defaultValue={String(defaultValue)}
           onInput={(v) => handleInput(v)}
         />
-        <AutoComplete className="list">
-          {
-            isActive? (
-              traces.toList().map(x => (
-                <Item className="list-item" key={x.id} onClick={() => onSelect(x.id)}>
-                  {x.name}
-                </Item>
-              ))
-            ):null
-          }
-        </AutoComplete>
+        {
+          isActive? (
+            <AutoComplete className="list">
+              {
+                traces.toList().map(x => (
+                  <Item className="list-item" key={x.id} onClick={() => onSelect(x.id)}>
+                    {x.name}
+                  </Item>
+                ))
+              }
+            </AutoComplete>
+          ):null
+        }
       </Layout>
     );
   }

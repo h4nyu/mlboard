@@ -58,3 +58,20 @@ impl Filter<SlimPoint> for Client {
         Ok(res)
     }
 }
+
+#[async_trait]
+impl BulkInsert<Point> for Client {
+    async fn bulk_insert(&self, rows: &[Point]) -> Result<(), Error> {
+        let values_stmt = rows
+            .iter()
+            .map(|x| format!("('{}',{},'{}')", x.ts, x.value, x.trace_id))
+            .collect::<Vec<String>>()
+            .join(",");
+        let sql = format!(
+            "INSERT INTO points (ts, value, trace_id) VALUES {}",
+            values_stmt
+        );
+        self.execute(&sql[..], &[]).await?;
+        Ok(())
+    }
+}

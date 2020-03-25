@@ -32,7 +32,7 @@ pub trait Create<T> {
 
 #[async_trait]
 pub trait BulkInsert<T> {
-    async fn bulk_insert(&self, row: &[&T]) -> Result<(), Error>;
+    async fn bulk_insert(&self, row: &[T]) -> Result<(), Error>;
 }
 
 #[async_trait]
@@ -71,7 +71,7 @@ pub trait Storage:
     + Get<Trace, Key = NameKey>
     + Delete<Trace, Key = IdKey>
     + Contain<Trace, Key = NameKey>
-    + Create<Point>
+    + BulkInsert<Point>
     + Filter<SlimPoint, Key = RangeKey>
     + Delete<Point, Key = IdKey>
     + Sync
@@ -145,6 +145,7 @@ pub trait AddScalars: CreateTrace {
         values: &HashMap<String, f64>,
         ts: &DateTime<Utc>,
     ) -> Result<(), Error> {
+        let mut points:Vec<Point> = vec![];
         for (k, v) in values {
             let trace_id = self.create_trace(k).await?;
             let point = Point {
@@ -152,8 +153,9 @@ pub trait AddScalars: CreateTrace {
                 ts: ts.to_owned(),
                 value: v.to_owned(),
             };
-            self.storage().create(&point).await?;
+            points.push(point);
         }
+        self.storage().bulk_insert(&points).await?;
         Ok(())
     }
 }
