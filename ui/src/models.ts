@@ -14,16 +14,10 @@ export type Trace = {
 
 export type Transition = {
   id: string;
+  traceId: string;
   smoothWeight: number;
   isLog: boolean;
   isDatetime: boolean;
-  fromDate: Moment;
-  toDate: Moment;
-}
-
-export type Segment = {
-  id: string;
-  traceId: string;
   points: Point[];
   fromDate: Moment;
   toDate: Moment;

@@ -10,7 +10,6 @@ const {transitionStore, transitionUsecase} = store;
 const Component = () => (
   <TransitionList
     transitions={transitionStore.rows}
-    onAddClick={transitionUsecase.add}
     Child={Transition}
   />
 );

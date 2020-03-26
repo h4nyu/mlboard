@@ -7,7 +7,7 @@ import {transition, trace } from 'tests/mocks/models';
 import { Map, Set } from 'immutable';
 import { boolean, number } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
-import { Trace, Segment } from '~/models';
+import { Trace } from '~/models';
 
 const points = [
   {
@@ -38,34 +38,17 @@ storiesOf('Transition', module)
         updatedAt: moment(),
       }
     });
-    const segments:Map<string,Segment> = Map({
-      "s0": {
-        id: "s0",
-        traceId: "t0",
-        points: points,
-        fromDate: moment(),
-        toDate: moment(),
-      }
-    });
-    const relations = Set([{
-      transitionId: transition.id,
-      traceId: "t0",
-      segmentId: "s0"
-    }]);
     return (
       <Component 
-        currentId={""}
         transition={{
           ...transition,
-          isDatetime: boolean('isDatetime', false),
-          isLog: boolean('isLog', false),
-          smoothWeight: number('smoothWeight', 0.5),
+            traceId:"t0",
+            isDatetime: boolean('isDatetime', false),
+            isLog: boolean('isLog', false),
+            smoothWeight: number('smoothWeight', 0.5),
+            points: points,
         }}
-        relations={relations}
-        segments={segments}
         traces={traces}
-        onClick={action('onClick')}
-        onLegendCLick={action('onLegendCLick')}
         onWeightChange={action('onWeightChange')}
         onRangeChange={action('onRangeChange')}
         onClose={action('onClose')}

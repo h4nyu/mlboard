@@ -1,6 +1,5 @@
 import moment,{Moment} from 'moment';
 import { action, observable, computed } from 'mobx';
-import { Segment } from '~/models'; 
 import {some, keyBy} from 'lodash';
 import uuid from 'uuid';
 import {RootStore} from './index';
@@ -19,17 +18,15 @@ export default class SearchUsecase{
 
   fetchTraces = async () => {
     await this.root.loadingStore.dispatch(async () => {
-      const rows = await this.root.api.traceApi.all();
+      const rows = await this.root.api.traceApi.all(this.keyword);
       if(rows === undefined) {return;}
       this.root.traceStore.upsert(keyBy(rows, x => x.id));
     });
   }
 
-  @action addTrace = async (traceId: string) => {
-  }
-
-  @action setKeyword = (keyword: string) => {
+  @action setKeyword = async (keyword: string) => {
     this.keyword = keyword;
+    await this.fetchTraces()
   }
 }
 

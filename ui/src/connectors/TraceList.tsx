@@ -3,12 +3,12 @@ import React from "react";
 import TraceList from '~/containers/TraceList';
 import TraceListItem from "~/connectors/TraceListItem";
 import store from "~/store";
-const {transitionUsecase} = store;
+const {traceStore} = store;
 
 
 const Component = () => (
   <TraceList
-    traces={transitionUsecase.traces}
+    traces={traceStore.rows}
     Child={TraceListItem}
   />
 );

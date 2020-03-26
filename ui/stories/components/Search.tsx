@@ -20,8 +20,8 @@ storiesOf('Search', module)
       onSelect={action('onSelect')}
     />
   ))
-  .add('default', () => (
-    <div>
+  .add('narrow-box', () => (
+    <div style={{width:300}}>
       <Search
         defaultValue={"aaa"}
         traces={traces}

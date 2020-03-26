@@ -7,6 +7,7 @@ import styled from 'styled-components';
 
 const Layout = styled.div`
   width: 100%;
+  position: relative;
 `;
 
 const AutoComplete = styled.div`
@@ -17,10 +18,10 @@ const AutoComplete = styled.div`
 
 const Item = styled.div`
   width: 100%;
-  hover: {
-    background-color: #e9e9e9;
-  }
   cursor: pointer;
+  &:hover {
+    background-color: #EEEEEE;
+  };
 `;
 
 type State = {
@@ -60,11 +61,11 @@ export default class DatetimeInput extends React.Component<IProps, State> {
           defaultValue={String(defaultValue)}
           onInput={(v) => handleInput(v)}
         />
-        <AutoComplete className="list is-hoverable">
+        <AutoComplete className="list">
           {
             isActive? (
               traces.toList().map(x => (
-                <Item className="list-item" onClick={() => onSelect(x.id)}>
+                <Item className="list-item" key={x.id} onClick={() => onSelect(x.id)}>
                   {x.name}
                 </Item>
               ))

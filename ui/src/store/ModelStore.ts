@@ -11,5 +11,8 @@ export default class ModelStore<T> {
   @action upsert = (rows: {[key: string]: T}) => {
     this.rows = this.rows.merge(Map(rows));
   }
-}
 
+  @action clear = () => {
+    this.rows = this.rows.clear();
+  }
+}

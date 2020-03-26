@@ -15,16 +15,12 @@ const AddIcon = () => (<i className="fas fa-plus"></i>);
 
 interface IProps {
   transitions: Map<string, Transition>;
-  onAddClick: () => void;
   Child: React.ComponentType<IChildProps>;
 }
 const Component = (props: IProps) => {
-  const {transitions, Child, onAddClick} = props;
+  const {transitions, Child} = props;
   return (
     <Layout>
-      <div className="button" onClick={()=> onAddClick()}>
-        <AddIcon/>
-      </div>
       {Array.from(transitions.values()).map(x => (
         <Child 
           key={x.id} 

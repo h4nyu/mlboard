@@ -19,8 +19,12 @@ export default class ChartComponent extends React.Component<IProps, State>{
     if(this.state.ref.current){
       Plotly.newPlot(this.state.ref.current, this.props.data, this.props.layout).then(
         (e: any) => {
-          e.on("plotly_relayout", this.props.onRelayout);
-          e.on("plotly_legendclick", this.props.onLegendCLick);
+          if(this.props.onRelayout){
+            e.on("plotly_relayout", this.props.onRelayout);
+          }
+          if(this.props.onLegendCLick){
+            e.on("plotly_legendclick", this.props.onLegendCLick);
+          }
         }
       );
     }

@@ -1,5 +1,4 @@
 import { 
-  Segment,
   Trace, 
   Transition, 
 } from '~/models';
@@ -16,7 +15,6 @@ export class RootStore {
   loadingStore: LoadingStore;
   appStore: AppStore;
   traceStore: ModelStore<Trace>;
-  segmentStore: ModelStore<Segment>;
   transitionStore: ModelStore<Transition>;
   transitionUsecase: TransitionUsecase;
   searchUsecase : SearchUsecase;
@@ -24,7 +22,6 @@ export class RootStore {
   constructor() {
     this.api = new WebApi()
 
-    this.segmentStore = new ModelStore<Segment>();
     this.traceStore = new ModelStore<Trace>();
     this.transitionStore = new ModelStore<Transition>();
     this.loadingStore = new LoadingStore();
