@@ -21,7 +21,7 @@ services:
       - db
 
   board: &default-node
-    image:  h4nyu/mlboard_board
+    image:  h4nyu/mlboard_ui
     volumes:
       - ./web-data:/public
 
