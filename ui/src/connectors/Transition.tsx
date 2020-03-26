@@ -16,6 +16,7 @@ const Component = (props: IProps) => (
     segments={segmentStore.rows}
     onWeightChange={transitionUsecase.updateSmoothWeight}
     onRangeChange={transitionUsecase.syncRange}
+    onLegendCLick={transitionUsecase.deleteSegment}
     onClick={transitionUsecase.select}
     onClose={transitionUsecase.deleteTransition}
     onIsLogChange={transitionUsecase.toggleIsLog}

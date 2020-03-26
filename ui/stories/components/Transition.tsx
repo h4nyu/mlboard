@@ -58,6 +58,7 @@ storiesOf('Transition', module)
         traces={traces}
         onWeightChange={action('onWeightChange')}
         onRangeChange={action('onRangeChange')}
+        onLegendCLick={action('onLegendCLick')}
         onClick={action('onClick')}
         onClose={action('onClose')}
         onIsLogChange={action('onIsLogChange')}

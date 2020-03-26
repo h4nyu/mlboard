@@ -9,14 +9,14 @@ import { Set } from "immutable";
 
 export default class TransitionUsecase{
   private root: RootStore
-  @observable selectedId: string = "";
+  @observable selectedId = "";
 
   constructor(
     root: RootStore,
   ){
     this.root = root;
     if(this.root.transitionStore.rows.size === 0){
-      this.addTransition()
+      this.addTransition();
     }
   }
 
@@ -52,7 +52,7 @@ export default class TransitionUsecase{
     this.selectedId = transition.id;
   }
 
-  fetchSegment = async (segment:Segment) => {
+  fetchSegment = async (segment: Segment) => {
     await this.root.loadingStore.dispatch(async () => {
       const points = await this.root.api.pointApi.rangeBy(segment.traceId, segment.fromDate, segment.toDate);
       if(points === undefined) {return;};
@@ -70,9 +70,9 @@ export default class TransitionUsecase{
       points: [],
       fromDate: transition.fromDate,
       toDate: transition.toDate,
-    }
+    };
     this.root.transitionStore.upsert({[transition.id]: {...transition, segmentIds: [...transition.segmentIds, segment.id]}});
-    this.fetchSegment(segment)
+    this.fetchSegment(segment);
   }
 
   @action updateSmoothWeight = (id: string, value: number) => {
@@ -84,16 +84,16 @@ export default class TransitionUsecase{
   @action updateRangeOne = async (transition: Transition, fromDate: Moment, toDate: Moment) => {
     const segments = this.root.segmentStore.rows.filter(x => transition.segmentIds.includes(x.id))
       .forEach(x => {
-        this.fetchSegment({ ...x, fromDate, toDate, })
-      })
-      this.root.transitionStore.upsert({[transition.id]: { ...transition, fromDate, toDate}});
+        this.fetchSegment({ ...x, fromDate, toDate, });
+      });
+    this.root.transitionStore.upsert({[transition.id]: { ...transition, fromDate, toDate}});
   }
 
   @action syncRange = async (transitionId: string, fromDate: Moment, toDate: Moment) => {
     const transition = this.root.transitionStore.rows.get(transitionId);
     if(transition === undefined){return;}
     if (!transition.isSync) {
-      await this.updateRangeOne(transition, fromDate, toDate)
+      await this.updateRangeOne(transition, fromDate, toDate);
     }else {
       this.root.transitionStore.rows.filter(x => x.isSync).forEach(x => {
         this.updateRangeOne(x, fromDate, toDate);
@@ -133,6 +133,15 @@ export default class TransitionUsecase{
     if(transition === undefined){return;}
     this.root.segmentStore.delete(transition.segmentIds);
     this.root.transitionStore.delete([id]);
+  }
+
+  @action deleteSegment = (transitionId: string, segmentId: string) => {
+    const transition = this.root.transitionStore.rows.get(transitionId);
+    if(transition === undefined){return;}
+    this.root.segmentStore.delete([segmentId]);
+    this.root.transitionStore.upsert({
+      [transition.id]: {...transition, segmentIds:transition.segmentIds.filter(x => x!==segmentId)}
+    });
   }
 
   @action select = (id: string) => {

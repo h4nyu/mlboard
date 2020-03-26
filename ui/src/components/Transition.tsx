@@ -9,13 +9,15 @@ import {range} from 'lodash';
 import Plot from '~/components/Plot';
 import Check from '~/components/Check';
 import { Transition, Trace, Segment } from '~/models';
+import Legends from './Legends';
 
 
 const Layout = styled.div<{isSelected: boolean}>`
   display: grid;
   grid-template-areas:
     "control close"
-    "plot plot";
+    "plot plot"
+    "legend legend";
   padding: 0.5em;
   margin: 0.25em;
   grid-template-columns: 1fr auto auto auto;
@@ -28,6 +30,10 @@ const PlotArea = styled.div`
   grid-area: plot;
   height: 200px;
   padding: 0.5em;
+`;
+
+const LegendArea = styled.div`
+  grid-area: legend;
 `;
 
 const Close = styled.a`
@@ -53,34 +59,34 @@ const CotrolArea = styled.div`
   justify-content: flex-end;
 `;
 
-const TitleArea = styled.div`
-  grid-area: control;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-`;
-
 const formatDatetime = (value: Moment) => {
   return value.local().format("YYYY-MM-DD HH:mm:ss.SSS");
 };
 export interface IProps {
-  selectedId: string,
+  selectedId: string;
   transition: Transition;
   traces: Map<string, Trace>;
   segments: Map<string, Segment>;
   onWeightChange: (id: string, value: number) => void;
   onRangeChange: (id: string, fromDate: Moment, toDate: Moment) => void;
   onClose: (id: string) => void;
+  onLegendCLick: (transitionId: string, segmentId: string) => void;
   onIsSyncChange: (id: string) => void;
   onIsLogChange: (id: string) => void;
   onIsDatetimeChange: (id: string) => void;
   onClick: (id: string) => void;
 }
 export default (props: IProps) => {
-  const getTitle = () => {
-    const { transition, traces } = props;
-    const trace = traces.get(transition.traceId);
-    return trace? trace.name : "";
+  const getLegends = (): {id: string; name: string}[] => {
+    const { transition, traces, segments } = props;
+    return segments.filter(x => transition.segmentIds.includes(x.id)).map(
+      x => {
+        const trace = traces.get(x.traceId);
+        return {
+          id: x.id, name: trace? trace.name:""
+        };
+      }
+    ).toList().toJS();
   };
 
   const getPlotData = () => {
@@ -88,7 +94,7 @@ export default (props: IProps) => {
     const trace = traces.get(transition.traceId);
     
     return segments.filter(x => transition.segmentIds.includes(x.id))
-      .map((s:Segment) => {
+      .map((s: Segment) => {
         const trace = traces.get(s.traceId);
         let xValues = [];
         const points = s.points;
@@ -116,8 +122,8 @@ export default (props: IProps) => {
           marker: {
             size: 6,
           },
-        }
-      }).toList().toJS()
+        };
+      }).toList().toJS();
   };
   const getPlotLayout = () => {
     const { transition } = props;
@@ -159,12 +165,13 @@ export default (props: IProps) => {
 
   const plotData = getPlotData();
   const plotLayout = getPlotLayout();
-  const title = getTitle();
+  const legends = getLegends();
   const {
     selectedId,
     transition, 
     onClose, 
     onClick,
+    onLegendCLick,
     onIsLogChange, 
     onIsDatetimeChange, 
     onIsSyncChange,
@@ -176,9 +183,6 @@ export default (props: IProps) => {
       isSelected={selectedId === transition.id}
       onClick={() => onClick(transition.id)}
     >
-      <TitleArea > 
-        <Item className="title is-4"> {title} </Item>
-      </TitleArea>
       <CotrolArea>
         <Item>
           <Slider
@@ -217,6 +221,9 @@ export default (props: IProps) => {
           }}
         </AutoSizer>
       </PlotArea>
+      <LegendArea>
+        <Legends values={legends} onClick={(x) => onLegendCLick(transition.id, x)}/>
+      </LegendArea>
     </Layout>
   );
 };
