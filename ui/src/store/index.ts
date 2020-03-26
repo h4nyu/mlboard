@@ -17,10 +17,10 @@ export class RootStore {
   traceStore: ModelStore<Trace>;
   transitionStore: ModelStore<Transition>;
   transitionUsecase: TransitionUsecase;
-  searchUsecase : SearchUsecase;
+  searchUsecase: SearchUsecase;
 
   constructor() {
-    this.api = new WebApi()
+    this.api = new WebApi();
 
     this.traceStore = new ModelStore<Trace>();
     this.transitionStore = new ModelStore<Transition>();

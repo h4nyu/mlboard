@@ -1,7 +1,7 @@
 import React, {FormEvent} from 'react';
 import fp from 'lodash/fp';
-import TextInput from './TextInput'
-import {Trace} from '~/models'
+import TextInput from './TextInput';
+import {Trace} from '~/models';
 import { Map } from 'immutable';
 import styled from 'styled-components';
 
@@ -24,19 +24,19 @@ const Item = styled.div`
   };
 `;
 
-type State = {
-  isActive:boolean;
+interface State {
+  isActive: boolean;
 }
 export interface IProps {
   defaultValue: string;
-  traces:Map<string, Trace>;
+  traces: Map<string, Trace>;
   onInput: (value: string) => void;
   onSelect: (traceId: string) => void;
 }
 export default class DatetimeInput extends React.Component<IProps, State> {
-  constructor(props:IProps){
-    super(props)
-    this.state = {isActive: false}
+  constructor(props: IProps){
+    super(props);
+    this.state = {isActive: false};
   }
   delayedOnInput = fp.debounce(200)(this.props.onInput)
   handleInput = (value: string) => {
@@ -46,7 +46,7 @@ export default class DatetimeInput extends React.Component<IProps, State> {
   toggle = () => {
     this.setState({
       isActive: !this.state.isActive
-    })
+    });
   }
   render = () => {
     const {defaultValue, traces, onSelect} = this.props;

@@ -74,8 +74,8 @@ export default (props: IProps) => {
   const getTitle = () => {
     const { transition, traces } = props;
     let trace = traces.get(transition.traceId);
-    return trace? trace.name : ""
-  }
+    return trace? trace.name : "";
+  };
 
   const getPlotData = () => {
     const { transition, traces } = props;
@@ -113,7 +113,7 @@ export default (props: IProps) => {
         size: 6,
       },
     }];
-  }
+  };
   const getPlotLayout = () => {
     const { transition } = props;
     return {
@@ -135,7 +135,7 @@ export default (props: IProps) => {
       },
       showTips: false,
     } as any; 
-  }
+  };
 
   const handleRelayout = (e: any) => {
     if (e['xaxis.range[0]'] && e['xaxis.range[1]'] && props.transition.isDatetime) {
@@ -150,7 +150,7 @@ export default (props: IProps) => {
         );
       }
     }
-  }
+  };
 
   const plotData = getPlotData();
   const plotLayout = getPlotLayout();
@@ -206,4 +206,4 @@ export default (props: IProps) => {
       </PlotArea>
     </Layout>
   );
-}
+};

@@ -26,7 +26,7 @@ export default class SearchUsecase{
 
   @action setKeyword = async (keyword: string) => {
     this.keyword = keyword;
-    await this.fetchTraces()
+    await this.fetchTraces();
   }
 }
 

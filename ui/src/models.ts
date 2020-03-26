@@ -1,18 +1,18 @@
 import {Moment} from 'moment';
 
-export type Point = {
+export interface Point {
   value: number;
   ts: Moment;
 }
 
-export type Trace = {
+export interface Trace {
   id: string;
   name: string;
   createdAt: Moment;
   updatedAt: Moment;
 }
 
-export type Transition = {
+export interface Transition {
   id: string;
   traceId: string;
   smoothWeight: number;

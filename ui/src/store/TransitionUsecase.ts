@@ -43,7 +43,7 @@ export default class TransitionUsecase{
       points: [],
     };
     this.root.transitionStore.upsert({[transition.id]: transition});
-    await this.updateRange(transition.id, transition.fromDate, transition.toDate)
+    await this.updateRange(transition.id, transition.fromDate, transition.toDate);
   }
 
   @action updateSmoothWeight = (id: string, value: number) => {

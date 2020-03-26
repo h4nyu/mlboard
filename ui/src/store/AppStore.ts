@@ -1,4 +1,4 @@
-import {RootStore } from './index'
+import {RootStore } from './index';
 
 export default class AppStore {
   private root: RootStore;
