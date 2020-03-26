@@ -15,13 +15,16 @@ export default class SearchUsecase{
   ){
     this.root = root;
   }
+  @computed get traces(){
+    return this.root.traceStore.rows.filter(
+      x => x.name.includes(this.keyword)
+    )
+  }
 
   fetchTraces = async () => {
-    await this.root.loadingStore.dispatch(async () => {
-      const rows = await this.root.api.traceApi.all(this.keyword);
-      if(rows === undefined) {return;}
-      this.root.traceStore.upsert(keyBy(rows, x => x.id));
-    });
+    const rows = await this.root.api.traceApi.all(this.keyword);
+    if(rows === undefined) {return;}
+    this.root.traceStore.upsert(keyBy(rows, x => x.id));
   }
 
   @action setKeyword = async (keyword: string) => {
