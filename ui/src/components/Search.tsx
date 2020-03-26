@@ -43,9 +43,15 @@ export default class DatetimeInput extends React.Component<IProps, State> {
     const inputValue = value;
     this.delayedOnInput(inputValue);
   };
-  toggle = () => {
+  active = () => {
     this.setState({
-      isActive: !this.state.isActive
+      isActive: true
+    });
+  }
+
+  deactive = () => {
+    this.setState({
+      isActive: false
     });
   }
   render = () => {
@@ -54,8 +60,9 @@ export default class DatetimeInput extends React.Component<IProps, State> {
     const {handleInput, } = this;
     return (
       <Layout
-        onMouseEnter={() => this.toggle()}
-        onMouseLeave={() => this.toggle()}
+        onMouseEnter={() => this.active()}
+        onMouseLeave={() => this.deactive()}
+        onFocus={ () => this.active() } 
       >
         <TextInput
           defaultValue={String(defaultValue)}
