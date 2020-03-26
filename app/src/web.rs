@@ -24,7 +24,7 @@ pub async fn run() -> std::io::Result<()> {
             .wrap(Logger::default())
             .wrap(Logger::new("%a %{User-Agent}i"))
             .service(fs::Files::new("/ui", "/public").index_file("index.html"))
-            .service(web::resource("/api/v1/add_scalars").route(web::post().to(add_scalars)))
+            .service(web::resource("/api/v1/add-scalars").route(web::post().to(add_scalars)))
             .service(web::resource("/api/v1/points").route(web::get().to(search_points)))
             .service(web::resource("/api/v1/traces").route(web::get().to(search_traces)))
             .service(web::resource("/api/v1/traces").route(web::delete().to(delete_trace)))
