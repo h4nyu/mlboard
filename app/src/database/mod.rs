@@ -1,6 +1,7 @@
 mod point;
 mod trace;
 
+use uuid::Uuid;
 use crate::entities::*;
 use crate::usecase::*;
 use async_trait::async_trait;

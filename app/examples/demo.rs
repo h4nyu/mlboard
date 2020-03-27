@@ -2,12 +2,8 @@ use app::database::create_connection_pool;
 use app::usecase::*;
 use app::web::Context;
 use chrono::prelude::Utc;
-use deadpool_postgres::Pool;
-use failure::Error;
-use futures::future::join_all;
-use serde_json::json;
 use std::collections::HashMap;
-use std::time::{Duration, Instant};
+use std::time::{Instant};
 
 #[tokio::main]
 async fn main() {

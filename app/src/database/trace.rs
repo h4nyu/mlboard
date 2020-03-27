@@ -14,7 +14,20 @@ impl From<Row> for Trace {
 #[async_trait]
 impl Create<Trace> for Client {
     async fn create(&self, row: &Trace) -> Result<(), Error> {
-        self.execute(
+        let table_name = format!("points_{}", &row.id.to_simple());
+        self.simple_query(
+            &format!("
+            CREATE TABLE {table_name}
+                (
+                    ts timestamp with time zone NOT NULL DEFAULT clock_timestamp(),
+                    value double precision
+                );
+            SELECT create_hypertable('{table_name}', 'ts', chunk_time_interval => interval '2 day');
+            ", table_name=&table_name)[..],
+        )
+        .await?;
+
+         self.execute(
             "INSERT INTO traces (id, name, created_at, updated_at) VALUES ($1, $2, $3, $4)",
             &[&row.id, &row.name, &row.created_at, &row.updated_at],
         )
@@ -39,8 +52,8 @@ impl Get<Trace> for Client {
 impl Delete<Trace> for Client {
     type Key = IdKey;
     async fn delete(&self, key: &IdKey) -> Result<(), Error> {
-        self.execute("DELETE FROM traces WHERE id = $1", &[&key.id])
-            .await?;
+        self.simple_query(&format!("DROP TABLE points_{};", &key.id.to_simple())[..]).await?;
+        self.execute("DELETE FROM traces WHERE id = $1;", &[&key.id]).await?;
         Ok(())
     }
 }
@@ -51,7 +64,7 @@ impl Contain<Trace> for Client {
     async fn contain(&self, key: &NameKey) -> Result<Vec<Trace>, Error> {
         let regex = format!("%{}%", &key.name);
         let res: Vec<Trace> = self
-            .query("SELECT * FROM traces WHERE name LIKE $1", &[&regex])
+            .query("SELECT * FROM traces WHERE name LIKE $1 ORDER BY created_at DESC", &[&regex])
             .await?
             .into_iter()
             .map(|x| x.into())
@@ -60,64 +73,17 @@ impl Contain<Trace> for Client {
     }
 }
 
-// #[async_trait]
-// impl TraceRepository for Client {
-//     async fn get_all(&self) -> Result<Vec<Trace>, Error> {
-//         let res = self
-//             .query("SELECT * FROM traces", &[])
-//             .await?
-//             .into_iter()
-//             .map(Trace::from)
-//             .collect();
-//         Ok(res)
-//     }
-//     async fn get(&self, name: &str) -> Result<Option<Trace>, Error> {
-//         let res = self
-//             .query_opt(
-//                 "SELECT * FROM traces WHERE name = $1",
-//                 &[&name],
-//             )
-//             .await?
-//             .map(Trace::from);
-//         Ok(res)
-//     }
-//
-//     async fn insert(&self, row: &Trace) -> Result<Uuid, Error> {
-//         let sql = "INSERT INTO traces (id, name, created_at, updated_at) VALUES ($1, $2, $3, $4, $5)";
-//         self.execute(
-//             &sql[..],
-//             &[
-//                 &row.id,
-//                 &row.name,
-//                 &row.created_at,
-//                 &row.updated_at,
-//             ],
-//         )
-//         .await?;
-//         Ok(row.id)
-//     }
-//
-//     async fn update_last_ts(&self, ids: &[&Uuid], updated_at: &DateTime<Utc>) -> Result<(), Error> {
-//         let sql = "UPDATE traces SET updated_at = $1 WHERE id = ANY($2)";
-//         self.execute(&sql[..], &[updated_at, &ids]).await?;
-//         Ok(())
-//     }
-//     async fn delete(&self, ids: &[&Uuid]) -> Result<(), Error> {
-//         self.execute("DELETE FROM traces WHERE id = ANY($1)", &[&ids])
-//             .await?;
-//         Ok(())
-//     }
-// }
-//
-// #[cfg(test)]
-// mod tests {
-//     use super::*;
-//
-//     #[tokio::test]
-//     async fn test_get_all() -> Result<(), Error> {
-//         let pool = create_connection_pool()?;
-//         let client = pool.get().await?;
-//         TraceRepository::get_all(&client).await?;
-//         Ok(())
-//     }
-// }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[tokio::test]
+    async fn test_create_trace() -> () {
+        let mut row:Trace = Default::default();
+        row.name = Uuid::new_v4().to_string();
+        let pool = create_connection_pool().unwrap();
+        let conn = pool.get().await.unwrap();
+        conn.create(&row).await.unwrap();
+        Delete::<Trace>::delete(&conn, &IdKey{id: row.id.to_owned()}).await.unwrap();
+    }
+}

@@ -46,12 +46,6 @@ pub trait Delete<T> {
     async fn delete(&self, key: &Self::Key) -> Result<(), Error>;
 }
 
-#[async_trait]
-pub trait TraceUsecase {
-    async fn get_all(&self, keyword: &str) -> Result<Vec<Trace>, Error>;
-    async fn add_scalars(&self, keyword: &str) -> Result<Vec<Trace>, Error>;
-}
-
 pub struct NameKey {
     pub name: String,
 }
@@ -71,9 +65,8 @@ pub trait Storage:
     + Get<Trace, Key = NameKey>
     + Delete<Trace, Key = IdKey>
     + Contain<Trace, Key = NameKey>
-    + BulkInsert<Point>
+    + Create<Point>
     + Filter<SlimPoint, Key = RangeKey>
-    + Delete<Point, Key = IdKey>
     + Sync
 {
 }
@@ -145,7 +138,6 @@ pub trait AddScalars: CreateTrace {
         values: &HashMap<String, f64>,
         ts: &DateTime<Utc>,
     ) -> Result<(), Error> {
-        let mut points:Vec<Point> = vec![];
         for (k, v) in values {
             let trace_id = self.create_trace(k).await?;
             let point = Point {
@@ -153,9 +145,8 @@ pub trait AddScalars: CreateTrace {
                 ts: ts.to_owned(),
                 value: v.to_owned(),
             };
-            points.push(point);
+            self.storage().create(&point).await?;
         }
-        self.storage().bulk_insert(&points).await?;
         Ok(())
     }
 }
@@ -178,14 +169,6 @@ pub trait DeleteTrace: HasStorage {
             },
         )
         .await?;
-        Delete::<Point>::delete(
-            self.storage(),
-            &IdKey {
-                id: trace_id.to_owned(),
-            },
-        )
-        .await?;
-
         Ok(())
     }
 }

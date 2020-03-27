@@ -22,21 +22,12 @@ impl From<Row> for SlimPoint {
 #[async_trait]
 impl Create<Point> for Client {
     async fn create(&self, row: &Point) -> Result<(), Error> {
+        let table_name = format!("points_{}", row.trace_id.to_simple());
         self.execute(
-            "INSERT INTO points (ts, value, trace_id) VALUES ($1, $2, $3)",
-            &[&row.ts, &row.value, &row.trace_id],
+            &format!("INSERT INTO {table_name} (ts, value) VALUES ($1, $2)", table_name=&table_name)[..],
+            &[&row.ts, &row.value],
         )
         .await?;
-        Ok(())
-    }
-}
-
-#[async_trait]
-impl Delete<Point> for Client {
-    type Key = IdKey;
-    async fn delete(&self, key: &IdKey) -> Result<(), Error> {
-        self.execute("DELETE FROM points WHERE trace_id = $1", &[&key.id])
-            .await?;
         Ok(())
     }
 }
@@ -45,10 +36,11 @@ impl Delete<Point> for Client {
 impl Filter<SlimPoint> for Client {
     type Key = RangeKey;
     async fn filter(&self, key: &Self::Key) -> Result<Vec<SlimPoint>, Error> {
+        let table_name = format!("points_{}", key.id.to_simple());
         let mut res: Vec<SlimPoint> = self
             .query(
-                "SELECT value, ts FROM points WHERE trace_id = $1 AND ts BETWEEN $2 AND $3",
-                &[&key.id, &key.from_date, &key.to_date],
+                &format!("SELECT value, ts FROM {table_name} WHERE ts BETWEEN $1 AND $2", table_name=&table_name)[..],
+                &[&key.from_date, &key.to_date],
             )
             .await?
             .into_iter()
