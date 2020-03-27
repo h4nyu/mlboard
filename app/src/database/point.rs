@@ -20,18 +20,6 @@ impl From<Row> for SlimPoint {
 }
 
 #[async_trait]
-impl Create<Point> for Client {
-    async fn create(&self, row: &Point) -> Result<(), Error> {
-        self.execute(
-            "INSERT INTO points (ts, value, trace_id) VALUES ($1, $2, $3)",
-            &[&row.ts, &row.value, &row.trace_id],
-        )
-        .await?;
-        Ok(())
-    }
-}
-
-#[async_trait]
 impl Delete<Point> for Client {
     type Key = IdKey;
     async fn delete(&self, key: &IdKey) -> Result<(), Error> {

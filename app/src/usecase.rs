@@ -145,7 +145,7 @@ pub trait AddScalars: CreateTrace {
         values: &HashMap<String, f64>,
         ts: &DateTime<Utc>,
     ) -> Result<(), Error> {
-        let mut points:Vec<Point> = vec![];
+        let mut points: Vec<Point> = vec![];
         for (k, v) in values {
             let trace_id = self.create_trace(k).await?;
             let point = Point {
