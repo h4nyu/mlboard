@@ -8,10 +8,10 @@ import Slider from '~/components/Slider';
 import {range} from 'lodash';
 import Plot from '~/components/Plot';
 import Check from '~/components/Check';
-import {Transition, Trace } from '~/models';
+import { Transition, Trace, Segment } from '~/models';
 
 
-const Layout = styled.div`
+const Layout = styled.div<{isSelected: boolean}>`
   display: grid;
   grid-template-areas:
     "control close"
@@ -20,6 +20,8 @@ const Layout = styled.div`
   margin: 0.25em;
   grid-template-columns: 1fr auto auto auto;
   grid-template-rows: auto 1fr;
+  border-left: 5px solid;
+  border-color: ${props => props.isSelected ? "gray" : "white"};
 `;
 
 const PlotArea = styled.div`
@@ -62,14 +64,17 @@ const formatDatetime = (value: Moment) => {
   return value.local().format("YYYY-MM-DD HH:mm:ss.SSS");
 };
 export interface IProps {
+  selectedId: string,
   transition: Transition;
   traces: Map<string, Trace>;
+  segments: Map<string, Segment>;
   onWeightChange: (id: string, value: number) => void;
   onRangeChange: (id: string, fromDate: Moment, toDate: Moment) => void;
   onClose: (id: string) => void;
   onIsSyncChange: (id: string) => void;
   onIsLogChange: (id: string) => void;
   onIsDatetimeChange: (id: string) => void;
+  onClick: (id: string) => void;
 }
 export default (props: IProps) => {
   const getTitle = () => {
@@ -79,41 +84,40 @@ export default (props: IProps) => {
   };
 
   const getPlotData = () => {
-    const { transition, traces } = props;
+    const { transition, traces, segments } = props;
     const trace = traces.get(transition.traceId);
+    
+    return segments.filter(x => transition.segmentIds.includes(x.id))
+      .map((s:Segment) => {
+        const trace = traces.get(s.traceId);
+        let xValues = [];
+        const points = s.points;
+        if(transition.isDatetime){
+          xValues = points.map(p => formatDatetime(p.ts));
+        }else{
+          xValues = range(points.length);
+        }
+        let yValues = points.map(p => p.value);
 
-    if (trace === undefined) {
-      return  [{}];
-    }
-    const points = transition.points;
-    let xValues = [];
-    if(transition.isDatetime){
-      xValues = points.map(p => formatDatetime(p.ts));
-    }else{
-      xValues = range(points.length);
-    }
-
-    let yValues = points.map(p => p.value);
-
-    // show legends when data is empty 
-    // https://github.com/plotly/plotly.js/issues/2861
-    xValues = xValues.length > 0 ? xValues : [null];
-    yValues = yValues.length > 0 ? yValues : [0];
-    return [{
-      name: trace.name,
-      traceId: trace.id,
-      x: xValues,
-      y: yValues.length > 1 ? smooth(yValues, transition.smoothWeight):yValues,
-      mode: "markers" ,
-      type: "scattergl",
-      line: {
-        width: 1,
-      },
-      opacity: 0.3,
-      marker: {
-        size: 6,
-      },
-    }];
+        // show legends when data is empty 
+        // https://github.com/plotly/plotly.js/issues/2861
+        xValues = xValues.length > 0 ? xValues : [null];
+        yValues = yValues.length > 0 ? yValues : [0];
+        return {
+          name: trace? trace.name:"",
+          x: xValues,
+          y: yValues.length > 1 ? smooth(yValues, transition.smoothWeight):yValues,
+          mode: "markers" ,
+          type: "scattergl",
+          line: {
+            width: 1,
+          },
+          opacity: 0.3,
+          marker: {
+            size: 6,
+          },
+        }
+      }).toList().toJS()
   };
   const getPlotLayout = () => {
     const { transition } = props;
@@ -124,7 +128,10 @@ export default (props: IProps) => {
         b: 30,
         l: 80,
       },
-      showlegend: false,
+      showlegend: true,
+      legend: {
+        orientation: "h",
+      },
       xaxis: {
         range:[transition.fromDate, transition.toDate].map(formatDatetime),
         type: transition.isDatetime ? 'date': undefined,
@@ -157,8 +164,10 @@ export default (props: IProps) => {
   const plotLayout = getPlotLayout();
   const title = getTitle();
   const {
+    selectedId,
     transition, 
     onClose, 
+    onClick,
     onIsLogChange, 
     onIsDatetimeChange, 
     onIsSyncChange,
@@ -167,6 +176,8 @@ export default (props: IProps) => {
   return (
     <Layout 
       className="card" 
+      isSelected={selectedId === transition.id}
+      onClick={() => onClick(transition.id)}
     >
       <TitleArea > 
         <Item className="title is-4"> {title} </Item>

@@ -1,6 +1,7 @@
 import { 
   Trace, 
   Transition, 
+  Segment,
 } from '~/models';
 import LoadingStore from './LoadingStore';
 import AppStore from './AppStore';
@@ -15,6 +16,7 @@ export class RootStore {
   loadingStore: LoadingStore;
   appStore: AppStore;
   traceStore: ModelStore<Trace>;
+  segmentStore: ModelStore<Segment>;
   transitionStore: ModelStore<Transition>;
   transitionUsecase: TransitionUsecase;
   searchUsecase: SearchUsecase;
@@ -23,6 +25,7 @@ export class RootStore {
     this.api = new WebApi();
 
     this.traceStore = new ModelStore<Trace>();
+    this.segmentStore = new ModelStore<Segment>();
     this.transitionStore = new ModelStore<Transition>();
     this.loadingStore = new LoadingStore();
     this.appStore = new AppStore(this);

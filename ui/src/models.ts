@@ -19,6 +19,14 @@ export interface Transition {
   isLog: boolean;
   isSync: boolean;
   isDatetime: boolean;
+  segmentIds: string[];
+  fromDate: Moment;
+  toDate: Moment;
+}
+
+export interface Segment {
+  id: string;
+  traceId: string;
   points: Point[];
   fromDate: Moment;
   toDate: Moment;

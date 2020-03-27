@@ -1,13 +1,12 @@
 import React from 'react';
 import moment from 'moment';
 import { storiesOf } from '@storybook/react';
-import { Transition } from '~/models'; 
+import { Transition, Segment, Trace } from '~/models'; 
 import Component from '~/components/Transition';
-import {transition, trace } from 'tests/mocks/models';
+import {transition, trace, segment } from 'tests/mocks/models';
 import { Map, Set } from 'immutable';
 import { boolean, number } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
-import { Trace } from '~/models';
 
 const points = [
   {
@@ -38,19 +37,28 @@ storiesOf('Transition', module)
         updatedAt: moment(),
       }
     });
+    const segments :  Map<string, Segment> = Map({
+      [segment.id]: {
+        ...segment,
+        points: points
+      }
+    })
     return (
       <Component 
+        selectedId={transition.id}
         transition={{
           ...transition,
             traceId:"t0",
             isDatetime: boolean('isDatetime', false),
             isLog: boolean('isLog', false),
             smoothWeight: number('smoothWeight', 0.5),
-            points: points,
+            segmentIds: [segment.id]
         }}
+        segments={segments}
         traces={traces}
         onWeightChange={action('onWeightChange')}
         onRangeChange={action('onRangeChange')}
+        onClick={action('onClick')}
         onClose={action('onClose')}
         onIsLogChange={action('onIsLogChange')}
         onIsSyncChange={action('onIsSyncChange')}

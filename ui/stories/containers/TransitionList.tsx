@@ -16,6 +16,7 @@ storiesOf('TransitionList', module)
     return (
       <Component 
         transitions={rows}
+        onAddClick={action('onAddClick')}
         Child={(props) => <Mock name={transition.id} />}
       />
     );
