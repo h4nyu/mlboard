@@ -128,10 +128,7 @@ export default (props: IProps) => {
         b: 30,
         l: 80,
       },
-      showlegend: true,
-      legend: {
-        orientation: "h",
-      },
+      showlegend: false,
       xaxis: {
         range:[transition.fromDate, transition.toDate].map(formatDatetime),
         type: transition.isDatetime ? 'date': undefined,
