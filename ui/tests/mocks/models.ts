@@ -7,6 +7,7 @@ export  const transition:Transition = {
   smoothWeight: 1.0,
   traceId: uuid(),
   isLog: false,
+  isSync: true,
   isDatetime: false,
   fromDate: moment().add(-1, 'hours'),
   toDate: moment(),

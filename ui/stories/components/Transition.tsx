@@ -53,6 +53,7 @@ storiesOf('Transition', module)
         onRangeChange={action('onRangeChange')}
         onClose={action('onClose')}
         onIsLogChange={action('onIsLogChange')}
+        onIsSyncChange={action('onIsSyncChange')}
         onIsDatetimeChange={action('onIsDatetimeChange')}
       />
     );

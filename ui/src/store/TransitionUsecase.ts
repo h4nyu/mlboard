@@ -19,7 +19,7 @@ export default class TransitionUsecase{
   fetchAll = () => {
     this.fetchTraces();
     this.root.transitionStore.rows.forEach(x => {
-      this.updateRange(x.id, x.fromDate, x.toDate);
+      this.updateRangeOne(x, x.fromDate, x.toDate);
     });
   }
 
@@ -37,13 +37,14 @@ export default class TransitionUsecase{
       traceId: traceId,
       smoothWeight: 0.0,
       isLog: false,
+      isSync: true,
       isDatetime:true,
       fromDate: moment().add(-1, "months"),
       toDate: moment(),
       points: [],
     };
     this.root.transitionStore.upsert({[transition.id]: transition});
-    await this.updateRange(transition.id, transition.fromDate, transition.toDate);
+    await this.updateRangeOne(transition, transition.fromDate, transition.toDate);
   }
 
   @action updateSmoothWeight = (id: string, value: number) => {
@@ -52,14 +53,24 @@ export default class TransitionUsecase{
     this.root.transitionStore.upsert({ [id]: { ...transition, smoothWeight:value, }});
   }
 
-  @action updateRange = async (transitionId: string, fromDate: Moment, toDate: Moment) => {
-    const transition = this.root.transitionStore.rows.get(transitionId);
-    if(transition === undefined){return;}
+  @action updateRangeOne = async (transition: Transition, fromDate: Moment, toDate: Moment) => {
     await this.root.loadingStore.dispatch(async () => {
       const points = await this.root.api.pointApi.rangeBy(transition.traceId, fromDate, toDate);
       if(points === undefined) {return;};
-      this.root.transitionStore.upsert({[transitionId]: { ...transition, fromDate, toDate, points:points}});
+      this.root.transitionStore.upsert({[transition.id]: { ...transition, fromDate, toDate, points:points}});
     });
+  }
+
+  @action syncRange = async (transitionId: string, fromDate: Moment, toDate: Moment) => {
+    const transition = this.root.transitionStore.rows.get(transitionId);
+    if(transition === undefined){return;}
+    if (!transition.isSync) {
+      await this.updateRangeOne(transition, fromDate, toDate)
+    }else {
+      this.root.transitionStore.rows.filter(x => x.isSync).forEach(x => {
+        this.updateRangeOne(x, fromDate, toDate);
+      });
+    }
   }
 
   @action toggleIsDatetime = (id: string) => {
@@ -75,6 +86,16 @@ export default class TransitionUsecase{
       this.root.transitionStore.upsert({[id]:{
         ...row,
         isLog:!row.isLog,
+      }});
+    }
+  }
+
+  @action toggleIsSync = (id: string) => {
+    const row = this.root.transitionStore.rows.get(id);
+    if(row){
+      this.root.transitionStore.upsert({[id]:{
+        ...row,
+        isSync:!row.isSync,
       }});
     }
   }

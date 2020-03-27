@@ -67,6 +67,7 @@ export interface IProps {
   onWeightChange: (id: string, value: number) => void;
   onRangeChange: (id: string, fromDate: Moment, toDate: Moment) => void;
   onClose: (id: string) => void;
+  onIsSyncChange: (id: string) => void;
   onIsLogChange: (id: string) => void;
   onIsDatetimeChange: (id: string) => void;
 }
@@ -160,6 +161,7 @@ export default (props: IProps) => {
     onClose, 
     onIsLogChange, 
     onIsDatetimeChange, 
+    onIsSyncChange,
     onWeightChange,
   } = props;
   return (
@@ -181,6 +183,9 @@ export default (props: IProps) => {
           <SmoothWeight>
             {transition.smoothWeight}
           </SmoothWeight>
+        </Item>
+        <Item>
+          <Check value={transition.isSync} onClick={() => onIsSyncChange(transition.id)}> Sync </Check>
         </Item>
         <Item>
           <Check value={transition.isLog} onClick={() => onIsLogChange(transition.id)}> Log </Check>

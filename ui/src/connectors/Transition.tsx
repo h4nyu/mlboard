@@ -13,9 +13,10 @@ const Component = (props: IProps) => (
     transition={props.transition}
     traces={traceStore.rows}
     onWeightChange={transitionUsecase.updateSmoothWeight}
-    onRangeChange={transitionUsecase.updateRange}
+    onRangeChange={transitionUsecase.syncRange}
     onClose={transitionUsecase.deleteTransition}
     onIsLogChange={transitionUsecase.toggleIsLog}
+    onIsSyncChange={transitionUsecase.toggleIsSync}
     onIsDatetimeChange={transitionUsecase.toggleIsDatetime}
   />
 );

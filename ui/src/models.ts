@@ -17,6 +17,7 @@ export interface Transition {
   traceId: string;
   smoothWeight: number;
   isLog: boolean;
+  isSync: boolean;
   isDatetime: boolean;
   points: Point[];
   fromDate: Moment;
