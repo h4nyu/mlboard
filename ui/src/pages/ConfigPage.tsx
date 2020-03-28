@@ -1,7 +1,6 @@
 import React from 'react';
-import TransitionList from '~/connectors/TransitionList';
+import TraceList from '~/connectors/TraceList';
 import PageHeader from '~/connectors/PageHeader';
-import Search from '~/connectors/Search';
 import styled from 'styled-components';
 
 const Layout = styled.div`
@@ -9,16 +8,14 @@ const Layout = styled.div`
   flex-direction: column;
   height: 100vh;
 `;
-
-
 export default class TracePage extends React.Component<{}> {
   render = () => {
     return (
       <Layout>
-        <PageHeader/>
-        <Search/>
-        <TransitionList />
+        <PageHeader />
+        <TraceList/>
       </Layout>
     );
   }
 };
+

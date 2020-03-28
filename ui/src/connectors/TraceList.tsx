@@ -9,7 +9,7 @@ const {traceStore} = store;
 const Component = () => (
   <TraceList
     traces={traceStore.rows}
-    Child={TraceListItem}
+    Child={(props:{}) => null}
   />
 );
 export default observer(Component);

@@ -4,6 +4,7 @@ import TextInput from './TextInput';
 import {Trace} from '~/models';
 import { Map } from 'immutable';
 import styled from 'styled-components';
+import TraceComponent from '~/components/Trace';
 
 
 const Layout = styled.div`
@@ -76,9 +77,7 @@ export default class DatetimeInput extends React.Component<IProps, State> {
             <AutoComplete className="list">
               {
                 traces.toList().map(x => (
-                  <Item className="list-item" key={x.id} onClick={() => onSelect(x.id)}>
-                    {x.name}
-                  </Item>
+                  <TraceComponent key={x.id} trace={x} onSelect={onSelect}/>
                 ))
               }
             </AutoComplete>
