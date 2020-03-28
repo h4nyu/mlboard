@@ -2,7 +2,7 @@ use crate::database::create_connection_pool;
 use crate::usecase::*;
 use actix_files as fs;
 use actix_web::middleware::Logger;
-use actix_web::{error, web, App, HttpResponse, HttpServer};
+use actix_web::{error, http, web, App, HttpResponse, HttpServer};
 use async_trait::async_trait;
 use chrono::prelude::{DateTime, Utc};
 use deadpool_postgres::{Client, Pool};
@@ -24,6 +24,7 @@ pub async fn run() -> std::io::Result<()> {
             .wrap(Logger::default())
             .wrap(Logger::new("%a %{User-Agent}i"))
             .service(fs::Files::new("/ui", "/public").index_file("index.html"))
+            .service(web::resource("/").to(redirect_to_ui))
             .service(web::resource("/api/v1/add-scalars").route(web::post().to(add_scalars)))
             .service(web::resource("/api/v1/points").route(web::get().to(search_points)))
             .service(web::resource("/api/v1/traces").route(web::get().to(search_traces)))
@@ -127,4 +128,10 @@ async fn delete_trace(
         ctx.delete_trace(&payload.name).await
     })
     .await
+}
+
+async fn redirect_to_ui() -> Result<HttpResponse, error::Error> {
+    Ok(HttpResponse::TemporaryRedirect()
+        .header(http::header::LOCATION, "/ui/")
+        .finish())
 }
