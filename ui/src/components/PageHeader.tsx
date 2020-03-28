@@ -1,54 +1,72 @@
-import styled from 'styled-components';
 import React from 'react';
-import appStyle from '~/styles/app.scss';
+import styled from 'styled-components';
+import classnames from 'classnames';
+import {HashRouter as Router, NavLink } from 'react-router-dom';
 
-
-const Layout = styled.div`
-  background-color: ${appStyle.primary};
-  height: 52px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-`;
 const Brand = styled.span`
   font-family: Impact;
-  font-size: 26px;
-  padding: 0.5em;
-  color: white;
+  font-size: 1.5em;
 `;
 
-const SearchArea = styled.div`
+const Icon = styled.span`
   padding: 1em;
-  flex-grow: 2;
 `;
 
-const Btn = styled.div`
-  margin: 0.5em;
-`;
-
-
+interface IState {
+  isActive: boolean;
+}
 
 interface IProps {
   onRefleshClick: () => void;
   Search: React.ComponentType<{}>;
 }
-export default (props: IProps) => {
-  const {onRefleshClick, Search} = props;
-  return (
-    <Layout style={{zIndex: 30}}>
-      <Brand> 
-        MLBOARD
-      </Brand>
-      <SearchArea>
-        <Search />
-      </SearchArea>
-      <Btn className="button" onClick={onRefleshClick}>
-        <span className="icon is-small">
-          <i className="fas fa-sync-alt" />
-        </span>
-      </Btn>
-    </Layout>
-  );
-};
 
+export default class PageHeader extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
+    super(props);
+    this.state = { isActive: false};
+  }
+  toggle = () => {
+    this.setState({isActive: !this.state.isActive});
+  }
+  render = () => {
+    const {onRefleshClick, Search} = this.props;
+    return (
+      <Router>
+        <div className="navbar is-light" style={{zIndex: 30}}>
+          <div className="navbar-brand">
+            <Brand className="navbar-item" >
+              MLBOARD
+            </Brand>
+            <div className="navbar-burger burger" data-target="navMenubd-example" onClick={() => this.toggle()}>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+          <div className={classnames("navbar-menu", this.state.isActive ? "is-active": null,)}  id="navMenubd-example">
+            <div className="navbar-start">
+              <NavLink className="navbar-item" activeClassName='is-active'  to='transitions'>
+                <Icon className="icon is-small">
+                  <i className="far fa-chart-bar"/>
+                </Icon>
+              </NavLink>
+              <NavLink className="navbar-item" activeClassName='is-active'  to='config'>
+                <Icon className="icon is-small">
+                  <i className ="fas fa-cog"/>
+                </Icon>
+              </NavLink>
+            </div>
+            <div className="navbar-end">
+              <a className="navbar-item" onClick={onRefleshClick}>
+                <Icon className="icon is-small" >
+                  <i className="fas fa-sync-alt" />
+                </Icon>
+              </a>
+            </div>
+          </div>
+        </div>
+      </Router>
+    );
+  }
+};

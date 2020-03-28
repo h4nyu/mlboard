@@ -28,4 +28,7 @@ export default class TraceApi {
     }));
     return rows;
   };
+  delete = async (id: string) => {
+    await axios.delete(`/api/v1/traces/${id}`);
+  }
 }

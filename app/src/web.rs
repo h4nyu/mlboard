@@ -28,7 +28,7 @@ pub async fn run() -> std::io::Result<()> {
             .service(web::resource("/api/v1/add-scalars").route(web::post().to(add_scalars)))
             .service(web::resource("/api/v1/points").route(web::get().to(search_points)))
             .service(web::resource("/api/v1/traces").route(web::get().to(search_traces)))
-            .service(web::resource("/api/v1/traces").route(web::delete().to(delete_trace)))
+            .service(web::resource("/api/v1/traces/{id}").route(web::delete().to(delete_trace)))
     })
     .bind("0.0.0.0:5000")?
     .run()
@@ -114,18 +114,14 @@ async fn search_traces(
     .await
 }
 
-#[derive(Deserialize)]
-pub struct DeleteTracePayload {
-    name: String,
-}
 async fn delete_trace(
-    payload: web::Json<DeleteTracePayload>,
+    id: web::Path<Uuid>,
     db_pool: web::Data<Pool>,
 ) -> Result<HttpResponse, error::Error> {
     wrap(async {
         let db = db_pool.get().await?;
         let ctx = Context { storage: db };
-        ctx.delete_trace(&payload.name).await
+        ctx.delete_trace(&id).await
     })
     .await
 }

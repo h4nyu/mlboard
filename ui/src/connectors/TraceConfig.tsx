@@ -1,17 +1,17 @@
 import { observer } from 'mobx-react';
 import React from "react";
 import { Trace } from '~/models'; 
-import TraceComponent from '~/components/Trace';
+import TraceConfig from '~/components/TraceConfig';
 import store from '~/store';
-const { transitionUsecase } = store;
+const { traceUsecase } = store;
 
 export interface IProps{
   trace: Trace;
 }
 const Component = (props: IProps) => (
-  <TraceComponent
+  <TraceConfig
     trace={props.trace}
-    onSelect={transitionUsecase.addTrace}
+    onDeleteClick={traceUsecase.deleteTrace}
   />
 );
 export default observer(Component);

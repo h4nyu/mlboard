@@ -1,5 +1,4 @@
 use crate::entities::*;
-use crate::error::ErrorKind;
 use crate::logics::reduce_points;
 use async_trait::async_trait;
 use chrono::prelude::{DateTime, Utc};
@@ -162,30 +161,21 @@ pub trait AddScalars: CreateTrace {
 
 #[async_trait]
 pub trait DeleteTrace: HasStorage {
-    async fn delete_trace(&self, name: &str) -> Result<(), Error> {
-        let trace_id = self
-            .storage()
-            .get(&NameKey {
-                name: name.to_owned(),
-            })
-            .await?
-            .ok_or(ErrorKind::TraceNotFound)?
-            .id;
+    async fn delete_trace(&self, id: &Uuid) -> Result<(), Error> {
         Delete::<Trace>::delete(
             self.storage(),
             &IdKey {
-                id: trace_id.to_owned(),
+                id: id.to_owned(),
             },
         )
         .await?;
         Delete::<Point>::delete(
             self.storage(),
             &IdKey {
-                id: trace_id.to_owned(),
+                id: id.to_owned(),
             },
         )
         .await?;
-
         Ok(())
     }
 }

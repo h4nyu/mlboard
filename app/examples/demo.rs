@@ -1,13 +1,10 @@
 use app::database::create_connection_pool;
 use app::usecase::*;
 use app::web::Context;
+
 use chrono::prelude::Utc;
-use deadpool_postgres::Pool;
-use failure::Error;
-use futures::future::join_all;
-use serde_json::json;
 use std::collections::HashMap;
-use std::time::{Duration, Instant};
+use std::time::{Instant};
 
 #[tokio::main]
 async fn main() {
@@ -17,11 +14,11 @@ async fn main() {
     for _i in 0..100 {
         let now = Instant::now();
         let values: HashMap<String, f64> = vec![
-            ("a0".to_owned(), 1.0),
-            ("a1".to_owned(), 1.0),
-            ("a2".to_owned(), 1.0),
-            ("a3".to_owned(), 1.0),
-            ("a4".to_owned(), 1.0),
+            ("trace0".to_owned(), 1.0),
+            ("trace1".to_owned(), 2.0),
+            ("trace2".to_owned(), 3.0),
+            ("trace3".to_owned(), 4.0),
+            ("trace4".to_owned(), 5.0),
         ]
         .into_iter()
         .collect();
