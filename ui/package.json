@@ -76,7 +76,7 @@
     "html-webpack-plugin": "^4.0.1",
     "jest": "^25.1.0",
     "jest-css-modules": "^2.0.0",
-    "node-sass": "^4.13.0",
+    "node-sass": "^7.0.0",
     "paths.macro": "^2.0.2",
     "sass-loader": "^8.0.2",
     "style-loader": "^1.1.3",
