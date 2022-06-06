@@ -8,7 +8,7 @@ edition = "2018"
 actix-files = "0.2.1"
 actix-rt = "1.0.0"
 actix-web = "2.0"
-tokio = { version = "0.2", features = ["full"] }
+tokio = { version = "1.8", features = ["full"] }
 tokio-postgres = { version = "0.5.2", features = ["with-uuid-0_8", "with-chrono-0_4"] }
 deadpool-postgres = "0.5.4"
 chrono = { version = "0.4", features = ["serde"] }
